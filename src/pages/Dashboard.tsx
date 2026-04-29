@@ -4,6 +4,7 @@ import { Loader2, Sparkles, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail } from '../lib/utils';
+import { apiFetch } from '../lib/api';
 
 interface TrustRecord {
   id: string;
@@ -27,6 +28,7 @@ export default function Dashboard() {
   const [isOwner, setIsOwner] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [connectedProviders, setConnectedProviders] = useState<string[]>([]);
+  const [realTrustScore, setRealTrustScore] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,6 +68,18 @@ export default function Dashboard() {
         } else {
           setRecords(data || []);
         }
+
+        // Fetch Real Trust Score from Backend
+        if (user) {
+          try {
+            const scoreData = await apiFetch('/trust-score');
+            if (scoreData && scoreData.score) {
+              setRealTrustScore(scoreData.score);
+            }
+          } catch (err) {
+            console.warn('Failed to fetch trust score from backend:', err);
+          }
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : 'An unknown error occurred';
         setFetchError(message);
@@ -77,9 +91,9 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const trustScore = records.length > 0 
+  const trustScore = realTrustScore || (records.length > 0 
     ? Math.min(600 + (records.filter(r => r.verification_status === 'verified').length * 40), 999)
-    : 450;
+    : 450);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
