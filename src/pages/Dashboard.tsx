@@ -39,7 +39,9 @@ export default function Dashboard() {
         }
 
         const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError) throw userError;
+        if (userError && userError.message !== 'Auth session missing!') {
+          throw userError;
+        }
         
         setIsOwner(isAdminEmail(user?.email));
 

@@ -80,7 +80,7 @@ const FiverrIcon = ({ size = 20 }: { size?: number }) => (
 
 export default function Login() {
   const navigate = useNavigate();
-  const { enterGuest } = useGuest();
+  const { enterGuest, exitGuest } = useGuest();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -186,7 +186,7 @@ export default function Login() {
         setIsLoading(false);
         return;
       }
-      enterGuest(); 
+      exitGuest();
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || "Authentication failed");
