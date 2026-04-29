@@ -1,35 +1,22 @@
-import neo4j, { Driver } from 'neo4j-driver';
+/**
+ * Neo4j queries are handled by the backend API.
+ * The frontend should NOT connect directly to Neo4j.
+ * Use the backend routes (/api/v1/trust-score, etc.) instead.
+ *
+ * This file is kept as a placeholder to avoid breaking imports
+ * while the codebase is being migrated to the decoupled architecture.
+ */
 
-let driver: Driver;
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 
 /**
- * Get or initialize the Neo4j Driver
+ * @deprecated Use apiFetch from lib/api.ts instead.
+ * Kept here to avoid breaking existing component imports.
  */
-export const getNeo4jDriver = () => {
-  if (driver) return driver;
-
-  const uri = import.meta.env.VITE_NEO4J_URI || '';
-  const user = import.meta.env.VITE_NEO4J_USER || '';
-  const password = import.meta.env.VITE_NEO4J_PASSWORD || '';
-
-  if (!uri || !user || !password) {
-    console.warn('Neo4j credentials missing. Graph features will be disabled.');
-  }
-
-  driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
-  return driver;
+export const runCypher = async (_query: string, _params: Record<string, unknown> = {}) => {
+  console.warn('runCypher() is deprecated. Use the backend API via apiFetch() instead.');
+  return [];
 };
 
-/**
- * Execute a Cypher query with parameters
- */
-export const runCypher = async (query: string, params: Record<string, any> = {}) => {
-  const driver = getNeo4jDriver();
-  const session = driver.session();
-  try {
-    const result = await session.run(query, params);
-    return result.records;
-  } finally {
-    await session.close();
-  }
-};
+export { API_BASE };
+
