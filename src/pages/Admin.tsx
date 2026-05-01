@@ -19,6 +19,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
+import { apiFetch } from '../lib/api';
+
 
 interface AdminStats {
   totalVerifications: number;
@@ -61,7 +63,8 @@ interface Plan {
   features: string[];
 }
 
-type AdminTab = 'verifications' | 'users' | 'audit_logs' | 'subscriptions';
+type AdminTab = 'verifications' | 'users' | 'audit_logs' | 'subscriptions' | 'system_status';
+
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -79,6 +82,9 @@ export default function Admin() {
     activeUsers: 0,
     pendingReviews: 0
   });
+  const [diagnostics, setDiagnostics] = useState<any>(null);
+  const [diagLoading, setDiagLoading] = useState(false);
+
 
   useEffect(() => {
     let profileChannel: any;
@@ -168,8 +174,10 @@ export default function Admin() {
     }
 
     fetchAdminData();
+    fetchDiagnostics();
 
     return () => {
+
       if (profileChannel) supabase.removeChannel(profileChannel);
       if (trustChannel) supabase.removeChannel(trustChannel);
       if (auditChannel) supabase.removeChannel(auditChannel);
@@ -197,6 +205,19 @@ export default function Admin() {
     }
   };
 
+  const fetchDiagnostics = async () => {
+    try {
+      setDiagLoading(true);
+      const data = await apiFetch('/diagnostics');
+      setDiagnostics(data);
+    } catch (err) {
+      console.error('Diagnostics fetch error:', err);
+    } finally {
+      setDiagLoading(false);
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
@@ -217,9 +238,13 @@ export default function Admin() {
           <button className="brutal-btn bg-white px-4 py-2 text-xs flex items-center gap-2">
             <Download size={14} /> Export Report
           </button>
-          <button className="brutal-btn bg-black text-white px-4 py-2 text-xs flex items-center gap-2">
+          <button 
+            onClick={() => setActiveTab('system_status')}
+            className="brutal-btn bg-black text-white px-4 py-2 text-xs flex items-center gap-2"
+          >
             <Activity size={14} /> System Health
           </button>
+
         </div>
       </div>
 
@@ -262,7 +287,8 @@ export default function Admin() {
 
       {/* Tabs */}
       <div className="flex border-b-4 border-black gap-2 overflow-x-auto">
-        {(['verifications', 'users', 'audit_logs', 'subscriptions'] as const).map(tab => (
+        {(['verifications', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
+
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -272,7 +298,8 @@ export default function Admin() {
                 : 'bg-white text-black hover:bg-gray-100'
             } border-x-2 border-t-2 border-black`}
           >
-            {tab === 'audit_logs' ? 'Audit Logs' : tab}
+            {tab === 'audit_logs' ? 'Audit Logs' : tab === 'system_status' ? 'System Status' : tab}
+
           </button>
         ))}
       </div>
@@ -514,6 +541,99 @@ export default function Admin() {
               </div>
             </div>
           )}
+
+          {activeTab === 'system_status' && (
+            <div className="space-y-6">
+              <div className="brutal-card">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="font-display text-xl uppercase">Backend Diagnostics</h3>
+                  <button 
+                    onClick={fetchDiagnostics}
+                    disabled={diagLoading}
+                    className="p-2 border-2 border-black hover:bg-black hover:text-white transition-colors"
+                  >
+                    <History size={16} className={diagLoading ? 'animate-spin' : ''} />
+                  </button>
+                </div>
+
+                {diagLoading && !diagnostics ? (
+                  <div className="py-12 flex flex-col items-center justify-center gap-4">
+                    <Loader2 className="animate-spin text-brutal-blue" size={32} />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Running tests...</p>
+                  </div>
+                ) : diagnostics ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Database Health */}
+                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                      <div className="flex items-center gap-2 text-brutal-blue">
+                        <ShieldCheck size={18} />
+                        <h4 className="font-display text-sm uppercase">Supabase Connectivity</h4>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${diagnostics.supabase.status === 'reachable' ? 'bg-brutal-green' : 'bg-brutal-pink'}`}>
+                          {diagnostics.supabase.status}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold">{diagnostics.supabase.latency}ms</span>
+                      </div>
+                    </div>
+
+                    {/* Graph Health */}
+                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                      <div className="flex items-center gap-2 text-brutal-pink">
+                        <TrendingUp size={18} />
+                        <h4 className="font-display text-sm uppercase">Neo4j AuraDB</h4>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${diagnostics.neo4j.status === 'connected' ? 'bg-brutal-green' : 'bg-brutal-pink'}`}>
+                          {diagnostics.neo4j.status}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold">{diagnostics.neo4j.latency}ms</span>
+                      </div>
+                    </div>
+
+                    {/* Environment Info */}
+                    <div className="md:col-span-2 p-4 border-4 border-black bg-gray-50 space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Activity size={18} />
+                        <h4 className="font-display text-sm uppercase">Server Environment</h4>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div>
+                          <p className="text-[8px] font-black text-gray-500 uppercase">Version</p>
+                          <p className="text-[10px] font-bold">1.0.0</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-gray-500 uppercase">Environment</p>
+                          <p className="text-[10px] font-bold uppercase">{diagnostics.environment}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-gray-500 uppercase">Timestamp</p>
+                          <p className="text-[10px] font-bold">{new Date(diagnostics.timestamp).toLocaleTimeString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-gray-500 uppercase">Uptime</p>
+                          <p className="text-[10px] font-bold">Stable</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-8 border-4 border-black border-dashed text-center">
+                    <p className="text-xs font-black uppercase text-gray-400">Failed to load system diagnostics</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
         </div>
 
         {/* Sidebar */}
