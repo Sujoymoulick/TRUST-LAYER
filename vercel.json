@@ -2,8 +2,9 @@
   "rewrites": [
     {
       "source": "/auth-proxy/:path*",
-      "destination": "https://ilvjknzoillsapnutkyj.supabase.co/auth/v1/:path*"
+      "destination": "https://ilvjknzoillsapnutkyj.supabase.co/:path*"
     },
+
     {
       "source": "/(.*)",
       "destination": "/index.html"
