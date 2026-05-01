@@ -1,21 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/auth-proxy/callback",
-      "destination": "https://ilvjknzoillsapnutkyj.supabase.co/auth/v1/callback?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdmprbnpvaWxsc2FwbnV0a3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjAwMjksImV4cCI6MjA5MjU5NjAyOX0.AQ2_F1nMrKksHnVM7_ZlPoEkMB2tcHW2aeHS8P3DB-k"
-    },
-    {
-      "source": "/auth-proxy/:path*",
-      "destination": "https://ilvjknzoillsapnutkyj.supabase.co/:path*?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdmprbnpvaWxsc2FwbnV0a3lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMjAwMjksImV4cCI6MjA5MjU5NjAyOX0.AQ2_F1nMrKksHnVM7_ZlPoEkMB2tcHW2aeHS8P3DB-k"
-    },
-
-
-
-
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-

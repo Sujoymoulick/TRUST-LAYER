@@ -199,17 +199,14 @@ export default function Login() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider as any,
-        options: { 
-          redirectTo: provider === 'google' 
-            ? 'https://trust-layer-psi.vercel.app/auth-proxy/callback' 
-            : `${window.location.origin}/dashboard` 
-        }
+        options: { redirectTo: `${window.location.origin}/dashboard` }
       });
       if (error) throw error;
     } catch (err: any) {
       setError(err.message);
     }
   };
+
 
 
   const handleGuestLogin = () => {
