@@ -85,7 +85,9 @@ export default function Admin() {
   });
   const [diagnostics, setDiagnostics] = useState<any>(null);
   const [diagLoading, setDiagLoading] = useState(false);
+  const [diagError, setDiagError] = useState<string | null>(null);
   const [health, setHealth] = useState<any>(null);
+
 
 
 
@@ -213,11 +215,14 @@ export default function Admin() {
   const fetchDiagnostics = async () => {
     try {
       setDiagLoading(true);
+      setDiagError(null);
       const data = await apiFetch('/diagnostics');
       setDiagnostics(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Diagnostics fetch error:', err);
+      setDiagError(err.message || 'Unknown connection error');
     } finally {
+
       setDiagLoading(false);
     }
   };
@@ -646,11 +651,13 @@ export default function Admin() {
                     </div>
                   </div>
                 ) : (
-
-                  <div className="p-8 border-4 border-black border-dashed text-center">
-                    <p className="text-xs font-black uppercase text-gray-400">Failed to load system diagnostics</p>
+                  <div className="p-8 border-4 border-black border-dashed text-center space-y-2">
+                    <p className="text-xs font-black uppercase text-red-500">Failed to load system diagnostics</p>
+                    {diagError && <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{diagError}</p>}
+                    <button onClick={fetchDiagnostics} className="text-[8px] font-black underline uppercase hover:text-black">Try Again</button>
                   </div>
                 )}
+
               </div>
             </div>
           )}
