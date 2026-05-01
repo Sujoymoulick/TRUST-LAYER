@@ -84,6 +84,8 @@ export default function Admin() {
   });
   const [diagnostics, setDiagnostics] = useState<any>(null);
   const [diagLoading, setDiagLoading] = useState(false);
+  const [health, setHealth] = useState<any>(null);
+
 
 
   useEffect(() => {
@@ -175,6 +177,8 @@ export default function Admin() {
 
     fetchAdminData();
     fetchDiagnostics();
+    fetchHealth();
+
 
     return () => {
 
@@ -216,6 +220,21 @@ export default function Admin() {
       setDiagLoading(false);
     }
   };
+
+  const fetchHealth = async () => {
+    try {
+      // Health is at /api/health, not under /api/v1
+      const rootUrl = VITE_API_BASE_URL.replace('/api/v1', '');
+      const response = await fetch(`${rootUrl}/api/health`);
+      if (response.ok) {
+        const data = await response.json();
+        setHealth(data);
+      }
+    } catch (err) {
+      console.error('Health fetch error:', err);
+    }
+  };
+
 
 
   if (loading) {
@@ -620,12 +639,13 @@ export default function Admin() {
                         </div>
                         <div>
                           <p className="text-[8px] font-black text-gray-500 uppercase">Uptime</p>
-                          <p className="text-[10px] font-bold">Stable</p>
+                          <p className="text-[10px] font-bold">{health?.status === 'up' ? 'Online' : 'Recovering'}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
+
                   <div className="p-8 border-4 border-black border-dashed text-center">
                     <p className="text-xs font-black uppercase text-gray-400">Failed to load system diagnostics</p>
                   </div>
