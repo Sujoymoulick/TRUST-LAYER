@@ -19,7 +19,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
-import { apiFetch } from '../lib/api';
+import { apiFetch, VITE_API_BASE_URL } from '../lib/api';
+
 
 
 interface AdminStats {
