@@ -84,10 +84,12 @@ export default function ApiDashboard() {
     }
   };
 
-  const handleRevokeKey = async (id: string) => {
-    if (!userId || !confirm('Are you sure you want to revoke this key? This action cannot be undone.')) return;
+  const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
+
+  const confirmRevokeKey = async () => {
+    if (!userId || !keyToRevoke) return;
     try {
-      const response = await fetch(`${API_BASE_URL}/keys/${id}?ownerId=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/keys/${keyToRevoke}?ownerId=${userId}`, {
         method: 'DELETE'
       });
       if (response.ok) {
@@ -95,6 +97,8 @@ export default function ApiDashboard() {
       }
     } catch (err) {
       console.error('Failed to revoke key:', err);
+    } finally {
+      setKeyToRevoke(null);
     }
   };
 
@@ -114,6 +118,37 @@ export default function ApiDashboard() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-20 relative">
+      {/* Brutalist Revoke Confirmation Modal */}
+      {keyToRevoke && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-sm w-full p-6 flex flex-col gap-6">
+            <div className="flex items-center gap-3 text-red-500">
+              <AlertTriangle size={32} />
+              <h3 className="font-display text-2xl uppercase leading-none">Revoke Key?</h3>
+            </div>
+            
+            <p className="text-xs font-bold uppercase text-gray-600 tracking-widest leading-relaxed">
+              Are you sure you want to revoke this API key? This action is permanent and cannot be undone. Applications using this key will lose access immediately.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mt-2">
+              <button 
+                onClick={() => setKeyToRevoke(null)}
+                className="brutal-btn flex-1 bg-gray-100 text-black px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmRevokeKey}
+                className="brutal-btn flex-1 bg-red-500 text-white px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+              >
+                Yes, Revoke
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Glassmorphism Modal for New Key */}
       {newKeyData && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -214,7 +249,7 @@ export default function ApiDashboard() {
                   </div>
                 </div>
                 <button 
-                  onClick={() => handleRevokeKey(key._id)}
+                  onClick={() => setKeyToRevoke(key._id)}
                   className="text-red-500 hover:bg-red-50 p-2 border-2 border-transparent hover:border-red-500 transition-colors self-end md:self-auto"
                   title="Revoke Key"
                 >
