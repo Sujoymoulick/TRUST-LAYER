@@ -4,7 +4,7 @@ import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, Dollar
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail } from '../lib/utils';
-import mainLogo from '../assets/main-logo.png';
+import mainLogo from '../assets/Trust-layer.png';
 import { SafetyMonitor } from '../components/SafetyMonitor';
 
 const NAV_ITEMS = [

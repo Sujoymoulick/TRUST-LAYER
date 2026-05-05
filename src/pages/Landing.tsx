@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGuest } from '../context/GuestContext';
 import { Component as RocketLoader } from '../components/ui/rocket-loader';
-import mainLogo from '../assets/main-logo.png';
+import mainLogo from '../assets/Trust-layer.png';
 
 export default function Landing() {
   const navigate = useNavigate();
