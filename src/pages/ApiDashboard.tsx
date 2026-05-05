@@ -1,22 +1,37 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Copy, Loader2, Key, CheckCircle } from 'lucide-react';
+import { Copy, Loader2, Key, CheckCircle, Trash2, Plus, AlertTriangle, EyeOff } from 'lucide-react';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+interface ApiKey {
+  _id: string;
+  name: string;
+  apiId: string;
+  keyHint: string;
+  lastUsed: string | null;
+  status: string;
+  createdAt: string;
+}
 
 export default function ApiDashboard() {
-  const [apiKey, setApiKey] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<any[]>([]);
+  
+  // New API Key States
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [newKeyData, setNewKeyData] = useState<{ apiId: string; secretKey: string; name: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          // Check for existing API key in user_metadata or a separate table
-          // For now, we'll use a hashed version of the user ID as a mock real key
-          const mockKey = `tl_live_${btoa(user.id).substring(0, 32)}`;
-          setApiKey(mockKey);
+          setUserId(user.id);
+          await fetchApiKeys(user.id);
         }
 
         const { data, error } = await supabase
@@ -28,7 +43,7 @@ export default function ApiDashboard() {
         if (error) throw error;
         setRecords(data || []);
       } catch (err) {
-        console.error('Error fetching API data:', err);
+        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
@@ -36,8 +51,55 @@ export default function ApiDashboard() {
     fetchData();
   }, []);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(apiKey);
+  const fetchApiKeys = async (uid: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/keys?ownerId=${uid}`);
+      if (response.ok) {
+        const keys = await response.json();
+        setApiKeys(keys);
+      }
+    } catch (err) {
+      console.error('Failed to fetch API keys:', err);
+    }
+  };
+
+  const handleGenerateKey = async () => {
+    if (!userId) return;
+    setIsGenerating(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/keys/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ownerId: userId, name: 'Production Key' })
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setNewKeyData(data);
+        await fetchApiKeys(userId); // Refresh the list
+      }
+    } catch (err) {
+      console.error('Failed to generate key:', err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleRevokeKey = async (id: string) => {
+    if (!userId || !confirm('Are you sure you want to revoke this key? This action cannot be undone.')) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/keys/${id}?ownerId=${userId}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        await fetchApiKeys(userId);
+      }
+    } catch (err) {
+      console.error('Failed to revoke key:', err);
+    }
+  };
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -51,30 +113,117 @@ export default function ApiDashboard() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-20">
+    <div className="max-w-4xl mx-auto space-y-8 pb-20 relative">
+      {/* Glassmorphism Modal for New Key */}
+      {newKeyData && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[#111] border border-white/20 shadow-2xl rounded-2xl max-w-lg w-full overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-white/10 bg-white/5 flex items-center gap-3">
+              <div className="p-2 bg-brutal-green/20 rounded-full text-brutal-green">
+                <Key size={24} />
+              </div>
+              <div>
+                <h3 className="text-white font-display text-xl uppercase tracking-wider">New API Key Generated</h3>
+                <p className="text-white/60 text-xs">Save this key securely.</p>
+              </div>
+            </div>
+            
+            <div className="p-8 space-y-6">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex gap-3 text-red-200">
+                <AlertTriangle className="shrink-0 text-red-400" />
+                <p className="text-sm">This is the <strong>only time</strong> we will show you this secret key. If you lose it, you will need to generate a new one.</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-white/70 uppercase tracking-widest">Secret Key</label>
+                <div className="flex gap-2">
+                  <div className="flex-1 bg-black border border-white/10 rounded-lg p-3 font-mono text-sm text-white break-all flex items-center gap-2">
+                    <EyeOff size={16} className="text-white/40 shrink-0" />
+                    {newKeyData.secretKey}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-white/70 uppercase tracking-widest">API ID (Public)</label>
+                <div className="bg-black border border-white/10 rounded-lg p-3 font-mono text-sm text-white/60 break-all">
+                  {newKeyData.apiId}
+                </div>
+              </div>
+
+              <button 
+                onClick={() => handleCopy(newKeyData.secretKey)}
+                className={`w-full py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all ${
+                  copied ? 'bg-brutal-green text-black shadow-[0_0_15px_rgba(0,255,100,0.5)]' : 'bg-white text-black hover:bg-gray-200'
+                }`}
+              >
+                {copied ? <><CheckCircle size={20} /> Copied to Clipboard</> : <><Copy size={20} /> Copy Secret Key</>}
+              </button>
+            </div>
+
+            <div className="p-4 bg-black border-t border-white/10 flex justify-end">
+              <button 
+                onClick={() => setNewKeyData(null)}
+                className="text-white/70 hover:text-white px-4 py-2 font-bold text-sm transition-colors"
+              >
+                I have saved my key securely
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <h2 className="font-display text-3xl uppercase">API Dashboard</h2>
         <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your TrustLayer production access.</p>
       </div>
 
       <div className="brutal-card shadow-[8px_8px_0px_#000]">
-        <h3 className="font-display text-lg uppercase mb-4 flex items-center gap-2">
-          <Key size={20} /> Your Production API Key
-        </h3>
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 brutal-input bg-gray-50 flex items-center overflow-hidden font-mono text-sm break-all">
-            {apiKey || 'No key generated'}
-          </div>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="font-display text-lg uppercase flex items-center gap-2">
+            <Key size={20} /> API Keys
+          </h3>
           <button 
-            onClick={handleCopy}
-            className={`brutal-btn px-6 gap-2 flex items-center justify-center min-w-[140px] transition-colors ${copied ? 'bg-brutal-green' : 'bg-white'}`}
+            onClick={handleGenerateKey}
+            disabled={isGenerating}
+            className="brutal-btn bg-brutal-yellow text-black text-xs px-4 py-2 flex items-center gap-2 disabled:opacity-50"
           >
-            {copied ? <><CheckCircle size={18} /> Copied</> : <><Copy size={18} /> Copy Key</>}
+            {isGenerating ? <Loader2 className="animate-spin size-4" /> : <Plus size={16} />}
+            Generate Key
           </button>
         </div>
-        <p className="text-[10px] font-black text-gray-400 uppercase mt-4">
-          Warning: Never share your API key. It provides full access to your trust identity data.
-        </p>
+
+        {apiKeys.length === 0 ? (
+          <div className="text-center py-8 border-2 border-dashed border-gray-300 bg-gray-50">
+            <p className="text-gray-500 font-bold uppercase text-xs">No active API keys found.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {apiKeys.map(key => (
+              <div key={key._id} className="border-2 border-black p-4 bg-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold">{key.name}</span>
+                    {key.status === 'active' && <span className="bg-brutal-green text-black text-[10px] uppercase font-black px-2 py-0.5">Active</span>}
+                  </div>
+                  <div className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 inline-block">
+                    {key.apiId}
+                  </div>
+                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                    Secret: sk_live_****{key.keyHint} • Created: {new Date(key.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handleRevokeKey(key._id)}
+                  className="text-red-500 hover:bg-red-50 p-2 border-2 border-transparent hover:border-red-500 transition-colors self-end md:self-auto"
+                  title="Revoke Key"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
