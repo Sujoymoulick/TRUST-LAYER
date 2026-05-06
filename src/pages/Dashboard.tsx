@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [records, setRecords] = useState<TrustRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [plan, setPlan] = useState<string | null>(null);
+  const [kycStatus, setKycStatus] = useState<string>('not_started');
   const [isOwner, setIsOwner] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [connectedProviders, setConnectedProviders] = useState<string[]>([]);
@@ -52,10 +53,11 @@ export default function Dashboard() {
           // Fetch Profile for Plan
           const { data: profile } = await supabase
             .from('profiles')
-            .select('plan')
+            .select('plan, kyc_status')
             .eq('id', user.id)
             .single();
           setPlan(profile?.plan || 'free');
+          setKycStatus(profile?.kyc_status || 'not_started');
         }
 
         const { data, error } = await supabase
@@ -121,7 +123,7 @@ export default function Dashboard() {
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
       
       {/* Phase 1: Claim Trust Passport Banner */}
-      {!loading && trustScore === 450 && (
+      {!loading && kycStatus === 'not_started' && (
         <div className="brutal-card bg-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center text-3xl">
@@ -136,7 +138,7 @@ export default function Dashboard() {
             onClick={() => navigate('/identity')}
             className="brutal-btn bg-black text-white px-8 py-3 text-sm font-black uppercase whitespace-nowrap"
           >
-            Claim Now →
+            Claim Your Passport
           </button>
         </div>
       )}

@@ -3,6 +3,8 @@ import { Loader2, Link2, ShieldCheck } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useGuest } from '../context/GuestContext';
 import { DigiLockerVerify } from '../components/DigiLockerVerify';
+import SumsubWebSdk from '@sumsub/websdk-react';
+import { apiFetch } from '../lib/api';
 
 const PLATFORMS = [
   { id: 'github', name: 'GitHub', icon: '🐙', category: 'Professional' },
@@ -10,7 +12,6 @@ const PLATFORMS = [
   { id: 'google', name: 'Google', icon: '🔍', category: 'Professional' },
   { id: 'stripe', name: 'Stripe', icon: '💳', category: 'Financial' },
   { id: 'paypal', name: 'PayPal', icon: '💰', category: 'Financial' },
-  { id: 'onfido', name: 'Onfido', icon: '🪪', category: 'Identity' },
   { id: 'digilocker', name: 'DigiLocker', icon: '🇮🇳', category: 'Identity' },
 ];
 
@@ -20,6 +21,11 @@ export default function Identity() {
   const [loading, setLoading] = useState(true);
   const [connectedProviders, setConnectedProviders] = useState<string[]>([]);
   const [showDigiLocker, setShowDigiLocker] = useState(false);
+  const [kycStatus, setKycStatus] = useState<string>('not_started');
+  const [kycToken, setKycToken] = useState<string | null>(null);
+  const [showSumsub, setShowSumsub] = useState(false);
+  const [kycLoading, setKycLoading] = useState(false);
+  const [kycRejectionReason, setKycRejectionReason] = useState<string | null>(null);
 
   useEffect(() => {
     async function getProviders() {
@@ -34,6 +40,15 @@ export default function Identity() {
         if (user) {
           setUser(user);
           setConnectedProviders(user.app_metadata?.providers || []);
+          
+          // Fetch KYC status
+          try {
+            const kyc = await apiFetch('/kyc/status');
+            setKycStatus(kyc.status);
+            setKycRejectionReason(kyc.rejectionReason);
+          } catch (err) {
+            console.error('Failed to fetch KYC status:', err);
+          }
         }
       } catch (error) {
         console.error('Error fetching providers:', error);
@@ -42,7 +57,43 @@ export default function Identity() {
       }
     }
     getProviders();
+    
+    // Real-time updates for KYC status via Supabase
+    let subscription: any;
+    if (!isGuest) {
+      subscription = supabase
+        .channel('kyc_status_updates')
+        .on('postgres_changes', { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'profiles' 
+        }, (payload: any) => {
+          if (user && payload.new.id === user.id) {
+            setKycStatus(payload.new.kyc_status);
+            setKycRejectionReason(payload.new.kyc_rejection_reason);
+          }
+        })
+        .subscribe();
+    }
+
+    return () => {
+      if (subscription) supabase.removeChannel(subscription);
+    };
   }, [isGuest]);
+
+  const handleStartKYC = async () => {
+    if (isGuest) return;
+    setKycLoading(true);
+    try {
+      const { token } = await apiFetch('/kyc/create-session', { method: 'POST' });
+      setKycToken(token);
+      setShowSumsub(true);
+    } catch (err: any) {
+      alert('Failed to start verification: ' + err.message);
+    } finally {
+      setKycLoading(false);
+    }
+  };
 
   const handleConnect = async (provider: string) => {
     if (isGuest) return;
@@ -95,6 +146,91 @@ export default function Identity() {
         />
       )}
       <h2 className="font-display text-3xl uppercase mb-8">Link Your Identities</h2>
+      
+      {/* Sumsub KYC Section */}
+      <div className="mb-12 brutal-card bg-white p-6 shadow-[8px_8px_0px_#000]">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <div className={`w-16 h-16 border-4 border-black flex items-center justify-center text-3xl ${
+              kycStatus === 'verified' ? 'bg-brutal-green' : 
+              kycStatus === 'pending' ? 'bg-brutal-yellow' : 
+              kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-gray-100'
+            }`}>
+              {kycStatus === 'verified' ? '✅' : '🛂'}
+            </div>
+            <div>
+              <h3 className="font-display text-xl uppercase">Identity Verification (KYC)</h3>
+              <p className="text-xs font-bold uppercase mt-1 text-gray-500">
+                {kycStatus === 'not_started' && 'Verification Required'}
+                {kycStatus === 'pending' && 'Verification Pending'}
+                {kycStatus === 'verified' && 'Verification Successful'}
+                {kycStatus === 'rejected' && 'Verification Rejected'}
+              </p>
+              {kycStatus === 'pending' && (
+                <div className="flex items-center gap-2 mt-2">
+                  <Loader2 className="animate-spin size-3" />
+                  <span className="text-[10px] font-black uppercase">Estimated review time: 5-10 mins</span>
+                </div>
+              )}
+              {kycStatus === 'rejected' && kycRejectionReason && (
+                <p className="text-[10px] font-black uppercase text-red-500 mt-2">Reason: {kycRejectionReason}</p>
+              )}
+            </div>
+          </div>
+          
+          {kycStatus !== 'verified' && kycStatus !== 'pending' && (
+            <button 
+              onClick={handleStartKYC}
+              disabled={kycLoading || isGuest}
+              className={`brutal-btn px-8 py-3 text-sm font-black uppercase ${
+                kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-brutal-yellow'
+              } ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {kycLoading ? <Loader2 className="animate-spin" /> : kycStatus === 'rejected' ? 'Retry Verification' : 'Start Verification'}
+            </button>
+          )}
+
+          {kycStatus === 'verified' && (
+            <div className="bg-brutal-green px-6 py-2 border-2 border-black font-black uppercase text-xs">
+              Passport Unlocked
+            </div>
+          )}
+        </div>
+      </div>
+
+      {showSumsub && kycToken && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-2xl h-[80vh] border-4 border-black shadow-[12px_12px_0px_#000] relative overflow-hidden">
+            <button 
+              onClick={() => setShowSumsub(false)}
+              className="absolute top-4 right-4 z-10 brutal-btn bg-white size-8 flex items-center justify-center font-black"
+            >
+              ×
+            </button>
+            <div className="h-full overflow-y-auto">
+              <SumsubWebSdk
+                accessToken={kycToken}
+                expirationHandler={() => {
+                  // Token expired, refresh it
+                  handleStartKYC();
+                  return Promise.resolve(kycToken);
+                }}
+                onMessage={(type: string, payload: any) => {
+                  console.log('Sumsub message:', type, payload);
+                  // Auto close modal when applicant is reviewed or pending
+                  if (type === 'idCheck.applicantStatus' && (payload.reviewStatus === 'pending' || payload.reviewStatus === 'completed')) {
+                    setTimeout(() => setShowSumsub(false), 2000);
+                  }
+                }}
+                onError={(error: any) => {
+                  console.error('Sumsub error:', error);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <p className="text-sm font-bold text-gray-500 uppercase mb-8 tracking-widest">
         The more accounts you link, the higher your Trust Score becomes.
       </p>
