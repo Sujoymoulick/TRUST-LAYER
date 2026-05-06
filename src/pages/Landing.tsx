@@ -123,32 +123,34 @@ export default function Landing() {
         {['Freelancers', 'Enterprises', 'Developers', 'Marketplaces'].map(t => <span key={t}>{t}</span>)}
       </div>
 
-      {/* TURNSTILE MODAL */}
+      {/* TURNSTILE FULLSCREEN OVERLAY */}
       {isTurnstileOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="brutal-card bg-white p-8 max-w-sm w-full flex flex-col items-center relative" style={{ boxShadow: '12px 12px 0px #000' }}>
-            <button 
-              onClick={() => setIsTurnstileOpen(false)}
-              className="absolute top-4 right-4 font-bold text-2xl leading-none hover:text-red-500"
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <h2 className="text-xl font-black mb-6 uppercase text-center" style={{ fontFamily: "'Archivo Black', sans-serif" }}>
-              Verify Identity
-            </h2>
-            <div className="mb-4">
+        <div className="fixed inset-0 z-50 flex flex-col justify-between bg-black text-white font-sans overflow-y-auto">
+          <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto px-6 md:px-12 py-12 w-full mt-[-10vh]">
+            <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">www.trustlayer.com</h1>
+            <h2 className="text-xl md:text-2xl font-semibold mb-4 tracking-tight">Performing security verification</h2>
+            <p className="text-gray-300 text-sm md:text-base mb-8 max-w-3xl leading-relaxed">
+              This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot.
+            </p>
+            <div className="mb-8 flex items-center justify-start">
               <Turnstile
                 siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                options={{ theme: 'dark' }}
                 onSuccess={() => {
                   setIsTurnstileOpen(false);
                   navigate('/login');
                 }}
               />
             </div>
-            <p className="text-xs text-gray-500 font-medium text-center mt-2">
-              Protected by Cloudflare Turnstile
-            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto w-full px-6 md:px-12 pb-8">
+            <div className="border-t border-[#333] pt-6 flex flex-col items-center text-xs text-gray-400 gap-1">
+              <p>Ray ID: <span className="font-mono font-bold">9f76272db8a6a7aa</span></p>
+              <p>
+                Performance and Security by <a href="https://www.cloudflare.com" target="_blank" rel="noreferrer" className="underline hover:text-white transition-colors">Cloudflare</a> <span className="mx-1">|</span> <a href="#" className="underline hover:text-white transition-colors">Privacy</a>
+              </p>
+            </div>
           </div>
         </div>
       )}
