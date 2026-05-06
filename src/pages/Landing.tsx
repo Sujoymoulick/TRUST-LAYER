@@ -137,8 +137,10 @@ export default function Landing() {
                 siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '3x00000000000000000000FF'}
                 options={{ theme: 'dark' }}
                 onSuccess={() => {
-                  setIsTurnstileOpen(false);
-                  navigate('/login');
+                  setTimeout(() => {
+                    setIsTurnstileOpen(false);
+                    navigate('/login');
+                  }, 1200);
                 }}
               />
             </div>
