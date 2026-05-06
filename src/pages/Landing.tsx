@@ -127,14 +127,14 @@ export default function Landing() {
       {isTurnstileOpen && (
         <div className="fixed inset-0 z-50 flex flex-col justify-between bg-black text-white font-sans overflow-y-auto">
           <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto px-6 md:px-12 py-12 w-full mt-[-10vh]">
-            <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">www.trustlayer.com</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">www.pramaaan.com</h1>
             <h2 className="text-xl md:text-2xl font-semibold mb-4 tracking-tight">Performing security verification</h2>
             <p className="text-gray-300 text-sm md:text-base mb-8 max-w-3xl leading-relaxed">
               This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot.
             </p>
             <div className="mb-8 flex items-center justify-start">
               <Turnstile
-                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '3x00000000000000000000FF'}
                 options={{ theme: 'dark' }}
                 onSuccess={() => {
                   setIsTurnstileOpen(false);
