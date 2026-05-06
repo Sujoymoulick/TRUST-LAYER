@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock } from 'lucide-react';
+import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail } from '../lib/utils';
 import mainLogo from '../assets/Trust-layer.png';
 import { SafetyMonitor } from '../components/SafetyMonitor';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useSIWE } from '../hooks/useSIWE';
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/wallet',    icon: Wallet,          label: 'Wallet'    },
   { to: '/identity',  icon: User,            label: 'Identity'  },
   { to: '/vault',     icon: Lock,            label: 'Consent Vault' },
   { to: '/analytics', icon: BarChart2,        label: 'Analytics' },
@@ -23,6 +26,7 @@ export function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [plan, setPlan] = useState<string | null>(null);
+  useSIWE();
 
   useEffect(() => {
     async function getUserAndProfile() {
@@ -202,7 +206,12 @@ export function DashboardLayout() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
+            <ConnectButton 
+              accountStatus="address"
+              showBalance={false}
+              chainStatus="icon"
+            />
             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
               <Bell size={20} />
             </button>
