@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGuest } from '../context/GuestContext';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { Component as RocketLoader } from '../components/ui/rocket-loader';
 import mainLogo from '../assets/Trust-layer.png';
 
@@ -8,6 +9,7 @@ export default function Landing() {
   const navigate = useNavigate();
   const { enterGuest } = useGuest();
   const [loading, setLoading] = useState(true);
+  const [isTurnstileOpen, setIsTurnstileOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -17,6 +19,11 @@ export default function Landing() {
   }, []);
 
   const handleGuest = () => { enterGuest(); navigate('/dashboard'); };
+
+  const handleLoginClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsTurnstileOpen(true);
+  };
 
   if (loading) {
     return <RocketLoader />;
@@ -40,8 +47,8 @@ export default function Landing() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link to="/login" className="hidden sm:block font-bold text-sm underline">Login</Link>
-          <Link to="/login" className="brutal-btn text-sm px-4 py-2" style={{ minHeight: 'auto' }}>Sign Up</Link>
+          <Link to="/login" onClick={handleLoginClick} className="hidden sm:block font-bold text-sm underline">Login</Link>
+          <Link to="/login" onClick={handleLoginClick} className="brutal-btn text-sm px-4 py-2" style={{ minHeight: 'auto' }}>Sign Up</Link>
         </div>
       </nav>
 
@@ -61,7 +68,7 @@ export default function Landing() {
             Secure. Connect. Analyze. Build your global reputation and carry your trust everywhere.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link to="/login" className="brutal-btn text-base px-8 py-4" style={{ background: '#FFE600', boxShadow: '6px 6px 0px #000' }}>
+            <Link to="/login" onClick={handleLoginClick} className="brutal-btn text-base px-8 py-4" style={{ background: '#FFE600', boxShadow: '6px 6px 0px #000' }}>
               Get Started Free
             </Link>
             <button onClick={handleGuest} className="brutal-btn text-base px-8 py-4" style={{ background: '#fff' }}>
@@ -115,6 +122,36 @@ export default function Landing() {
       <div className="flex flex-wrap items-center justify-center gap-8 px-5 py-5 border-t-[3px] border-black font-black text-sm uppercase tracking-widest" style={{ background: '#FFE600' }}>
         {['Freelancers', 'Enterprises', 'Developers', 'Marketplaces'].map(t => <span key={t}>{t}</span>)}
       </div>
+
+      {/* TURNSTILE MODAL */}
+      {isTurnstileOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="brutal-card bg-white p-8 max-w-sm w-full flex flex-col items-center relative" style={{ boxShadow: '12px 12px 0px #000' }}>
+            <button 
+              onClick={() => setIsTurnstileOpen(false)}
+              className="absolute top-4 right-4 font-bold text-2xl leading-none hover:text-red-500"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <h2 className="text-xl font-black mb-6 uppercase text-center" style={{ fontFamily: "'Archivo Black', sans-serif" }}>
+              Verify Identity
+            </h2>
+            <div className="mb-4">
+              <Turnstile
+                siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                onSuccess={() => {
+                  setIsTurnstileOpen(false);
+                  navigate('/login');
+                }}
+              />
+            </div>
+            <p className="text-xs text-gray-500 font-medium text-center mt-2">
+              Protected by Cloudflare Turnstile
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
