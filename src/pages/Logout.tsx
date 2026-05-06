@@ -4,13 +4,21 @@ import { LogOut, Home, ArrowLeft } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 
+import { useDisconnect } from 'wagmi';
+
 const Logout = () => {
   const { exitGuest } = useGuest();
+  const { disconnect } = useDisconnect();
 
   useEffect(() => {
     const handleLogout = async () => {
-      await supabase.auth.signOut();
-      exitGuest();
+      try {
+        await supabase.auth.signOut();
+        disconnect(); // Disconnect wallet on logout
+        exitGuest();
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
     };
     handleLogout();
     
