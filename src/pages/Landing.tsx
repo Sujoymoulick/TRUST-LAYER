@@ -77,9 +77,9 @@ export default function Landing() {
         </div>
 
         <div className="hidden md:flex gap-10 font-bold text-[12px] uppercase tracking-[0.2em] text-[var(--text-primary)]">
-          <a href="#" className="hover:text-neon-green transition-colors">Ecosystem</a>
-          <a href="#" className="hover:text-neon-green transition-colors">API docs</a>
-          <Link to="/pricing" className="hover:text-neon-green transition-colors">Pricing</Link>
+          <a href="#" className="hover:text-neon-orange transition-colors">Ecosystem</a>
+          <a href="#" className="hover:text-neon-orange transition-colors">API docs</a>
+          <Link to="/pricing" className="hover:text-neon-orange transition-colors">Pricing</Link>
         </div>
 
         <div className="flex items-center gap-4">
@@ -91,8 +91,8 @@ export default function Landing() {
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          <Link to="/login" onClick={handleLoginClick} className="hidden sm:block text-xs font-black uppercase tracking-widest hover:text-neon-green">Login</Link>
-          <Link to="/login" onClick={handleLoginClick} className="brutal-btn !bg-neon-green !text-black !py-2 !px-6 !text-xs !shadow-[4px_4px_0px_var(--border-color)]">Sign Up</Link>
+          <Link to="/login" onClick={handleLoginClick} className="hidden sm:block text-xs font-black uppercase tracking-widest hover:text-neon-orange">Login</Link>
+          <Link to="/login" onClick={handleLoginClick} className="brutal-btn !bg-neon-orange !text-black !py-2 !px-6 !text-xs !shadow-[4px_4px_0px_var(--border-color)]">Sign Up</Link>
         </div>
       </nav>
 
@@ -106,19 +106,19 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded-full mb-6">
-              <div className="w-2 h-2 bg-neon-green rounded-full neon-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neon-green">Network Active v1.0</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-neon-orange/10 border border-neon-orange/30 rounded-full mb-6">
+              <div className="w-2 h-2 bg-neon-orange rounded-full neon-pulse" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neon-orange">Network Active v1.0</span>
             </div>
             
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter uppercase italic">
               The Portable<br />
-              <span className="text-neon-green">Trust Layer</span><br />
+              <span className="text-neon-orange">Trust Layer</span><br />
               For The Web.
             </h1>
             
             <p className="mt-8 text-lg md:text-xl text-[var(--text-secondary)] font-medium max-w-2xl leading-relaxed">
-              Aggregate your professional reputation from GitHub, LinkedIn, and Web3 into one verifiable identity. Powered by <span className="underline decoration-brutal-yellow decoration-2 underline-offset-4">Gemini AI</span>.
+              Aggregate your professional reputation from GitHub, LinkedIn, and Web3 into one verifiable identity.
             </p>
           </motion.div>
 
@@ -131,7 +131,7 @@ export default function Landing() {
             <Link 
               to="/login" 
               onClick={handleLoginClick} 
-              className="group relative brutal-btn !bg-brutal-yellow !text-black !px-10 !py-5 !text-lg !shadow-[8px_8px_0px_#00FF00] hover:-translate-y-1 active:translate-y-0 transition-transform"
+              className="group relative brutal-btn !bg-brutal-yellow !text-black !px-10 !py-5 !text-lg !shadow-[8px_8px_0px_var(--color-neon-orange)] hover:-translate-y-1 active:translate-y-0 transition-transform"
             >
               Start Building Trust
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -139,20 +139,20 @@ export default function Landing() {
             
             <button 
               onClick={handleGuest} 
-              className="brutal-btn !bg-transparent !text-white !border-white/20 !px-10 !py-5 !text-lg !shadow-[8px_8px_0px_#333] hover:!bg-white/5"
+              className="brutal-btn !bg-transparent !text-[var(--text-primary)] !border-[var(--border-color)] !px-10 !py-5 !text-lg !shadow-[8px_8px_0px_rgba(0,0,0,0.1)] hover:!bg-[var(--text-primary)]/5"
             >
               Try Sandbox
             </button>
           </motion.div>
 
           {/* Integration Features */}
-          <div className="grid grid-cols-2 gap-8 pt-12 border-t border-white/5">
+          <div className="grid grid-cols-2 gap-8 pt-12 border-t border-[var(--border-color)]">
             <div className="flex gap-4">
-              <div className="p-3 bg-neon-green/10 border border-neon-green/20 h-fit">
-                <Cpu className="text-neon-green" size={24} />
+              <div className="p-3 bg-neon-orange/10 border border-neon-orange/20 h-fit">
+                <Cpu className="text-neon-orange" size={24} />
               </div>
               <div>
-                <h4 className="font-display text-sm tracking-tight mb-1 text-white">Gemini AI Analysis</h4>
+                <h4 className="font-display text-sm tracking-tight mb-1 text-white">Trust Analysis</h4>
                 <p className="text-[11px] text-gray-500 uppercase font-black leading-tight">Advanced behavioral and risk modeling for true identity metrics.</p>
               </div>
             </div>
@@ -179,19 +179,19 @@ export default function Landing() {
           >
             <div className="flex justify-between items-start mb-6">
               <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] italic">Network Rank</span>
-              <div className="w-2 h-2 rounded-full bg-neon-green neon-pulse" />
+              <div className="w-2 h-2 rounded-full bg-neon-orange neon-pulse" />
             </div>
             <div className="text-center">
               <h2 className="font-display text-6xl tracking-tighter mb-2 italic">842</h2>
               <div className="h-1.5 w-full bg-[var(--text-primary)]/10 rounded-full overflow-hidden">
                 <motion.div 
-                  className="h-full bg-neon-green shadow-[0_0_15px_#00FF00]"
+                  className="h-full bg-neon-orange shadow-[0_0_15px_#FF5F00]"
                   initial={{ width: 0 }}
                   animate={{ width: "84%" }}
                   transition={{ duration: 1, delay: 0.5 }}
                 />
               </div>
-              <span className="inline-block mt-4 text-[10px] font-black uppercase tracking-widest text-neon-green">Verified Elite</span>
+              <span className="inline-block mt-4 text-[10px] font-black uppercase tracking-widest text-neon-orange">Verified Elite</span>
             </div>
           </motion.div>
 
@@ -208,7 +208,7 @@ export default function Landing() {
               <span className="text-[10px] font-black uppercase tracking-widest">Risk Profile</span>
             </div>
             <div className="flex gap-2">
-              <div className="flex-1 h-3 bg-neon-green" />
+              <div className="flex-1 h-3 bg-neon-orange" />
               <div className="flex-1 h-3 bg-brutal-yellow" />
               <div className="flex-1 h-3 bg-[var(--text-primary)]/10" />
             </div>
@@ -226,15 +226,15 @@ export default function Landing() {
                 {String.fromCharCode(64 + i)}
               </div>
             ))}
-            <div className="w-16 h-16 rounded-full border-4 border-[var(--border-color)] bg-neon-green flex items-center justify-center text-black shadow-xl">
+            <div className="w-16 h-16 rounded-full border-4 border-[var(--border-color)] bg-neon-orange flex items-center justify-center text-black shadow-xl">
               <ArrowRight size={24} />
             </div>
           </motion.div>
 
           {/* Ecosystem Links */}
           <div className="absolute -bottom-10 left-0 flex gap-4">
-            <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-[var(--glass-border)] !shadow-[4px_4px_0px_#00FF00]">
-              <Target size={14} className="text-neon-green" />
+            <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-[var(--glass-border)] !shadow-[4px_4px_0px_#FF5F00]">
+              <Target size={14} className="text-neon-orange" />
               <span className="text-[10px] font-black uppercase tracking-widest">Lakshya Active</span>
             </div>
             <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-[var(--glass-border)] !shadow-[4px_4px_0px_#0057FF]">
@@ -250,7 +250,7 @@ export default function Landing() {
         <div className="animate-marquee whitespace-nowrap flex items-center">
           {[...PLATFORMS, ...PLATFORMS].map((p, idx) => (
             <div key={idx} className="flex items-center gap-4 mx-12 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-default group">
-              <div className="p-2 border border-[var(--border-color)] rounded-lg group-hover:border-neon-green transition-colors">
+              <div className="p-2 border border-[var(--border-color)] rounded-lg group-hover:border-neon-orange transition-colors">
                 {p.icon}
               </div>
               <span className="font-display text-2xl uppercase italic tracking-tighter">{p.name}</span>

@@ -95,7 +95,7 @@
   --color-brutal-black: #000000;
   --color-brutal-white: #FFFFFF;
   --color-brutal-bg: #F5F5F5;
-  --color-neon-green: #00FF00;
+  --color-neon-orange: #FF5F00; /* New Primary Accent */
 }
 
 @keyframes marquee {

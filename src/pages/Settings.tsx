@@ -153,7 +153,7 @@ export default function Settings() {
               </div>
               <div>
                 <label className="block font-black text-xs uppercase mb-2">Identity Verification</label>
-                <div className="brutal-badge bg-brutal-green text-[10px]">VERIFIED USER</div>
+                <div className="brutal-badge bg-neon-orange text-[10px]">VERIFIED USER</div>
               </div>
             </div>
 
@@ -173,7 +173,7 @@ export default function Settings() {
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                    <div className="p-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)]">
-                      {theme === 'dark' ? <Moon className="text-neon-green" /> : <Sun className="text-brutal-yellow" />}
+                      {theme === 'dark' ? <Moon className="text-neon-orange" /> : <Sun className="text-brutal-yellow" />}
                    </div>
                    <div>
                       <h4 className="font-display text-sm uppercase">Dark Mode</h4>
