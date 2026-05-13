@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGuest } from '../context/GuestContext';
+import { useTheme } from '../context/ThemeContext';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -14,7 +15,9 @@ import {
   Lock,
   ArrowRight,
   Target,
-  BookOpen
+  BookOpen,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { Component as RocketLoader } from '../components/ui/rocket-loader';
 import mainLogo from '../assets/Trust-layer.png';
@@ -32,6 +35,7 @@ const PLATFORMS = [
 export default function Landing() {
   const navigate = useNavigate();
   const { enterGuest } = useGuest();
+  const { theme, toggleTheme } = useTheme();
   const [loading, setLoading] = useState(true);
   const [isTurnstileOpen, setIsTurnstileOpen] = useState(false);
 
@@ -57,26 +61,34 @@ export default function Landing() {
   } as const;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden selection:bg-neon-green selection:text-black">
+    <div className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 overflow-x-hidden selection:bg-neon-green selection:text-black`}>
       {/* Mesh Gradient Background */}
-      <div className="fixed inset-0 pointer-events-none mesh-gradient-bg opacity-30" />
+      <div className={`fixed inset-0 pointer-events-none mesh-gradient-bg ${theme === 'dark' ? 'opacity-30' : 'opacity-10'}`} />
 
       {/* NAV */}
-      <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 py-6 border-b-2 border-white/5 backdrop-blur-xl bg-black/40">
+      <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 py-6 border-b-2 border-[var(--border-color)] backdrop-blur-xl bg-[var(--nav-bg)]">
         <div className="flex items-center gap-3">
-          <img src={mainLogo} alt="TrustLayer Logo" className="h-10 w-auto brightness-110" />
-          <span className="hidden sm:inline font-display text-xl tracking-tighter text-white">TrustLayer</span>
+          <img src={mainLogo} alt="TrustLayer Logo" className={`h-10 w-auto ${theme === 'dark' ? 'brightness-110' : 'brightness-0'}`} />
+          <span className="hidden sm:inline font-display text-xl tracking-tighter">TrustLayer</span>
         </div>
 
-        <div className="hidden md:flex gap-10 font-bold text-[11px] uppercase tracking-[0.2em] text-gray-400">
+        <div className="hidden md:flex gap-10 font-bold text-[11px] uppercase tracking-[0.2em] text-[var(--text-secondary)]">
           <a href="#" className="hover:text-neon-green transition-colors">Ecosystem</a>
           <a href="#" className="hover:text-neon-green transition-colors">API docs</a>
           <Link to="/pricing" className="hover:text-neon-green transition-colors">Pricing</Link>
         </div>
 
         <div className="flex items-center gap-4">
-          <Link to="/login" onClick={handleLoginClick} className="hidden sm:block text-xs font-black uppercase tracking-widest hover:text-neon-green text-white">Login</Link>
-          <Link to="/login" onClick={handleLoginClick} className="brutal-btn !bg-neon-green !text-black !py-2 !px-6 !text-xs !shadow-[4px_4px_0px_#fff]">Sign Up</Link>
+          {/* Theme Toggle */}
+          <button 
+            onClick={toggleTheme}
+            className="p-2 border-2 border-[var(--border-color)] hover:bg-[var(--text-primary)] hover:text-[var(--bg-primary)] transition-colors"
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+
+          <Link to="/login" onClick={handleLoginClick} className="hidden sm:block text-xs font-black uppercase tracking-widest hover:text-neon-green">Login</Link>
+          <Link to="/login" onClick={handleLoginClick} className="brutal-btn !bg-neon-green !text-black !py-2 !px-6 !text-xs !shadow-[4px_4px_0px_var(--border-color)]">Sign Up</Link>
         </div>
       </nav>
 
@@ -95,14 +107,14 @@ export default function Landing() {
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neon-green">Network Active v1.0</span>
             </div>
             
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter uppercase italic text-white">
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter uppercase italic">
               The Portable<br />
               <span className="text-neon-green">Trust Layer</span><br />
               For The Web.
             </h1>
             
-            <p className="mt-8 text-lg md:text-xl text-gray-400 font-medium max-w-2xl leading-relaxed">
-              Aggregate your professional reputation from GitHub, LinkedIn, and Web3 into one verifiable identity. Powered by <span className="text-white underline decoration-brutal-yellow decoration-2 underline-offset-4">Gemini AI</span>.
+            <p className="mt-8 text-lg md:text-xl text-[var(--text-secondary)] font-medium max-w-2xl leading-relaxed">
+              Aggregate your professional reputation from GitHub, LinkedIn, and Web3 into one verifiable identity. Powered by <span className="underline decoration-brutal-yellow decoration-2 underline-offset-4">Gemini AI</span>.
             </p>
           </motion.div>
 
@@ -162,12 +174,12 @@ export default function Landing() {
             transition={{ ...floatTransition, delay: 0 } as any}
           >
             <div className="flex justify-between items-start mb-6">
-              <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 italic">Network Rank</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-[var(--text-secondary)] italic">Network Rank</span>
               <div className="w-2 h-2 rounded-full bg-neon-green neon-pulse" />
             </div>
             <div className="text-center">
-              <h2 className="font-display text-6xl tracking-tighter mb-2 italic text-white">842</h2>
-              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+              <h2 className="font-display text-6xl tracking-tighter mb-2 italic">842</h2>
+              <div className="h-1.5 w-full bg-[var(--text-primary)]/10 rounded-full overflow-hidden">
                 <motion.div 
                   className="h-full bg-neon-green shadow-[0_0_15px_#00FF00]"
                   initial={{ width: 0 }}
@@ -189,14 +201,14 @@ export default function Landing() {
               <div className="p-2 bg-brutal-pink/20 border border-brutal-pink/30">
                 <Lock className="text-brutal-pink" size={16} />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-white">Risk Profile</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">Risk Profile</span>
             </div>
             <div className="flex gap-2">
               <div className="flex-1 h-3 bg-neon-green" />
               <div className="flex-1 h-3 bg-brutal-yellow" />
-              <div className="flex-1 h-3 bg-white/10" />
+              <div className="flex-1 h-3 bg-[var(--text-primary)]/10" />
             </div>
-            <p className="mt-4 font-display text-xl tracking-tighter uppercase italic text-white">Institutional</p>
+            <p className="mt-4 font-display text-xl tracking-tighter uppercase italic">Institutional</p>
           </motion.div>
 
           {/* Profile Bubbles */}
@@ -206,22 +218,22 @@ export default function Landing() {
             transition={{ ...floatTransition, delay: 1 } as any}
           >
             {[1, 2, 3].map((i) => (
-              <div key={i} className="w-16 h-16 rounded-full border-4 border-black bg-gray-800 flex items-center justify-center font-display text-xl shadow-xl backdrop-blur-md">
+              <div key={i} className="w-16 h-16 rounded-full border-4 border-[var(--border-color)] bg-[var(--bg-primary)] flex items-center justify-center font-display text-xl shadow-xl backdrop-blur-md">
                 {String.fromCharCode(64 + i)}
               </div>
             ))}
-            <div className="w-16 h-16 rounded-full border-4 border-black bg-neon-green flex items-center justify-center text-black shadow-xl">
+            <div className="w-16 h-16 rounded-full border-4 border-[var(--border-color)] bg-neon-green flex items-center justify-center text-black shadow-xl">
               <ArrowRight size={24} />
             </div>
           </motion.div>
 
           {/* Ecosystem Links */}
           <div className="absolute -bottom-10 left-0 flex gap-4">
-            <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-white/5 !shadow-[4px_4px_0px_#00FF00]">
+            <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-[var(--glass-border)] !shadow-[4px_4px_0px_#00FF00]">
               <Target size={14} className="text-neon-green" />
               <span className="text-[10px] font-black uppercase tracking-widest">Lakshya Active</span>
             </div>
-            <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-white/5 !shadow-[4px_4px_0px_#0057FF]">
+            <div className="glass-brutalism py-2 px-4 flex items-center gap-2 border-[var(--glass-border)] !shadow-[4px_4px_0px_#0057FF]">
               <BookOpen size={14} className="text-brutal-blue" />
               <span className="text-[10px] font-black uppercase tracking-widest">Adhyayan Dev</span>
             </div>
@@ -230,11 +242,11 @@ export default function Landing() {
       </main>
 
       {/* MARQUEE SECTION */}
-      <section className="relative z-20 border-y-2 border-white/10 bg-black/80 py-10 overflow-hidden backdrop-blur-sm">
-        <div className="animate-marquee">
+      <section className="relative z-20 border-y-2 border-[var(--border-color)] bg-[var(--nav-bg)] py-10 overflow-hidden backdrop-blur-sm">
+        <div className="animate-marquee whitespace-nowrap flex items-center">
           {[...PLATFORMS, ...PLATFORMS].map((p, idx) => (
-            <div key={idx} className="flex items-center gap-4 mx-12 text-gray-500 hover:text-white transition-colors cursor-default">
-              <div className="p-2 border border-white/10 rounded-lg group-hover:border-neon-green transition-colors">
+            <div key={idx} className="flex items-center gap-4 mx-12 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-default group">
+              <div className="p-2 border border-[var(--border-color)] rounded-lg group-hover:border-neon-green transition-colors">
                 {p.icon}
               </div>
               <span className="font-display text-2xl uppercase italic tracking-tighter">{p.name}</span>
@@ -244,37 +256,37 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 py-16 px-6 md:px-12 border-t border-white/5 bg-black">
+      <footer className={`relative z-10 py-16 px-6 md:px-12 border-t border-[var(--border-color)] ${theme === 'dark' ? 'bg-black' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-4">
-             <img src={mainLogo} alt="TrustLayer Logo" className="h-8 w-auto opacity-50" />
-             <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">© 2026 TrustLayer Protocol</p>
+             <img src={mainLogo} alt="TrustLayer Logo" className={`h-8 w-auto ${theme === 'dark' ? 'opacity-50' : 'opacity-20'}`} />
+             <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">© 2026 TrustLayer Protocol</p>
           </div>
           <div className="flex gap-10">
-            <a href="#" className="text-xs font-black uppercase tracking-widest text-gray-500 hover:text-white">Whitepaper</a>
-            <a href="#" className="text-xs font-black uppercase tracking-widest text-gray-500 hover:text-white">Github</a>
-            <a href="#" className="text-xs font-black uppercase tracking-widest text-gray-500 hover:text-white">Status</a>
+            <a href="#" className="text-xs font-black uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--text-primary)]">Whitepaper</a>
+            <a href="#" className="text-xs font-black uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--text-primary)]">Github</a>
+            <a href="#" className="text-xs font-black uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--text-primary)]">Status</a>
           </div>
         </div>
       </footer>
 
-      {/* TURNSTILE OVERLAY (Existing Logic) */}
+      {/* TURNSTILE OVERLAY */}
       <AnimatePresence>
         {isTurnstileOpen && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex flex-col justify-center items-center bg-[#050505] text-white p-6"
+            className="fixed inset-0 z-[100] flex flex-col justify-center items-center bg-[var(--bg-primary)] p-6"
           >
-            <div className="max-w-xl w-full glass-brutalism p-12 border-neon-green/20 !shadow-[20px_20px_0px_#000]">
+            <div className="max-w-xl w-full glass-brutalism p-12 !shadow-[20px_20px_0px_var(--border-color)]">
               <h1 className="font-display text-2xl mb-2 tracking-tight italic">SECURITY VERIFICATION</h1>
-              <p className="text-gray-400 text-sm mb-10 leading-relaxed uppercase font-black">
+              <p className="text-[var(--text-secondary)] text-sm mb-10 leading-relaxed uppercase font-black">
                 Pramaaan Network is verifying your identity signature to prevent malicious traffic.
               </p>
               <Turnstile
                 siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || '3x00000000000000000000FF'}
-                options={{ theme: 'dark' }}
+                options={{ theme: theme === 'dark' ? 'dark' : 'light' }}
                 onSuccess={() => {
                   setTimeout(() => {
                     setIsTurnstileOpen(false);
@@ -282,7 +294,7 @@ export default function Landing() {
                   }, 1200);
                 }}
               />
-              <div className="mt-12 pt-8 border-t border-white/5 flex flex-col gap-2 opacity-40">
+              <div className="mt-12 pt-8 border-t border-[var(--border-color)] flex flex-col gap-2 opacity-40">
                 <p className="text-[9px] font-black uppercase tracking-widest">Ray ID: 9f76272db8a6a7aa</p>
                 <p className="text-[9px] font-black uppercase tracking-widest">Performance by Cloudflare</p>
               </div>
