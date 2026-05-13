@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Loader2, ShieldAlert } from 'lucide-react';
+import { useGuest } from '../context/GuestContext';
 
 interface TrustRecord {
   id: string;
@@ -22,11 +23,24 @@ const RISK_LABEL: Record<string, string> = {
   failed: 'RISKY',
 };
 
+const GUEST_DEMO_RECORDS: TrustRecord[] = [
+  { id: 'd1', created_at: new Date(Date.now() - 86400000).toISOString(), identity_hash: 'demo_hash_a1b2c3d4e5f6g7h8i9j0', verification_status: 'verified', metadata: {} },
+  { id: 'd2', created_at: new Date(Date.now() - 172800000).toISOString(), identity_hash: 'demo_hash_k1l2m3n4o5p6q7r8s9t0', verification_status: 'pending', metadata: {} },
+  { id: 'd3', created_at: new Date(Date.now() - 259200000).toISOString(), identity_hash: 'demo_hash_u1v2w3x4y5z6a7b8c9d0', verification_status: 'verified', metadata: {} },
+];
+
 export default function RiskAnalysis() {
+  const { isGuest } = useGuest();
   const [records, setRecords] = useState<TrustRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (isGuest) {
+      setRecords(GUEST_DEMO_RECORDS);
+      setLoading(false);
+      return;
+    }
+
     async function fetchAnalytics() {
       try {
         const { data, error } = await supabase
@@ -43,7 +57,7 @@ export default function RiskAnalysis() {
       }
     }
     fetchAnalytics();
-  }, []);
+  }, [isGuest]);
 
   // Calculate needle rotation based on verified vs failed ratio
   const verifiedCount = records.filter(r => r.verification_status === 'verified').length;

@@ -10,14 +10,14 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSIWE } from '../hooks/useSIWE';
 
 const NAV_ITEMS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/wallet',    icon: Wallet,          label: 'Wallet'    },
-  { to: '/identity',  icon: User,            label: 'Identity'  },
-  { to: '/vault',     icon: Lock,            label: 'Consent Vault' },
-  { to: '/analytics', icon: BarChart2,        label: 'Analytics' },
-  { to: '/api',       icon: Code,             label: 'API'       },
-  { to: '/pricing',   icon: DollarSign,       label: 'Pricing'   },
-  { to: '/settings',  icon: Settings,         label: 'Settings'  },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', guestAllowed: true },
+  { to: '/wallet',    icon: Wallet,          label: 'Wallet',    guestAllowed: false },
+  { to: '/identity',  icon: User,            label: 'Identity',  guestAllowed: true  },
+  { to: '/vault',     icon: Lock,            label: 'Consent Vault', guestAllowed: false },
+  { to: '/analytics', icon: BarChart2,        label: 'Analytics', guestAllowed: true  },
+  { to: '/api',       icon: Code,             label: 'API',       guestAllowed: false },
+  { to: '/pricing',   icon: DollarSign,       label: 'Pricing',   guestAllowed: true  },
+  { to: '/settings',  icon: Settings,         label: 'Settings',  guestAllowed: true  },
 ];
 
 export function DashboardLayout() {
@@ -72,7 +72,9 @@ export function DashboardLayout() {
     if (!isGuest) getUserAndProfile();
   }, [isGuest, navigate]);
 
-  const visibleNavItems = NAV_ITEMS;
+  const visibleNavItems = isGuest
+    ? NAV_ITEMS.filter(item => item.guestAllowed)
+    : NAV_ITEMS;
 
   const handleSignIn = () => { exitGuest(); navigate('/login'); };
   const closeSidebar = () => setSidebarOpen(false);
@@ -126,8 +128,8 @@ export function DashboardLayout() {
             </NavLink>
           ))}
           
-          {/* Admin Console - Only visible to the owner */}
-          {isAdminEmail(user?.email) && (
+          {/* Admin Console - Only visible to the owner (never to guests) */}
+          {!isGuest && isAdminEmail(user?.email) && (
             <NavLink
               to="/admin"
               onClick={closeSidebar}

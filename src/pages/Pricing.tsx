@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2, ArrowRight } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
 import { UPIPayment } from '../components/UPIPayment';
+import { useGuest } from '../context/GuestContext';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 // ... (PLANS, FEATURES, etc.)
@@ -74,9 +75,12 @@ export default function Pricing() {
   const [loading, setLoading] = useState<string | null>(null);
   const [showUpi, setShowUpi] = useState<{ amount: number; planId: string; planName: string } | null>(null);
   const navigate = useNavigate();
+  const { isGuest } = useGuest();
 
   useEffect(() => {
     async function checkAdmin() {
+      // Never grant admin in guest mode
+      if (isGuest) { setIsAdmin(false); return; }
       const { data: { user } } = await supabase.auth.getUser();
       setIsAdmin(isAdminEmail(user?.email));
     }
@@ -102,9 +106,15 @@ export default function Pricing() {
       }
     }
     fetchPlans();
-  }, []);
+  }, [isGuest]);
 
   const handlePlanSelect = async (planId: string) => {
+    // Guest users: redirect to login/signup
+    if (isGuest) {
+      navigate('/login');
+      return;
+    }
+
     try {
       setLoading(planId);
       const { data: { user } } = await supabase.auth.getUser();

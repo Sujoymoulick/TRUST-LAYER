@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch } from '../lib/api';
+import { useGuest } from '../context/GuestContext';
 
 interface TrustRecord {
   id: string;
@@ -20,8 +21,14 @@ const STATUS_COLOR = {
   failed: '#FF60B5' 
 } as const;
 
+// Demo data for guest mode
+const GUEST_DEMO_RECORDS: TrustRecord[] = [];
+const GUEST_CONNECTED_PROVIDERS: string[] = ['github'];
+const GUEST_TRUST_SCORE = 320;
+
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { isGuest } = useGuest();
   const [records, setRecords] = useState<TrustRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [plan, setPlan] = useState<string | null>(null);
@@ -32,6 +39,18 @@ export default function Dashboard() {
   const [realTrustScore, setRealTrustScore] = useState<number | null>(null);
 
   useEffect(() => {
+    // Guest mode: show demo data, never fetch real DB data
+    if (isGuest) {
+      setRecords(GUEST_DEMO_RECORDS);
+      setConnectedProviders(GUEST_CONNECTED_PROVIDERS);
+      setPlan('free');
+      setKycStatus('not_started');
+      setIsOwner(false);
+      setRealTrustScore(GUEST_TRUST_SCORE);
+      setLoading(false);
+      return;
+    }
+
     async function fetchData() {
       try {
         // Avoid race condition: wait for Supabase to process the OAuth redirect fragment
@@ -93,7 +112,7 @@ export default function Dashboard() {
       }
     }
     fetchData();
-  }, []);
+  }, [isGuest]);
 
   const trustScore = realTrustScore || (records.length > 0 
     ? Math.min(600 + (records.filter(r => r.verification_status === 'verified').length * 40), 999)
@@ -122,8 +141,8 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
       
-      {/* Phase 1: Claim Trust Passport Banner */}
-      {!loading && kycStatus === 'not_started' && (
+      {/* Phase 1: Claim Trust Passport Banner — hide for guests (show sign-up CTA instead) */}
+      {!loading && !isGuest && kycStatus === 'not_started' && (
         <div className="brutal-card bg-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center text-3xl">
@@ -139,6 +158,27 @@ export default function Dashboard() {
             className="brutal-btn bg-black text-white px-8 py-3 text-sm font-black uppercase whitespace-nowrap"
           >
             Claim Your Passport
+          </button>
+        </div>
+      )}
+
+      {/* Guest CTA Banner */}
+      {isGuest && (
+        <div className="brutal-card bg-black text-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#FFE600]">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 border-4 border-brutal-yellow bg-white flex items-center justify-center text-3xl">
+              👁
+            </div>
+            <div>
+              <h4 className="font-display text-xl uppercase leading-none text-brutal-yellow">You're Viewing Demo Data</h4>
+              <p className="text-xs font-bold uppercase mt-2 text-white/80">Create a free account to build your real trust score and link identities.</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/login')}
+            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase whitespace-nowrap border-2 border-brutal-yellow"
+          >
+            Create Free Account →
           </button>
         </div>
       )}
@@ -160,19 +200,26 @@ export default function Dashboard() {
           </div>
           <div className="flex flex-col gap-3 w-full">
             <span className="font-display text-sm text-brutal-green uppercase tracking-widest">
-              {trustScore > 800 ? 'Excellent' : trustScore > 600 ? 'Good' : 'Needs Verification'}
+              {isGuest ? 'Demo Mode' : (trustScore > 800 ? 'Excellent' : trustScore > 600 ? 'Good' : 'Needs Verification')}
             </span>
             
             <div className="flex items-center justify-between p-3 border-2 border-black bg-white shadow-[4px_4px_0px_#000]">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className={plan === 'pro' || isOwner ? 'text-brutal-blue' : 'text-gray-400'} />
+                <Sparkles size={16} className={(!isGuest && (plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-gray-400'} />
                 <span className="font-black uppercase text-[10px] tracking-wider">
-                  {isOwner ? 'Administrator' : `${plan || 'Free'} Plan`}
+                  {isGuest ? 'Guest Access' : (isOwner ? 'Administrator' : `${plan || 'Free'} Plan`)}
                 </span>
               </div>
               
-              {/* Admin Button for the Owner */}
-              {isOwner ? (
+              {/* Never show Admin Button to guests; show upgrade CTA for guests */}
+              {isGuest ? (
+                <button
+                  onClick={() => navigate('/login')}
+                  className="bg-brutal-yellow px-3 py-1 border-2 border-black text-[9px] font-black uppercase hover:bg-black hover:text-brutal-yellow transition-colors shadow-[2px_2px_0px_#000]"
+                >
+                  Sign Up
+                </button>
+              ) : isOwner ? (
                  <button 
                   onClick={() => navigate('/admin')}
                   className="bg-brutal-blue px-3 py-1 border-2 border-black text-white text-[9px] font-black uppercase hover:bg-black transition-colors shadow-[2px_2px_0px_#000]"
@@ -196,6 +243,11 @@ export default function Dashboard() {
 
         <div className="brutal-card">
           <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest mb-6">Connected Accounts</h3>
+          {isGuest && (
+            <div className="mb-4 px-3 py-2 border-2 border-black bg-brutal-yellow text-[9px] font-black uppercase text-center">
+              👁 Demo — Sign in to connect real accounts
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             {[
               { id: 'github', name: 'GitHub' },
@@ -204,11 +256,11 @@ export default function Dashboard() {
               { id: 'twitter', name: 'Twitter' },
               { id: 'facebook', name: 'Facebook' },
             ].map(a => {
-              const isConnected = connectedProviders.includes(a.id);
+              const isConnected = !isGuest && connectedProviders.includes(a.id);
               return (
                 <button 
                   key={a.id} 
-                  onClick={() => !isConnected && handleConnect(a.id)}
+                  onClick={() => isGuest ? navigate('/login') : (!isConnected && handleConnect(a.id))}
                   disabled={isConnected}
                   className={`flex flex-col items-center gap-2 p-3 border-2 border-black text-[10px] font-black uppercase transition-all ${
                     isConnected 
@@ -221,18 +273,20 @@ export default function Dashboard() {
                   </div>
                   {a.name}
                   <span className={`text-[8px] ${isConnected ? 'opacity-100 font-black' : 'opacity-60'}`}>
-                    {isConnected ? 'CONNECTED' : '(Connect)'}
+                    {isConnected ? 'CONNECTED' : isGuest ? '(LOGIN)' : '(Connect)'}
                   </span>
                 </button>
               );
             })}
-            <button 
-              onClick={() => navigate('/identity')}
-              className="flex flex-col items-center justify-center gap-2 p-3 border-2 border-dashed border-black opacity-50 text-[10px] font-black uppercase cursor-pointer hover:opacity-100 hover:bg-gray-100 transition-all"
-            >
-              <div className="w-8 h-8 border-2 border-dashed border-black flex items-center justify-center">+</div>
-              Add new
-            </button>
+            {!isGuest && (
+              <button 
+                onClick={() => navigate('/identity')}
+                className="flex flex-col items-center justify-center gap-2 p-3 border-2 border-dashed border-black opacity-50 text-[10px] font-black uppercase cursor-pointer hover:opacity-100 hover:bg-gray-100 transition-all"
+              >
+                <div className="w-8 h-8 border-2 border-dashed border-black flex items-center justify-center">+</div>
+                Add new
+              </button>
+            )}
           </div>
         </div>
       </div>

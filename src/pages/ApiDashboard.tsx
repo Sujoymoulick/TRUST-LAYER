@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Copy, Loader2, Key, CheckCircle, Trash2, Plus, AlertTriangle, EyeOff } from 'lucide-react';
+import { Copy, Loader2, Key, CheckCircle, Trash2, Plus, AlertTriangle, EyeOff, Lock } from 'lucide-react';
+import { useGuest } from '../context/GuestContext';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -15,6 +17,8 @@ interface ApiKey {
 }
 
 export default function ApiDashboard() {
+  const { isGuest } = useGuest();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<any[]>([]);
   
@@ -26,6 +30,12 @@ export default function ApiDashboard() {
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Guest mode: no API key fetching
+    if (isGuest) {
+      setLoading(false);
+      return;
+    }
+
     async function fetchData() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
@@ -49,7 +59,7 @@ export default function ApiDashboard() {
       }
     }
     fetchData();
-  }, []);
+  }, [isGuest]);
 
   const fetchApiKeys = async (uid: string) => {
     try {
@@ -112,6 +122,59 @@ export default function ApiDashboard() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="animate-spin size-12" />
+      </div>
+    );
+  }
+
+  // Guest Mode: show locked placeholder
+  if (isGuest) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-8 pb-20">
+        <div>
+          <h2 className="font-display text-3xl uppercase">API Dashboard</h2>
+          <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your TrustLayer production access.</p>
+        </div>
+
+        <div className="brutal-card shadow-[8px_8px_0px_#000] flex flex-col items-center text-center py-16 gap-6">
+          <div className="w-20 h-20 border-4 border-black bg-brutal-yellow flex items-center justify-center shadow-[6px_6px_0px_#000]">
+            <Lock size={40} />
+          </div>
+          <h3 className="font-display text-2xl uppercase">API Keys Locked</h3>
+          <p className="font-bold text-gray-600 uppercase text-xs tracking-widest max-w-sm leading-relaxed">
+            API key management is only available to registered users. Create a free account to generate and manage your production keys.
+          </p>
+          <button
+            onClick={() => navigate('/login')}
+            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase"
+          >
+            Create Free Account →
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="brutal-card">
+            <h3 className="font-display text-lg uppercase mb-6">API Utilization</h3>
+            <div className="h-40 relative border-b-4 border-l-4 border-black ml-8 mb-4 opacity-30 blur-sm">
+              <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
+                <path d="M0,80 L40,70 L80,85 L120,40 L160,60 L200,20 L240,45 L280,30 L320,65 L360,40 L400,50" fill="none" stroke="#0057FF" strokeWidth="4" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div className="flex justify-between font-black text-[10px] uppercase text-gray-300">
+              <span>Current Month</span>
+              <span>— Total Calls</span>
+            </div>
+          </div>
+
+          <div className="brutal-card flex flex-col justify-center gap-4 bg-brutal-navy text-white">
+            <h3 className="font-display text-xl uppercase">Developer Docs</h3>
+            <p className="text-xs font-bold leading-relaxed opacity-80 uppercase">
+              Integrate the TrustLayer protocol into your own applications using our high-performance SDK.
+            </p>
+            <button className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-2 text-xs">
+              Read API Docs →
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

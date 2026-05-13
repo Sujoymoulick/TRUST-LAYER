@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch, VITE_API_BASE_URL } from '../lib/api';
+import { useGuest } from '../context/GuestContext';
 
 
 
@@ -69,6 +70,7 @@ type AdminTab = 'verifications' | 'users' | 'audit_logs' | 'subscriptions' | 'sy
 
 export default function Admin() {
   const navigate = useNavigate();
+  const { isGuest } = useGuest();
   const [activeTab, setActiveTab] = useState<AdminTab>('verifications');
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<TrustRecord[]>([]);
@@ -92,6 +94,12 @@ export default function Admin() {
 
 
   useEffect(() => {
+    // Guests are never allowed in the admin panel
+    if (isGuest) {
+      navigate('/login');
+      return;
+    }
+
     let profileChannel: any;
     let trustChannel: any;
     let auditChannel: any;
@@ -189,7 +197,7 @@ export default function Admin() {
       if (trustChannel) supabase.removeChannel(trustChannel);
       if (auditChannel) supabase.removeChannel(auditChannel);
     };
-  }, [navigate]);
+  }, [navigate, isGuest]);
 
   const handleUpdatePlanPrice = async (planId: string, monthly: number, yearly: number) => {
     try {
