@@ -18,7 +18,8 @@ import {
   DollarSign,
   ArrowRight,
   Database,
-  RefreshCw
+  RefreshCw,
+  ExternalLink
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch, VITE_API_BASE_URL } from '../lib/api';
@@ -283,6 +284,14 @@ export default function Admin() {
           <button className="brutal-btn bg-white px-4 py-2 text-xs flex items-center gap-2">
             <Download size={14} /> Export Report
           </button>
+          <a
+            href="https://trust-layers-backend.onrender.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="brutal-btn bg-brutal-blue text-white px-4 py-2 text-xs flex items-center gap-2 no-underline"
+          >
+            <ExternalLink size={14} /> View Backend
+          </a>
           <button 
             onClick={() => setActiveTab('system_status')}
             className="brutal-btn bg-black text-white px-4 py-2 text-xs flex items-center gap-2"
@@ -291,6 +300,7 @@ export default function Admin() {
           </button>
 
         </div>
+
       </div>
 
       {error && (
