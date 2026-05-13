@@ -16,7 +16,9 @@ import {
   Shield,
   Clock,
   DollarSign,
-  ArrowRight
+  ArrowRight,
+  Database,
+  RefreshCw
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch, VITE_API_BASE_URL } from '../lib/api';
@@ -89,6 +91,7 @@ export default function Admin() {
   const [diagLoading, setDiagLoading] = useState(false);
   const [diagError, setDiagError] = useState<string | null>(null);
   const [health, setHealth] = useState<any>(null);
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
 
 
@@ -226,11 +229,11 @@ export default function Admin() {
       setDiagError(null);
       const data = await apiFetch('/diagnostics');
       setDiagnostics(data);
+      setLastRefreshed(new Date());
     } catch (err: any) {
       console.error('Diagnostics fetch error:', err);
       setDiagError(err.message || 'Unknown connection error');
     } finally {
-
       setDiagLoading(false);
     }
   };
@@ -248,6 +251,15 @@ export default function Admin() {
       console.error('Health fetch error:', err);
     }
   };
+
+  // Realtime polling: refresh diagnostics every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchDiagnostics();
+      fetchHealth();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
 
 
@@ -579,11 +591,20 @@ export default function Admin() {
             <div className="space-y-6">
               <div className="brutal-card">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="font-display text-xl uppercase">Backend Diagnostics</h3>
+                  <div className="flex flex-col">
+                    <h3 className="font-display text-xl uppercase">Backend Diagnostics</h3>
+                    {lastRefreshed && (
+                      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 flex items-center gap-1">
+                        <RefreshCw size={9} />
+                        Auto-refreshes every 30s · Last: {lastRefreshed.toLocaleTimeString()}
+                      </span>
+                    )}
+                  </div>
                   <button 
                     onClick={fetchDiagnostics}
                     disabled={diagLoading}
                     className="p-2 border-2 border-black hover:bg-black hover:text-white transition-colors"
+                    title="Refresh now"
                   >
                     <History size={16} className={diagLoading ? 'animate-spin' : ''} />
                   </button>
@@ -596,7 +617,7 @@ export default function Admin() {
                   </div>
                 ) : diagnostics ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Database Health */}
+                    {/* Supabase Health */}
                     <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
                       <div className="flex items-center gap-2 text-brutal-blue">
                         <ShieldCheck size={18} />
@@ -614,7 +635,7 @@ export default function Admin() {
                       </div>
                     </div>
 
-                    {/* Graph Health */}
+                    {/* Neo4j Health */}
                     <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
                       <div className="flex items-center gap-2 text-brutal-pink">
                         <TrendingUp size={18} />
@@ -632,7 +653,34 @@ export default function Admin() {
                       </div>
                     </div>
 
-                    {/* Environment Info */}
+                    {/* MongoDB Health */}
+                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                      <div className="flex items-center gap-2 text-brutal-yellow" style={{ color: '#E8A400' }}>
+                        <Database size={18} />
+                        <h4 className="font-display text-sm uppercase">MongoDB Atlas</h4>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
+                          diagnostics.mongodb?.status === 'connected'    ? 'bg-brutal-green' :
+                          diagnostics.mongodb?.status === 'connecting'   ? 'bg-brutal-yellow' :
+                          diagnostics.mongodb?.status === 'disconnected' ? 'bg-brutal-pink'   :
+                          'bg-gray-200'
+                        }`}>
+                          {diagnostics.mongodb?.status ?? 'unknown'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold">
+                          {diagnostics.mongodb?.status === 'connected'
+                            ? `${diagnostics.mongodb.latency}ms`
+                            : '—'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Environment Info — spans full width */}
                     <div className="md:col-span-2 p-4 border-4 border-black bg-gray-50 space-y-4">
                       <div className="flex items-center gap-2">
                         <Activity size={18} />
