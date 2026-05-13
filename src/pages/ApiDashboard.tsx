@@ -132,7 +132,7 @@ export default function ApiDashboard() {
       <div className="max-w-4xl mx-auto space-y-8 pb-20">
         <div>
           <h2 className="font-display text-3xl uppercase">API Dashboard</h2>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your TrustLayer production access.</p>
+          <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your Pramaaan production access.</p>
         </div>
 
         <div className="brutal-card shadow-[8px_8px_0px_#000] flex flex-col items-center text-center py-16 gap-6">
@@ -168,7 +168,7 @@ export default function ApiDashboard() {
           <div className="brutal-card flex flex-col justify-center gap-4 bg-brutal-navy text-white">
             <h3 className="font-display text-xl uppercase">Developer Docs</h3>
             <p className="text-xs font-bold leading-relaxed opacity-80 uppercase">
-              Integrate the TrustLayer protocol into your own applications using our high-performance SDK.
+              Integrate the Pramaaan protocol into your own applications using our high-performance SDK.
             </p>
             <button className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-2 text-xs">
               Read API Docs →
@@ -273,7 +273,7 @@ export default function ApiDashboard() {
 
       <div>
         <h2 className="font-display text-3xl uppercase">API Dashboard</h2>
-        <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your TrustLayer production access.</p>
+        <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your Pramaaan production access.</p>
       </div>
 
       <div className="brutal-card shadow-[8px_8px_0px_#000]">
@@ -347,7 +347,7 @@ export default function ApiDashboard() {
         <div className="brutal-card flex flex-col justify-center gap-4 bg-brutal-navy text-white">
           <h3 className="font-display text-xl uppercase">Developer Docs</h3>
           <p className="text-xs font-bold leading-relaxed opacity-80 uppercase">
-            Integrate the TrustLayer protocol into your own applications using our high-performance SDK.
+            Integrate the Pramaaan protocol into your own applications using our high-performance SDK.
           </p>
           <button className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-2 text-xs">
             Read API Docs →

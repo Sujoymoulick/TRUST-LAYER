@@ -203,10 +203,10 @@ export default function Dashboard() {
               {isGuest ? 'Demo Mode' : (trustScore > 800 ? 'Excellent' : trustScore > 600 ? 'Good' : 'Needs Verification')}
             </span>
             
-            <div className="flex items-center justify-between p-3 border-2 border-black bg-white shadow-[4px_4px_0px_#000]">
+            <div className="flex items-center justify-between p-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)] shadow-[4px_4px_0px_var(--border-color)]">
               <div className="flex items-center gap-2">
-                <Sparkles size={16} className={(!isGuest && (plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-gray-400'} />
-                <span className="font-black uppercase text-[10px] tracking-wider">
+                <Sparkles size={16} className={(!isGuest && (plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-[var(--text-secondary)]'} />
+                <span className="font-black uppercase text-[10px] tracking-wider text-[var(--text-primary)]">
                   {isGuest ? 'Guest Access' : (isOwner ? 'Administrator' : `${plan || 'Free'} Plan`)}
                 </span>
               </div>
@@ -262,13 +262,13 @@ export default function Dashboard() {
                   key={a.id} 
                   onClick={() => isGuest ? navigate('/login') : (!isConnected && handleConnect(a.id))}
                   disabled={isConnected}
-                  className={`flex flex-col items-center gap-2 p-3 border-2 border-black text-[10px] font-black uppercase transition-all ${
+                  className={`flex flex-col items-center gap-2 p-3 border-2 border-[var(--border-color)] text-[10px] font-black uppercase transition-all ${
                     isConnected 
-                      ? 'bg-brutal-green text-black cursor-default shadow-[4px_4px_0px_#000]' 
-                      : 'bg-gray-50 hover:bg-brutal-yellow hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_#000] active:translate-y-0 active:shadow-none'
+                      ? 'bg-brutal-green text-black cursor-default shadow-[4px_4px_0px_var(--border-color)]' 
+                      : 'bg-[var(--bg-primary)] hover:bg-brutal-yellow hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_var(--border-color)] active:translate-y-0 active:shadow-none'
                   }`}
                 >
-                  <div className={`w-8 h-8 border-2 border-black rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-black text-white' : 'bg-white text-black'}`}>
+                  <div className={`w-8 h-8 border-2 border-[var(--border-color)] rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-black text-white' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
                      {a.name[0]}
                   </div>
                   {a.name}
@@ -281,9 +281,9 @@ export default function Dashboard() {
             {!isGuest && (
               <button 
                 onClick={() => navigate('/identity')}
-                className="flex flex-col items-center justify-center gap-2 p-3 border-2 border-dashed border-black opacity-50 text-[10px] font-black uppercase cursor-pointer hover:opacity-100 hover:bg-gray-100 transition-all"
+                className="flex flex-col items-center justify-center gap-2 p-3 border-2 border-dashed border-[var(--border-color)] opacity-50 text-[10px] font-black uppercase cursor-pointer hover:opacity-100 hover:bg-[var(--text-primary)]/5 transition-all"
               >
-                <div className="w-8 h-8 border-2 border-dashed border-black flex items-center justify-center">+</div>
+                <div className="w-8 h-8 border-2 border-dashed border-[var(--border-color)] flex items-center justify-center text-[var(--text-primary)]">+</div>
                 Add new
               </button>
             )}
@@ -310,9 +310,9 @@ export default function Dashboard() {
                      <span>{layer.label}</span>
                      <span>{Math.round(score)} / 250</span>
                    </div>
-                   <div className="h-3 border-2 border-black bg-gray-100 shadow-[2px_2px_0px_#000]">
+                   <div className="h-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)] shadow-[2px_2px_0px_var(--border-color)]">
                      <div 
-                       className={`h-full border-r-2 border-black ${layer.color}`} 
+                       className={`h-full border-r-2 border-[var(--border-color)] ${layer.color}`} 
                        style={{ width: `${(score / 250) * 100}%` }} 
                      />
                    </div>
@@ -324,7 +324,7 @@ export default function Dashboard() {
              <div className="font-display text-lg uppercase">
                {trustScore >= 800 ? 'Elite Tier' : trustScore >= 500 ? 'Verified' : 'Unverified'}
              </div>
-             <div className="text-[8px] font-bold tracking-widest uppercase opacity-60">Verified by TrustLayer ML Engine</div>
+             <div className="text-[8px] font-bold tracking-widest uppercase opacity-60">Verified by Pramaaan ML Engine</div>
            </div>
          </div>
 
@@ -380,7 +380,7 @@ export default function Dashboard() {
       </div>
 
       {/* Network Intelligence Section (Neo4j) */}
-      <div className="brutal-card bg-white mt-8">
+      <div className="brutal-card bg-[var(--bg-primary)] mt-8">
         <GraphVisualization 
           nodes={[
             { id: '1', label: 'You', color: '#3B82F6' },

@@ -41,7 +41,7 @@ export default function PublicProfile() {
       
       {/* Footer Branding */}
       <div className="mt-8 font-display text-2xl uppercase tracking-tighter">
-        TrustLayer
+        Pramaaan
       </div>
     </div>
   );

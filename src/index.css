@@ -176,14 +176,14 @@ a { color: inherit; text-decoration: none; }
 /* ─── Reusable Neo-Brutalism Components ─── */
 
 .brutal-card {
-  background: #fff;
-  border: 3px solid #000;
-  box-shadow: 6px 6px 0px #000;
+  background: var(--bg-primary);
+  border: 3px solid var(--border-color);
+  box-shadow: 6px 6px 0px var(--border-color);
   padding: 24px;
 }
 
 @media (max-width: 640px) {
-  .brutal-card { padding: 16px; box-shadow: 4px 4px 0px #000; }
+  .brutal-card { padding: 16px; box-shadow: 4px 4px 0px var(--border-color); }
 }
 
 .brutal-btn {
@@ -193,38 +193,39 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.05em;
   padding: 12px 24px;
   min-height: 44px;
-  border: 3px solid #000;
-  box-shadow: 4px 4px 0px #000;
+  border: 3px solid var(--border-color);
+  box-shadow: 4px 4px 0px var(--border-color);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   transition: transform 0.08s, box-shadow 0.08s;
-  background: #FFE600;
+  background: var(--color-brutal-yellow);
   color: #000;
 }
-.brutal-btn:hover  { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+.brutal-btn:hover  { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--border-color); }
 .brutal-btn:active { transform: translate(4px, 4px); box-shadow: none; }
 
 .brutal-input {
   width: 100%;
   padding: 12px 16px;
   min-height: 48px;
-  border: 3px solid #000;
-  box-shadow: 3px 3px 0px #000;
+  border: 3px solid var(--border-color);
+  box-shadow: 3px 3px 0px var(--border-color);
   font-family: var(--font-body);
   font-weight: 700;
   font-size: 1rem;
   outline: none;
-  background: #fff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
-.brutal-input:focus { box-shadow: 5px 5px 0px #000; }
+.brutal-input:focus { box-shadow: 5px 5px 0px var(--border-color); }
 
 .brutal-badge {
   display: inline-block;
   padding: 4px 12px;
-  border: 2px solid #000;
+  border: 2px solid var(--border-color);
   font-family: var(--font-display);
   font-size: 0.7rem;
   text-transform: uppercase;
@@ -236,26 +237,26 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   gap: 12px;
   padding: 14px 20px;
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid var(--border-color);
   font-family: var(--font-display);
   font-size: 0.8rem;
   text-transform: uppercase;
   cursor: pointer;
   background: transparent;
   text-decoration: none;
-  color: #000;
+  color: var(--text-primary);
   transition: background 0.1s;
 }
-.nav-link:hover  { background: #e5e5e5; }
-.nav-link.active { background: #000; color: #FFE600; }
-.nav-link.active svg { color: #FFE600; }
+.nav-link:hover  { background: var(--text-primary); color: var(--bg-primary); }
+.nav-link.active { background: var(--text-primary); color: var(--color-brutal-yellow); }
+.nav-link.active svg { color: var(--color-brutal-yellow); }
 
 /* ─── Privacy toggle ─── */
 .brutal-toggle {
   appearance: none;
   width: 52px; height: 28px;
-  border: 3px solid #000;
-  background: #fff;
+  border: 3px solid var(--border-color);
+  background: var(--bg-primary);
   position: relative; cursor: pointer; outline: none;
   flex-shrink: 0;
 }
@@ -264,20 +265,20 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   top: 3px; left: 3px;
   width: 18px; height: 18px;
-  background: #000;
+  background: var(--text-primary);
   transition: left 0.15s;
 }
-.brutal-toggle:checked { background: #00FF00; }
+.brutal-toggle:checked { background: var(--color-brutal-green); }
 .brutal-toggle:checked::after { left: 27px; }
 
 /* ─── Data table ─── */
 .data-table { width: 100%; border-collapse: collapse; font-weight: 700; font-size: 0.85rem; white-space: nowrap; }
-.data-table th, .data-table td { padding: 12px 16px; border-bottom: 2px solid #000; text-align: left; }
-.data-table thead th { background: #000; color: #fff; font-family: var(--font-display); text-transform: uppercase; font-size: 0.75rem; }
+.data-table th, .data-table td { padding: 12px 16px; border-bottom: 2px solid var(--border-color); text-align: left; color: var(--text-primary); }
+.data-table thead th { background: var(--border-color); color: var(--bg-primary); font-family: var(--font-display); text-transform: uppercase; font-size: 0.75rem; }
 
 /* ─── Progress bar ─── */
-.progress-track { width: 100%; height: 20px; border: 3px solid #000; background: #fff; position: relative; overflow: hidden; }
-.progress-fill  { height: 100%; background: #00FF00; border-right: 2px solid #000; transition: width 0.4s; }
+.progress-track { width: 100%; height: 20px; border: 3px solid var(--border-color); background: var(--bg-primary); position: relative; overflow: hidden; }
+.progress-fill  { height: 100%; background: var(--color-brutal-green); border-right: 2px solid var(--border-color); transition: width 0.4s; }
 
 /* ─── Mobile sidebar drawer ─── */
 .sidebar-backdrop {

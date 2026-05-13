@@ -40,7 +40,7 @@ const Logout = () => {
           <div className="space-y-4">
             <h1 className="text-4xl font-display leading-none">Logged Out</h1>
             <p className="text-xl font-body font-bold">
-              You have been safely logged out of your TrustLayer session.
+              You have been safely logged out of your Pramaaan session.
             </p>
           </div>
 
@@ -70,7 +70,7 @@ const Logout = () => {
             className="inline-flex items-center gap-2 font-display text-sm uppercase hover:underline decoration-4 underline-offset-4"
           >
             <ArrowLeft size={16} />
-            Return to TrustLayer
+            Return to Pramaaan
           </Link>
         </div>
       </div>

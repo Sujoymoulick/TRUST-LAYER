@@ -14,7 +14,7 @@ export const UPIPayment: React.FC<UPIPaymentProps> = ({ amount, planName, onSucc
   
   // Replace with your actual merchant UPI ID
   const merchantVPA = "trustlayer@okaxis"; 
-  const merchantName = "TrustLayer SaaS";
+  const merchantName = "Pramaaan SaaS";
   
   const upiLink = `upi://pay?pa=${merchantVPA}&pn=${encodeURIComponent(merchantName)}&am=${amount}&tn=${encodeURIComponent(`Payment for ${planName}`)}&cu=INR`;
 

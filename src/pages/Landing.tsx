@@ -70,10 +70,10 @@ export default function Landing() {
         <div className="flex items-center gap-3">
           <img 
             src={mainLogo} 
-            alt="TrustLayer Logo" 
+            alt="Pramaaan Logo" 
             className={`h-10 w-auto transition-all duration-300 ${theme === 'dark' ? 'invert brightness-150' : ''}`} 
           />
-          <span className="hidden sm:inline font-display text-xl tracking-tighter">TrustLayer</span>
+          <span className="hidden sm:inline font-display text-xl tracking-tighter uppercase italic font-black">Pramaaan</span>
         </div>
 
         <div className="hidden md:flex gap-10 font-bold text-[12px] uppercase tracking-[0.2em] text-[var(--text-primary)]">
@@ -113,7 +113,7 @@ export default function Landing() {
             
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tighter uppercase italic">
               The Portable<br />
-              <span className="text-neon-orange">Trust Layer</span><br />
+              <span className="text-neon-orange">Pramaaan</span><br />
               For The Web.
             </h1>
             
@@ -152,7 +152,7 @@ export default function Landing() {
                 <Cpu className="text-neon-orange" size={24} />
               </div>
               <div>
-                <h4 className="font-display text-sm tracking-tight mb-1 text-white">Trust Analysis</h4>
+                <h4 className="font-display text-sm tracking-tight mb-1 text-[var(--text-primary)]">Trust Analysis</h4>
                 <p className="text-[11px] text-gray-500 uppercase font-black leading-tight">Advanced behavioral and risk modeling for true identity metrics.</p>
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function Landing() {
                 <DbIcon className="text-brutal-blue" size={24} />
               </div>
               <div>
-                <h4 className="font-display text-sm tracking-tight mb-1 text-white">Supabase Backend</h4>
+                <h4 className="font-display text-sm tracking-tight mb-1 text-[var(--text-primary)]">Supabase Backend</h4>
                 <p className="text-[11px] text-gray-500 uppercase font-black leading-tight">PostgreSQL storage with enterprise-grade security and real-time sync.</p>
               </div>
             </div>
@@ -246,25 +246,29 @@ export default function Landing() {
       </main>
 
       {/* MARQUEE SECTION */}
-      <section className="relative z-20 border-y-2 border-[var(--border-color)] bg-[var(--nav-bg)] py-10 overflow-hidden backdrop-blur-sm">
-        <div className="animate-marquee whitespace-nowrap flex items-center">
-          {[...PLATFORMS, ...PLATFORMS].map((p, idx) => (
-            <div key={idx} className="flex items-center gap-4 mx-12 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors cursor-default group">
-              <div className="p-2 border border-[var(--border-color)] rounded-lg group-hover:border-neon-orange transition-colors">
-                {p.icon}
+      <section className="relative z-20 border-y-2 border-[var(--border-color)] bg-[var(--nav-bg)] py-12 overflow-hidden backdrop-blur-sm">
+        {/* @ts-ignore */}
+        <marquee direction="left" scrollamount="15">
+          <div className="flex items-center">
+            {PLATFORMS.map((p, idx) => (
+              <div key={idx} className="flex items-center gap-6 mx-16 text-[var(--text-primary)] hover:text-neon-orange transition-colors cursor-default group">
+                <div className="p-3 border-2 border-[var(--border-color)] rounded-xl group-hover:border-neon-orange transition-colors bg-[var(--bg-primary)]">
+                  {p.icon}
+                </div>
+                <span className="font-display text-4xl md:text-5xl uppercase italic font-black tracking-tighter">{p.name}</span>
               </div>
-              <span className="font-display text-2xl uppercase italic tracking-tighter">{p.name}</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        {/* @ts-ignore */}
+        </marquee>
       </section>
 
       {/* Footer */}
       <footer className={`relative z-10 py-16 px-6 md:px-12 border-t border-[var(--border-color)] ${theme === 'dark' ? 'bg-black' : 'bg-white'}`}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-4">
-             <img src={mainLogo} alt="TrustLayer Logo" className={`h-8 w-auto ${theme === 'dark' ? 'opacity-50' : 'opacity-20'}`} />
-             <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">© 2026 TrustLayer Protocol</p>
+             <img src={mainLogo} alt="Pramaaan Logo" className={`h-8 w-auto ${theme === 'dark' ? 'opacity-50' : 'opacity-20'}`} />
+             <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-widest">© 2026 Pramaaan Protocol</p>
           </div>
           <div className="flex gap-10">
             <a href="#" className="text-xs font-black uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--text-primary)]">Whitepaper</a>

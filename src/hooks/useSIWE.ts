@@ -26,7 +26,7 @@ export function useSIWE() {
         const message = new SiweMessage({
           domain: window.location.host,
           address,
-          statement: 'Sign in with Ethereum to TrustLayer.',
+          statement: 'Sign in with Ethereum to Pramaaan.',
           uri: window.location.origin,
           version: '1',
           chainId: chainId,

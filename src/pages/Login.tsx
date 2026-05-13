@@ -225,7 +225,7 @@ export default function Login() {
       <div className="relative hidden lg:flex flex-col justify-between bg-brutal-navy p-12 text-white">
         <div className="relative z-20">
           <Link to="/" className="flex items-center gap-2">
-            <img src={mainLogo} alt="TrustLayer Logo" className="h-10 w-auto object-contain" />
+            <img src={mainLogo} alt="Pramaaan Logo" className="h-10 w-auto object-contain" />
           </Link>
         </div>
 
@@ -293,7 +293,7 @@ export default function Login() {
                   {isLogin ? "WELCOME BACK" : "CREATE ACCOUNT"}
                 </h1>
                 <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">
-                  {isLogin ? "Verify your identity on the TrustLayer" : "Start your journey with TrustLayer"}
+                  {isLogin ? "Verify your identity on the Pramaaan" : "Start your journey with Pramaaan"}
                 </p>
               </div>
 
