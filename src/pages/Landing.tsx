@@ -68,11 +68,15 @@ export default function Landing() {
       {/* NAV */}
       <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 py-6 border-b-2 border-[var(--border-color)] backdrop-blur-xl bg-[var(--nav-bg)]">
         <div className="flex items-center gap-3">
-          <img src={mainLogo} alt="TrustLayer Logo" className={`h-10 w-auto ${theme === 'dark' ? 'brightness-110' : 'brightness-0'}`} />
+          <img 
+            src={mainLogo} 
+            alt="TrustLayer Logo" 
+            className={`h-10 w-auto transition-all duration-300 ${theme === 'dark' ? 'invert brightness-150' : ''}`} 
+          />
           <span className="hidden sm:inline font-display text-xl tracking-tighter">TrustLayer</span>
         </div>
 
-        <div className="hidden md:flex gap-10 font-bold text-[11px] uppercase tracking-[0.2em] text-[var(--text-secondary)]">
+        <div className="hidden md:flex gap-10 font-bold text-[12px] uppercase tracking-[0.2em] text-[var(--text-primary)]">
           <a href="#" className="hover:text-neon-green transition-colors">Ecosystem</a>
           <a href="#" className="hover:text-neon-green transition-colors">API docs</a>
           <Link to="/pricing" className="hover:text-neon-green transition-colors">Pricing</Link>
