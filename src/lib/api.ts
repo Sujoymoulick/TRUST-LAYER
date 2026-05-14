@@ -31,8 +31,14 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || `API Error: ${response.status}`);
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const err = await response.json();
+      throw new Error(err.message || err.error || `API Error: ${response.status}`);
+    } else {
+      // Server returned HTML (e.g. Express 404 page) — don't show raw HTML
+      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    }
   }
 
   return response.json();
