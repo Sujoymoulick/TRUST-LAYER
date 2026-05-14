@@ -688,6 +688,8 @@ export default function Admin() {
                             : '—'}
                         </span>
                       </div>
+                    </div>
+
                     {/* Sumsub Health */}
                     <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
                       <div className="flex items-center gap-2 text-brutal-blue">
