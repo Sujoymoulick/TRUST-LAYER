@@ -8,6 +8,7 @@ import mainLogo from '../assets/Trust-layer.png';
 import { SafetyMonitor } from '../components/SafetyMonitor';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSIWE } from '../hooks/useSIWE';
+import { useProfileAvatar } from '../hooks/useProfileAvatar';
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', guestAllowed: true },
@@ -28,6 +29,9 @@ export function DashboardLayout() {
   const [user, setUser] = useState<any>(null);
   const [plan, setPlan] = useState<string | null>(null);
   useSIWE();
+
+  // Real-time avatar from Supabase Storage
+  const avatar = useProfileAvatar(user?.id ?? null);
 
   useEffect(() => {
     async function getUserAndProfile() {
@@ -162,7 +166,7 @@ export function DashboardLayout() {
         ) : (
           <div className="p-4 border-t-[3px] border-[var(--border-color)] flex items-center gap-3 bg-[var(--bg-primary)]">
             <div className="w-9 h-9 flex-shrink-0 border-2 border-[var(--border-color)] rounded-full overflow-hidden bg-gray-100 shadow-[2px_2px_0px_var(--border-color)]">
-              <img src={user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email || 'user'}`} alt="avatar" className="w-full" />
+              <img src={avatar.url || user?.user_metadata?.avatar_url || `https://api.dicebear.com/9.x/personas/svg?seed=${user?.email || 'user'}`} alt="avatar" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0 flex-1">
               <div style={{ fontWeight: 900, fontSize: '0.8rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
@@ -225,7 +229,7 @@ export function DashboardLayout() {
               </button>
             ) : (
               <div onClick={() => navigate('/settings')} className="w-9 h-9 border-2 border-[var(--border-color)] rounded-full overflow-hidden bg-gray-100 cursor-pointer shadow-[2px_2px_0px_var(--border-color)]">
-                <img src={user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`} alt="avatar" className="w-full" />
+                <img src={avatar.url || user?.user_metadata?.avatar_url || `https://api.dicebear.com/9.x/personas/svg?seed=${user?.email}`} alt="avatar" className="w-full h-full object-cover" />
               </div>
             )}
           </div>

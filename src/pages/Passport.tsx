@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
+import { useProfileAvatar } from '../hooks/useProfileAvatar';
 
 /* ─── Provider metadata ──────────────────────────────────────────── */
 const PROVIDER_META: Record<string, { emoji: string; label: string }> = {
@@ -69,6 +70,10 @@ export default function Passport() {
   const [loading,    setLoading   ] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error,      setError     ] = useState<string | null>(null);
+
+  // Real-time avatar from Supabase Storage
+  const userId = passport?.dataSources?.supabaseUserId ?? null;
+  const { url: liveAvatarUrl } = useProfileAvatar(userId);
 
   const [editing,   setEditing  ] = useState(false);
   const [editName,  setEditName ] = useState('');
@@ -224,7 +229,7 @@ export default function Passport() {
           <div className="w-40 flex-shrink-0 border-r-4 border-black bg-gray-50 flex items-center justify-center p-5">
             <div className="relative">
               <img
-                src={passport?.profile?.avatar || `https://api.dicebear.com/9.x/personas/svg?seed=${passport?.profile?.email}`}
+                src={liveAvatarUrl || passport?.profile?.avatar || `https://api.dicebear.com/9.x/personas/svg?seed=${passport?.profile?.email}`}
                 alt="Passport Photo"
                 className="w-28 h-28 border-4 border-black object-cover"
               />

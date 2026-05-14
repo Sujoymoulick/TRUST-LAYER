@@ -4,13 +4,12 @@ import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Loader2, Save, Trash2, ShieldCheck, Sun, Moon } from 'lucide-react';
-
+import { AvatarUploader } from '../components/AvatarUploader';
 import type { User } from '@supabase/supabase-js';
 
 interface UserProfile {
   full_name: string;
   email: string;
-  avatar_url: string;
 }
 
 export default function Settings() {
@@ -23,7 +22,6 @@ export default function Settings() {
   const [profile, setProfile] = useState<UserProfile>({
     full_name: '',
     email: '',
-    avatar_url: ''
   });
   const [message, setMessage] = useState('');
 
@@ -36,7 +34,6 @@ export default function Settings() {
           setProfile({
             full_name: user.user_metadata?.full_name || '',
             email: user.email || '',
-            avatar_url: user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`
           });
         }
       } catch (error) {
@@ -57,11 +54,11 @@ export default function Settings() {
     try {
       const { error } = await supabase.auth.updateUser({
         email: profile.email !== user.email ? profile.email : undefined,
-        data: { 
-          full_name: profile.full_name,
-          avatar_url: profile.avatar_url
-        }
+        data: { full_name: profile.full_name }
       });
+
+      // Also sync full_name to profiles table
+      await supabase.from('profiles').update({ full_name: profile.full_name }).eq('id', user.id);
 
       if (error) throw error;
       setMessage('Settings updated successfully!');
@@ -122,17 +119,13 @@ export default function Settings() {
 
         <div className="space-y-12">
           <form onSubmit={handleUpdate} className="brutal-card space-y-8">
-            <div className="flex items-center gap-6">
-               <div className="w-20 h-20 border-4 border-[var(--border-color)] rounded-full overflow-hidden bg-gray-100 shadow-[4px_4px_0px_#000]">
-                  <img src={profile.avatar_url} alt="avatar" />
-               </div>
-               <div className="space-y-2">
-                 <button type="button" className="brutal-btn bg-white px-4 py-1 text-[10px] uppercase font-black" onClick={() => setProfile({...profile, avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`})}>Randomize Avatar</button>
-                 <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Changes are saved locally until you submit.</p>
-               </div>
+            {/* ── Avatar Upload ── */}
+            <div>
+              <label className="block font-black text-xs uppercase mb-4">Profile Photo</label>
+              <AvatarUploader userId={user.id} email={user.email} size="lg" />
             </div>
 
-            <div className="space-y-6">
+            <div className="border-t-2 border-dashed border-gray-200 pt-6 space-y-6">
               <div>
                 <label className="block font-black text-xs uppercase mb-2">Display Name</label>
                 <input 
@@ -150,10 +143,6 @@ export default function Settings() {
                   onChange={e => setProfile({...profile, email: e.target.value})}
                   type="email"
                 />
-              </div>
-              <div>
-                <label className="block font-black text-xs uppercase mb-2">Identity Verification</label>
-                <div className="brutal-badge bg-neon-orange text-[10px]">VERIFIED USER</div>
               </div>
             </div>
 
