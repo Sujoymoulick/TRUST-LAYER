@@ -27,6 +27,7 @@ export default function Identity() {
   const [kycLoading, setKycLoading] = useState(false);
   const [kycRejectionReason, setKycRejectionReason] = useState<string | null>(null);
   const [statusRefreshing, setStatusRefreshing] = useState(false);
+  const [kycError, setKycError] = useState<string | null>(null);
   // Ref so real-time subscription always has the current user ID (avoids stale closure bug)
   const userIdRef = useRef<string | null>(null);
 
@@ -117,17 +118,15 @@ export default function Identity() {
   const handleStartKYC = async () => {
     if (isGuest) return;
     setKycLoading(true);
+    setKycError(null);
     try {
       const { token } = await apiFetch('/kyc/create-session', { method: 'POST' });
       setKycToken(token);
       setShowSumsub(true);
     } catch (err: any) {
       console.error('KYC session creation error:', err);
-      // More specific error message for the level name issue
-      const errorMsg = err.message?.includes('Level') 
-        ? `Configuration Error: The verification level is not found. Please contact support.`
-        : `Verification Failed: ${err.message}`;
-      alert(errorMsg);
+      // Show the real error message — don't mask it with a generic string
+      setKycError(err.message || 'Failed to start verification. Please try again.');
     } finally {
       setKycLoading(false);
     }
@@ -227,6 +226,9 @@ export default function Identity() {
               )}
               {kycStatus === 'rejected' && kycRejectionReason && (
                 <p className="text-[10px] font-black uppercase text-red-500 mt-2">Reason: {kycRejectionReason}</p>
+              )}
+              {kycError && (
+                <p className="text-[10px] font-black uppercase text-red-500 mt-2 max-w-xs">⚠ {kycError}</p>
               )}
             </div>
           </div>
