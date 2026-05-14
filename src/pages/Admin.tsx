@@ -280,25 +280,24 @@ export default function Admin() {
           <h2 className="font-display text-4xl uppercase tracking-tight">Admin Console</h2>
           <p className="font-bold text-gray-500 uppercase text-xs mt-1">System-wide monitoring & management</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="brutal-btn bg-white px-4 py-2 text-xs flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <button className="brutal-btn bg-white px-4 py-2 text-xs flex items-center gap-2 flex-1 sm:flex-none">
             <Download size={14} /> Export Report
           </button>
           <a
-            href="https://trust-layers-backend.onrender.com/"
+            href={import.meta.env.VITE_BACKEND_DASHBOARD_URL || VITE_API_BASE_URL.replace('/api/v1', '')}
             target="_blank"
             rel="noopener noreferrer"
-            className="brutal-btn bg-brutal-blue text-white px-4 py-2 text-xs flex items-center gap-2 no-underline"
+            className="brutal-btn bg-brutal-blue text-white px-4 py-2 text-xs flex items-center gap-2 no-underline flex-1 sm:flex-none"
           >
             <ExternalLink size={14} /> View Backend
           </a>
           <button 
             onClick={() => setActiveTab('system_status')}
-            className="brutal-btn bg-black text-white px-4 py-2 text-xs flex items-center gap-2"
+            className="brutal-btn bg-black text-white px-4 py-2 text-xs flex items-center gap-2 flex-1 sm:flex-none"
           >
             <Activity size={14} /> System Health
           </button>
-
         </div>
 
       </div>
