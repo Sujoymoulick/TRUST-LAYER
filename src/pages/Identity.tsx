@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Loader2, Link2, ShieldCheck } from 'lucide-react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { Loader2, Link2, ShieldCheck, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useGuest } from '../context/GuestContext';
 import { DigiLockerVerify } from '../components/DigiLockerVerify';
@@ -26,6 +26,30 @@ export default function Identity() {
   const [showSumsub, setShowSumsub] = useState(false);
   const [kycLoading, setKycLoading] = useState(false);
   const [kycRejectionReason, setKycRejectionReason] = useState<string | null>(null);
+  const [statusRefreshing, setStatusRefreshing] = useState(false);
+  // Ref so real-time subscription always has the current user ID (avoids stale closure bug)
+  const userIdRef = useRef<string | null>(null);
+
+  // Standalone refresh function — can be called manually or by auto-poll
+  const refreshKycStatus = useCallback(async (showSpinner = false) => {
+    if (isGuest) return;
+    if (showSpinner) setStatusRefreshing(true);
+    try {
+      // When triggered manually: call sync-status which directly queries Sumsub
+      // and writes the result to DB, then re-reads from DB for consistency.
+      // When auto-polling (showSpinner=false): just read from DB.
+      if (showSpinner) {
+        await apiFetch('/kyc/sync-status', { method: 'POST' });
+      }
+      const kyc = await apiFetch('/kyc/status');
+      setKycStatus(kyc.status);
+      setKycRejectionReason(kyc.rejectionReason);
+    } catch (err) {
+      console.error('Failed to refresh KYC status:', err);
+    } finally {
+      if (showSpinner) setStatusRefreshing(false);
+    }
+  }, [isGuest]);
 
   useEffect(() => {
     async function getProviders() {
@@ -39,6 +63,7 @@ export default function Identity() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setUser(user);
+          userIdRef.current = user.id; // Store in ref for real-time subscription
           setConnectedProviders(user.app_metadata?.providers || []);
           
           // Fetch KYC status
@@ -59,6 +84,7 @@ export default function Identity() {
     getProviders();
     
     // Real-time updates for KYC status via Supabase
+    // Uses userIdRef instead of `user` state to avoid stale closure
     let subscription: any;
     if (!isGuest) {
       subscription = supabase
@@ -68,7 +94,7 @@ export default function Identity() {
           schema: 'public', 
           table: 'profiles' 
         }, (payload: any) => {
-          if (user && payload.new.id === user.id) {
+          if (userIdRef.current && payload.new.id === userIdRef.current) {
             setKycStatus(payload.new.kyc_status);
             setKycRejectionReason(payload.new.kyc_rejection_reason);
           }
@@ -80,6 +106,13 @@ export default function Identity() {
       if (subscription) supabase.removeChannel(subscription);
     };
   }, [isGuest]);
+
+  // Auto-poll every 10 seconds while status is 'pending'
+  useEffect(() => {
+    if (kycStatus !== 'pending' || isGuest) return;
+    const interval = setInterval(() => refreshKycStatus(), 10000);
+    return () => clearInterval(interval);
+  }, [kycStatus, isGuest, refreshKycStatus]);
 
   const handleStartKYC = async () => {
     if (isGuest) return;
@@ -189,7 +222,7 @@ export default function Identity() {
               {kycStatus === 'pending' && (
                 <div className="flex items-center gap-2 mt-2">
                   <Loader2 className="animate-spin size-3" />
-                  <span className="text-[10px] font-black uppercase">Estimated review time: 5-10 mins</span>
+                  <span className="text-[10px] font-black uppercase">Auto-refreshing... Est. 5-10 mins</span>
                 </div>
               )}
               {kycStatus === 'rejected' && kycRejectionReason && (
@@ -198,23 +231,37 @@ export default function Identity() {
             </div>
           </div>
           
-          {kycStatus !== 'verified' && kycStatus !== 'pending' && (
-            <button 
-              onClick={handleStartKYC}
-              disabled={kycLoading || isGuest}
-              className={`brutal-btn px-8 py-3 text-sm font-black uppercase ${
-                kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-brutal-yellow'
-              } ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {kycLoading ? <Loader2 className="animate-spin" /> : kycStatus === 'rejected' ? 'Retry Verification' : 'Start Verification'}
-            </button>
-          )}
+          <div className="flex items-center gap-3">
+            {/* Manual refresh button — always shown for non-guest, non-verified */}
+            {!isGuest && kycStatus !== 'verified' && (
+              <button
+                onClick={() => refreshKycStatus(true)}
+                disabled={statusRefreshing}
+                title="Refresh verification status"
+                className="brutal-btn bg-white border-2 border-black size-10 flex items-center justify-center p-0 min-h-0"
+              >
+                <RefreshCw className={`size-4 ${statusRefreshing ? 'animate-spin' : ''}`} />
+              </button>
+            )}
 
-          {kycStatus === 'verified' && (
-            <div className="bg-brutal-green px-6 py-2 border-2 border-black font-black uppercase text-xs">
-              Passport Unlocked
-            </div>
-          )}
+            {kycStatus !== 'verified' && kycStatus !== 'pending' && (
+              <button 
+                onClick={handleStartKYC}
+                disabled={kycLoading || isGuest}
+                className={`brutal-btn px-8 py-3 text-sm font-black uppercase ${
+                  kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-brutal-yellow'
+                } ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {kycLoading ? <Loader2 className="animate-spin" /> : kycStatus === 'rejected' ? 'Retry Verification' : 'Start Verification'}
+              </button>
+            )}
+
+            {kycStatus === 'verified' && (
+              <div className="bg-brutal-green px-6 py-2 border-2 border-black font-black uppercase text-xs">
+                Passport Unlocked
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
