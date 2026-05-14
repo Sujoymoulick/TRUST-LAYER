@@ -54,8 +54,12 @@ export function useProfileAvatar(userId: string | null): AvatarState {
     if (!userId) return;
     fetchAvatar();
 
+    // Use a unique channel name per hook instance to prevent
+    // "cannot add callbacks after subscribe" when multiple components use this hook.
+    const channelName = `profile-avatar-${userId}-${Math.random().toString(36).substring(7)}`;
+
     const ch = supabase
-      .channel(`profile-avatar-${userId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${userId}` },
