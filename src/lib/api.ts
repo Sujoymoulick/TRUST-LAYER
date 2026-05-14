@@ -22,8 +22,8 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     headers['Authorization'] = `Bearer ${session.access_token}`;
   }
 
-  // 4. Ensure the endpoint starts with a slash
-  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  // 4. Ensure the endpoint starts with a slash and is lowercase
+  const path = endpoint.startsWith('/') ? endpoint.toLowerCase() : `/${endpoint.toLowerCase()}`;
   
   const response = await fetch(`${VITE_API_BASE_URL}${path}`, {
     ...options,
