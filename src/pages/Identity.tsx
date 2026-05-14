@@ -89,10 +89,27 @@ export default function Identity() {
       setKycToken(token);
       setShowSumsub(true);
     } catch (err: any) {
-      alert('Failed to start verification: ' + err.message);
+      console.error('KYC session creation error:', err);
+      // More specific error message for the level name issue
+      const errorMsg = err.message?.includes('Level') 
+        ? `Configuration Error: The verification level is not found. Please contact support.`
+        : `Verification Failed: ${err.message}`;
+      alert(errorMsg);
     } finally {
       setKycLoading(false);
     }
+  };
+
+  const handleKycComplete = async () => {
+    // Manually refresh status after modal closes to ensure immediate UI update
+    try {
+      const kyc = await apiFetch('/kyc/status');
+      setKycStatus(kyc.status);
+      setKycRejectionReason(kyc.rejectionReason);
+    } catch (err) {
+      console.error('Failed to refresh KYC status:', err);
+    }
+    setShowSumsub(false);
   };
 
   const handleConnect = async (provider: string) => {
@@ -119,7 +136,10 @@ export default function Identity() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="animate-spin size-12" />
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin size-12 text-brutal-blue" />
+          <p className="font-display text-xs uppercase tracking-widest animate-pulse">Synchronizing Identities...</p>
+        </div>
       </div>
     );
   }
@@ -199,15 +219,18 @@ export default function Identity() {
       </div>
 
       {showSumsub && kycToken && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-2xl h-[80vh] border-4 border-black shadow-[12px_12px_0px_#000] relative overflow-hidden">
-            <button 
-              onClick={() => setShowSumsub(false)}
-              className="absolute top-4 right-4 z-10 brutal-btn bg-white size-8 flex items-center justify-center font-black"
-            >
-              ×
-            </button>
-            <div className="h-full overflow-y-auto">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-2xl h-[85vh] border-4 border-black shadow-[16px_16px_0px_#000] relative overflow-hidden flex flex-col">
+            <div className="p-4 border-b-4 border-black flex items-center justify-between bg-brutal-yellow">
+               <h3 className="font-display text-sm uppercase tracking-widest">Secure Identity Verification</h3>
+               <button 
+                onClick={handleKycComplete}
+                className="brutal-btn bg-white size-8 flex items-center justify-center font-black p-0 min-h-0"
+              >
+                ×
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
               <SumsubWebSdk
                 accessToken={kycToken}
                 expirationHandler={() => {
@@ -219,11 +242,21 @@ export default function Identity() {
                   console.log('Sumsub message:', type, payload);
                   // Auto close modal when applicant is reviewed or pending
                   if (type === 'idCheck.applicantStatus' && (payload.reviewStatus === 'pending' || payload.reviewStatus === 'completed')) {
-                    setTimeout(() => setShowSumsub(false), 2000);
+                    setTimeout(handleKycComplete, 3000);
                   }
                 }}
                 onError={(error: any) => {
                   console.error('Sumsub error:', error);
+                  alert('Verification tool error. Please try again.');
+                  setShowSumsub(false);
+                }}
+                options={{
+                  adaptivness: true,
+                  i18n: {
+                    en: {
+                      'step.id-and-liveness.title': 'Passport Verification',
+                    },
+                  },
                 }}
               />
             </div>
