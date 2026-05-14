@@ -23,7 +23,9 @@ const PROVIDER_META: Record<string, { emoji: string; label: string }> = {
 /* ─── Helpers ────────────────────────────────────────────────────── */
 function fmt(iso?: string | null) {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('en-IN', {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   });
 }

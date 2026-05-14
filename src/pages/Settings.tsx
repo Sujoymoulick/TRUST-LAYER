@@ -10,6 +10,8 @@ import type { User } from '@supabase/supabase-js';
 interface UserProfile {
   full_name: string;
   email: string;
+  phone: string;
+  date_of_birth: string;
 }
 
 export default function Settings() {
@@ -22,6 +24,8 @@ export default function Settings() {
   const [profile, setProfile] = useState<UserProfile>({
     full_name: '',
     email: '',
+    phone: '',
+    date_of_birth: '',
   });
   const [message, setMessage] = useState('');
 
@@ -31,9 +35,18 @@ export default function Settings() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setUser(user);
+          
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('phone, date_of_birth')
+            .eq('id', user.id)
+            .single();
+
           setProfile({
             full_name: user.user_metadata?.full_name || '',
             email: user.email || '',
+            phone: profileData?.phone || '',
+            date_of_birth: profileData?.date_of_birth || '',
           });
         }
       } catch (error) {
@@ -57,8 +70,12 @@ export default function Settings() {
         data: { full_name: profile.full_name }
       });
 
-      // Also sync full_name to profiles table
-      await supabase.from('profiles').update({ full_name: profile.full_name }).eq('id', user.id);
+      // Also sync to profiles table
+      await supabase.from('profiles').update({ 
+        full_name: profile.full_name,
+        phone: profile.phone || null,
+        date_of_birth: profile.date_of_birth || null
+      }).eq('id', user.id);
 
       if (error) throw error;
       setMessage('Settings updated successfully!');
@@ -142,6 +159,25 @@ export default function Settings() {
                   value={profile.email} 
                   onChange={e => setProfile({...profile, email: e.target.value})}
                   type="email"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs uppercase mb-2">Phone Number</label>
+                <input 
+                  className="brutal-input" 
+                  value={profile.phone} 
+                  onChange={e => setProfile({...profile, phone: e.target.value})}
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                />
+              </div>
+              <div>
+                <label className="block font-black text-xs uppercase mb-2">Date of Birth</label>
+                <input 
+                  className="brutal-input" 
+                  value={profile.date_of_birth} 
+                  onChange={e => setProfile({...profile, date_of_birth: e.target.value})}
+                  type="date"
                 />
               </div>
             </div>
