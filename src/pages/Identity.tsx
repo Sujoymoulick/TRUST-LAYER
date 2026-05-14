@@ -124,8 +124,8 @@ export default function Identity() {
       setKycToken(token);
       setShowSumsub(true);
     } catch (err: any) {
-      console.error('KYC session creation error:', err);
-      // Show the real error message — don't mask it with a generic string
+      console.error('KYC session creation error (full):', err);
+      // Show the real error — apiFetch throws with err.message which is the backend `message` field
       setKycError(err.message || 'Failed to start verification. Please try again.');
     } finally {
       setKycLoading(false);
