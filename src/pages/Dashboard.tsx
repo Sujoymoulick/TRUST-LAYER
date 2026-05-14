@@ -163,24 +163,24 @@ export default function Dashboard() {
       )}
       {/* Passport mini-card — only shown when KYC verified */}
       {!loading && !isGuest && kycStatus === 'verified' && (
-        <div className="brutal-card bg-black text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#FFE600]">
+        <div className="brutal-card bg-black border-4 border-black flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 border-4 border-brutal-yellow bg-brutal-yellow flex items-center justify-center">
+            <div className="w-16 h-16 border-4 border-brutal-yellow bg-brutal-yellow flex items-center justify-center flex-shrink-0">
               <BookOpen className="size-8 text-black" />
             </div>
             <div>
               <h4 className="font-display text-xl uppercase leading-none text-brutal-yellow">Trust Passport Active</h4>
-              <p className="text-xs font-bold uppercase mt-2 text-white/60">Your verified identity passport is ready. View all linked accounts, address details &amp; trust graph.</p>
-              <div className="flex items-center gap-3 mt-3">
-                <span className="bg-brutal-green text-black px-2 py-0.5 border border-brutal-green font-black text-[9px] uppercase">✓ KYC Verified</span>
-                <span className="text-[9px] font-black uppercase text-white/40">{connectedProviders.length} apps linked</span>
-                <span className="text-[9px] font-black uppercase text-brutal-yellow">Score: {trustScore}</span>
+              <p className="text-xs font-bold uppercase mt-2 text-white">Your verified identity passport is ready. View all linked accounts, address details &amp; trust graph.</p>
+              <div className="flex items-center gap-3 mt-3 flex-wrap">
+                <span className="bg-brutal-green text-black px-2 py-0.5 border-2 border-black font-black text-[9px] uppercase">✓ KYC Verified</span>
+                <span className="text-[9px] font-black uppercase text-white border border-white/30 px-2 py-0.5">{connectedProviders.length} apps linked</span>
+                <span className="text-[9px] font-black uppercase bg-brutal-yellow text-black px-2 py-0.5 border-2 border-black">Score: {trustScore}</span>
               </div>
             </div>
           </div>
           <button
             onClick={() => navigate('/passport')}
-            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase whitespace-nowrap border-2 border-brutal-yellow shadow-[4px_4px_0px_#FFE600]"
+            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase whitespace-nowrap border-4 border-black shadow-[4px_4px_0px_#FFE600]"
           >
             View Full Passport →
           </button>

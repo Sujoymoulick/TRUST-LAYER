@@ -40,8 +40,8 @@ function scoreLabel(n: number) {
 function Cell({ label, value, mono }: { label: string; value?: string | null; mono?: boolean }) {
   return (
     <div className="space-y-0.5">
-      <div className="text-[9px] font-black uppercase tracking-widest text-gray-400">{label}</div>
-      <div className={`text-sm font-bold break-words leading-tight ${mono ? 'font-mono text-xs' : ''}`}>
+      <div className="text-[9px] font-black uppercase tracking-widest text-gray-500">{label}</div>
+      <div className={`text-sm font-bold break-words leading-tight text-gray-900 ${mono ? 'font-mono text-xs' : ''}`}>
         {value || '—'}
       </div>
     </div>
@@ -51,11 +51,11 @@ function Cell({ label, value, mono }: { label: string; value?: string | null; mo
 function Section({ title, icon: Icon, children }: { title: string; icon?: any; children: React.ReactNode }) {
   return (
     <div className="border-b-4 border-black last:border-b-0">
-      <div className="flex items-center gap-2 px-6 py-2 bg-gray-50 border-b-2 border-black">
-        {Icon && <Icon size={13} className="text-gray-500" />}
-        <span className="font-display text-[10px] uppercase tracking-widest text-gray-500">{title}</span>
+      <div className="flex items-center gap-2 px-6 py-2 bg-gray-100 border-b-2 border-black">
+        {Icon && <Icon size={13} className="text-gray-600" />}
+        <span className="font-display text-[10px] uppercase tracking-widest text-gray-700">{title}</span>
       </div>
-      <div className="px-6 py-5">{children}</div>
+      <div className="px-6 py-5 bg-white">{children}</div>
     </div>
   );
 }
@@ -287,8 +287,8 @@ export default function Passport() {
         {/* ── 3 · PERSONAL + ADDRESS + DOCUMENT ── */}
         <div className="grid grid-cols-3 border-b-4 border-black divide-x-4 divide-black">
           {/* Personal Details */}
-          <div className="p-5 space-y-4">
-            <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-black pb-2">
+          <div className="p-5 space-y-4 bg-white">
+            <div className="text-[10px] font-black uppercase tracking-widest text-gray-600 border-b-2 border-black pb-2">
               Personal Details
             </div>
             <Cell label="Date of Birth"  value={passport?.identity?.dob ? fmt(passport.identity.dob) : null} />
@@ -300,8 +300,8 @@ export default function Passport() {
           </div>
 
           {/* Address */}
-          <div className="p-5 space-y-4">
-            <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-black pb-2 flex items-center gap-2">
+          <div className="p-5 space-y-4 bg-white">
+            <div className="text-[10px] font-black uppercase tracking-widest text-gray-600 border-b-2 border-black pb-2 flex items-center gap-2">
               <MapPin size={11} /> Address
             </div>
             {passport?.address?.formattedAddress ? (
@@ -314,8 +314,8 @@ export default function Passport() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 gap-3 text-center">
-                <Globe size={32} className="text-gray-200" />
-                <p className="text-[10px] font-black uppercase text-gray-300">
+                <Globe size={32} className="text-gray-300" />
+                <p className="text-[10px] font-black uppercase text-gray-500">
                   Address available after<br />full document verification
                 </p>
               </div>
@@ -323,15 +323,15 @@ export default function Passport() {
           </div>
 
           {/* Document */}
-          <div className="p-5 space-y-4">
-            <div className="text-[10px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-black pb-2 flex items-center gap-2">
+          <div className="p-5 space-y-4 bg-white">
+            <div className="text-[10px] font-black uppercase tracking-widest text-gray-600 border-b-2 border-black pb-2 flex items-center gap-2">
               <Fingerprint size={11} /> KYC Document
             </div>
             <Cell label="Doc Type"   value={passport?.document?.type} />
             <Cell label="Doc Number" value={passport?.document?.number ? mask(passport.document.number) : null} mono />
             <Cell label="Issued By"  value={passport?.document?.issuedCountry} />
             <Cell label="Expires"    value={passport?.document?.validUntil ? fmt(passport.document.validUntil) : null} />
-            <div className="pt-3 border-t-2 border-dashed border-gray-200 space-y-3">
+            <div className="pt-3 border-t-2 border-dashed border-gray-300 space-y-3">
               <Cell label="KYC Status"  value={passport?.kyc?.status?.replace('_', ' ').toUpperCase()} />
               <Cell label="Verified On" value={fmt(passport?.kyc?.verifiedAt)} />
             </div>
