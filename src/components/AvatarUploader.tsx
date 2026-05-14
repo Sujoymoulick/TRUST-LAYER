@@ -3,7 +3,8 @@
  * Drop zone + click-to-upload + remove button for profile images.
  * Uses the useProfileAvatar hook for all Supabase Storage operations.
  */
-import { useRef, useState, DragEvent } from 'react';
+import { useRef, useState } from 'react';
+import type { DragEvent } from 'react';
 import { Camera, Trash2, Loader2, Upload, CheckCircle, X } from 'lucide-react';
 import { useProfileAvatar } from '../hooks/useProfileAvatar';
 
