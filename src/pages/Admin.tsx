@@ -23,7 +23,7 @@ import {
   Fingerprint
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
-import { apiFetch, VITE_API_BASE_URL } from '../lib/api';
+import { VITE_API_BASE_URL } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
 
 
@@ -226,15 +226,19 @@ export default function Admin() {
   };
 
   const fetchDiagnostics = async () => {
+    const targetUrl = `${VITE_API_BASE_URL}/diagnostics`;
     try {
       setDiagLoading(true);
       setDiagError(null);
-      const data = await apiFetch('/diagnostics');
+      console.log('Fetching diagnostics from:', targetUrl);
+      const response = await fetch(targetUrl);
+      if (!response.ok) throw new Error(`Server error: ${response.status} — URL: ${targetUrl}`);
+      const data = await response.json();
       setDiagnostics(data);
       setLastRefreshed(new Date());
     } catch (err: any) {
       console.error('Diagnostics fetch error:', err);
-      setDiagError(err.message || 'Unknown connection error');
+      setDiagError(`${err.message || 'Unknown error'} (calling: ${targetUrl})`);
     } finally {
       setDiagLoading(false);
     }
