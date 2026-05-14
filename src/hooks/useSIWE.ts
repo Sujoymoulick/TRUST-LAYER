@@ -9,7 +9,7 @@ export function useSIWE() {
   const { disconnect } = useDisconnect();
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const attemptedAddress = useRef<string | null>(null);
+  const attemptedAddress = useRef<string | null | undefined>(null);
 
   useEffect(() => {
     if (!isConnected || !address) {
