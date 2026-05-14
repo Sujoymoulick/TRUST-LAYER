@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import Pricing from './pages/Pricing';
 import Dashboard from './pages/Dashboard';
 import Identity from './pages/Identity';
+import Passport from './pages/Passport';
 import RiskAnalysis from './pages/RiskAnalysis';
 import ApiDashboard from './pages/ApiDashboard';
 import Admin from './pages/Admin';
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/wallet" element={<WalletDashboard />} />
                 <Route path="/identity" element={<Identity />} />
+                <Route path="/passport" element={<Passport />} />
                 <Route path="/analytics" element={<RiskAnalysis />} />
                 <Route path="/api" element={<ApiDashboard />} />
                 <Route path="/vault" element={<ConsentVault />} />

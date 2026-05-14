@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Loader2, Link2, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Loader2, Link2, ShieldCheck, RefreshCw, BookOpen } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useGuest } from '../context/GuestContext';
 import { DigiLockerVerify } from '../components/DigiLockerVerify';
 import SumsubWebSdk from '@sumsub/websdk-react';
 import { apiFetch } from '../lib/api';
+import { useNavigate } from 'react-router-dom';
 
 const PLATFORMS = [
   { id: 'github', name: 'GitHub', icon: '🐙', category: 'Professional' },
@@ -17,6 +18,7 @@ const PLATFORMS = [
 
 export default function Identity() {
   const { isGuest } = useGuest();
+  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [connectedProviders, setConnectedProviders] = useState<string[]>([]);
@@ -259,8 +261,16 @@ export default function Identity() {
             )}
 
             {kycStatus === 'verified' && (
-              <div className="bg-brutal-green px-6 py-2 border-2 border-black font-black uppercase text-xs">
-                Passport Unlocked
+              <div className="flex items-center gap-2">
+                <div className="bg-brutal-green px-4 py-2 border-2 border-black font-black uppercase text-xs">
+                  ✓ Passport Unlocked
+                </div>
+                <button
+                  onClick={() => navigate('/passport')}
+                  className="brutal-btn bg-black text-white px-4 py-2 text-xs font-black uppercase flex items-center gap-2 min-h-0"
+                >
+                  <BookOpen size={12} /> View Passport
+                </button>
               </div>
             )}
           </div>

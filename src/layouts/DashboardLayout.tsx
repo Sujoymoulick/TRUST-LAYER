@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet } from 'lucide-react';
+import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail } from '../lib/utils';
@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', guestAllowed: true },
   { to: '/wallet',    icon: Wallet,          label: 'Wallet',    guestAllowed: false },
   { to: '/identity',  icon: User,            label: 'Identity',  guestAllowed: true  },
+  { to: '/passport',  icon: BookOpen,        label: 'Passport',  guestAllowed: false },
   { to: '/vault',     icon: Lock,            label: 'Consent Vault', guestAllowed: false },
   { to: '/analytics', icon: BarChart2,        label: 'Analytics', guestAllowed: true  },
   { to: '/api',       icon: Code,             label: 'API',       guestAllowed: false },
