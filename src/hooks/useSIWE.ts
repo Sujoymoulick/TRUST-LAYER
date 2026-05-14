@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAccount, useSignMessage, useDisconnect } from 'wagmi';
 import { SiweMessage } from 'siwe';
 import { apiFetch } from '../lib/api';
@@ -9,11 +9,19 @@ export function useSIWE() {
   const { disconnect } = useDisconnect();
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
+  const attemptedAddress = useRef<string | null>(null);
 
   useEffect(() => {
-    async function authenticate() {
-      if (!isConnected || !address || authenticated || loading) return;
+    if (!isConnected || !address) {
+      attemptedAddress.current = null;
+      setAuthenticated(false);
+      return;
+    }
 
+    async function authenticate() {
+      if (authenticated || loading || attemptedAddress.current === address) return;
+
+      attemptedAddress.current = address;
       setLoading(true);
       try {
         // 1. Get nonce from backend
