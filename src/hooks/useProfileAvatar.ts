@@ -94,7 +94,7 @@ export function useProfileAvatar(userId: string | null): AvatarState {
       // Remove old file first (ignore errors — may not exist)
       const { data: listData } = await supabase.storage.from(BUCKET).list(userId);
       if (listData && listData.length > 0) {
-        const oldPaths = listData.map((f) => `${userId}/${f.name}`);
+        const oldPaths = listData.map((f: { name: string }) => `${userId}/${f.name}`);
         await supabase.storage.from(BUCKET).remove(oldPaths);
       }
 
@@ -140,7 +140,7 @@ export function useProfileAvatar(userId: string | null): AvatarState {
       if (listErr) throw listErr;
 
       if (listData && listData.length > 0) {
-        const paths = listData.map((f) => `${userId}/${f.name}`);
+        const paths = listData.map((f: { name: string }) => `${userId}/${f.name}`);
         const { error: removeErr } = await supabase.storage.from(BUCKET).remove(paths);
         if (removeErr) throw removeErr;
       }
