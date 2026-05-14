@@ -29,11 +29,13 @@ export function useProfileAvatar(userId: string | null): AvatarState {
   const [error,     setError    ] = useState<string | null>(null);
   const realtimeRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
-  // ── Resolve public URL from a storage path ────────────────────────────
-  function getPublicUrl(path: string): string {
-    const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  // ── Resolve secure URL from a private storage path ────────────────────────
+  async function getSecureUrl(path: string): Promise<string> {
+    // Create a signed URL valid for 10 years
+    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    if (error || !data) throw new Error('Failed to generate secure URL');
     // Cache-bust so browser immediately reflects changes
-    return data.publicUrl + '?t=' + Date.now();
+    return data.signedUrl + '&t=' + Date.now();
   }
 
   // ── Load initial avatar_url from profiles table ───────────────────────
@@ -103,20 +105,20 @@ export function useProfileAvatar(userId: string | null): AvatarState {
 
       if (uploadErr) throw uploadErr;
 
-      const publicUrl = getPublicUrl(path);
+      const secureUrl = await getSecureUrl(path);
 
       // Update profiles table — real-time will propagate
       const { error: dbErr } = await supabase
         .from('profiles')
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: secureUrl })
         .eq('id', userId);
 
       if (dbErr) throw dbErr;
 
       // Also update Supabase auth metadata so DashboardLayout picks it up
-      await supabase.auth.updateUser({ data: { avatar_url: publicUrl } });
+      await supabase.auth.updateUser({ data: { avatar_url: secureUrl } });
 
-      setUrl(publicUrl);
+      setUrl(secureUrl);
     } catch (e: any) {
       setError(e.message || 'Upload failed');
     } finally {
