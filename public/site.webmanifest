@@ -1,6 +1,6 @@
 {
-  "name": "Pramaaam",
-  "short_name": "Pramaaam",
+  "name": "Pramaaan",
+  "short_name": "Pramaaan",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#f0cd37",
-  "background_color": "#4c523b",
+  "theme_color": "#384f3a",
+  "background_color": "#78b079",
   "display": "standalone"
 }

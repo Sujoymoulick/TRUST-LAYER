@@ -8,7 +8,7 @@ import { Eye, EyeOff, Sparkles, Loader2 } from "lucide-react";
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
-import mainLogo from '../assets/Trust-layer.png';
+import mainLogo from '../assets/Pramaaan-logo.png';
 import { TurnstileWidget } from '../components/TurnstileWidget';
 
 interface EyeBallProps {

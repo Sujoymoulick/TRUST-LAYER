@@ -37,7 +37,8 @@ export default function Dashboard() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [connectedProviders, setConnectedProviders] = useState<string[]>([]);
   const [realTrustScore, setRealTrustScore] = useState<number | null>(null);
-
+  const [isGlowing, setIsGlowing] = useState(false);
+  const [activityFeed, setActivityFeed] = useState<any[]>([]);
   useEffect(() => {
     // Guest mode: show demo data, never fetch real DB data
     if (isGuest) {
@@ -99,8 +100,34 @@ export default function Dashboard() {
             if (scoreData && scoreData.score) {
               setRealTrustScore(scoreData.score);
             }
+
+            // Fetch initial activity logs
+            const { data: logs } = await supabase
+              .from('activity_logs')
+              .select('*')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false })
+              .limit(5);
+            if (logs) setActivityFeed(logs);
+
+            // Subscribe to real-time changes
+            const channel = supabase.channel('dashboard_updates')
+              .on('postgres_changes', { event: '*', schema: 'public', table: 'trust_scores', filter: `user_id=eq.${user.id}` }, payload => {
+                if (payload.new && (payload.new as any).final_score !== undefined) {
+                   setRealTrustScore((payload.new as any).final_score);
+                   setIsGlowing(true);
+                   setTimeout(() => setIsGlowing(false), 3000);
+                }
+              })
+              .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activity_logs', filter: `user_id=eq.${user.id}` }, payload => {
+                if (payload.new) {
+                   setActivityFeed(prev => [payload.new, ...prev].slice(0, 5));
+                }
+              })
+              .subscribe();
+
           } catch (err) {
-            console.warn('Failed to fetch trust score from backend:', err);
+            console.warn('Failed to fetch real-time data:', err);
           }
         }
       } catch (err) {
@@ -112,6 +139,10 @@ export default function Dashboard() {
       }
     }
     fetchData();
+
+    return () => {
+      supabase.removeAllChannels();
+    };
   }, [isGuest]);
 
   const trustScore = realTrustScore || (records.length > 0 
@@ -216,11 +247,14 @@ export default function Dashboard() {
             <TrendingUp size={16} className="text-brutal-green" />
             <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest">Your Trust Score</h3>
           </div>
-          <div className="font-display text-7xl leading-none">
-            {loading ? <Loader2 className="animate-spin" /> : trustScore}
+          <div className={`relative flex items-center justify-center w-48 h-48 rounded-full border-8 transition-all duration-1000 ${isGlowing ? 'border-transparent shadow-[0_0_30px_#00FFCC,inset_0_0_30px_#9D00FF]' : 'border-[var(--border-color)]'}`}>
+            <div className={`absolute inset-0 rounded-full transition-opacity duration-1000 ${isGlowing ? 'opacity-100 bg-gradient-to-tr from-[#00FFCC]/20 to-[#9D00FF]/20' : 'opacity-0'}`} />
+            <div className={`font-display text-7xl leading-none z-10 transition-colors duration-1000 ${isGlowing ? 'text-white' : ''} drop-shadow-md`}>
+              {loading ? <Loader2 className="animate-spin" /> : trustScore}
+            </div>
           </div>
-          <div className="progress-track w-full">
-            <div className="progress-fill" style={{ width: `${(trustScore / 1000) * 100}%` }} />
+          <div className="progress-track w-full mt-4">
+            <div className={`progress-fill transition-all duration-1000 ${isGlowing ? 'bg-gradient-to-r from-[#00FFCC] to-[#9D00FF]' : ''}`} style={{ width: `${(trustScore / 1000) * 100}%` }} />
           </div>
           <div className="flex flex-col gap-3 w-full">
             <span className="font-display text-sm text-brutal-green uppercase tracking-widest">
@@ -349,6 +383,30 @@ export default function Dashboard() {
                {trustScore >= 800 ? 'Elite Tier' : trustScore >= 500 ? 'Verified' : 'Unverified'}
              </div>
              <div className="text-[8px] font-bold tracking-widest uppercase opacity-60">Verified by Pramaaan ML Engine</div>
+           </div>
+         </div>
+
+         {/* Live Activity Feed */}
+         <div className="brutal-card bg-black text-white border-brutal-blue border-4 shadow-[8px_8px_0px_#0057FF]">
+           <div className="flex items-center justify-between mb-4">
+             <h3 className="font-display text-xs uppercase text-brutal-blue tracking-widest">Live Activity Feed</h3>
+             <span className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest">
+               <span className="w-2 h-2 bg-brutal-green rounded-full animate-pulse"></span>
+               Real-time
+             </span>
+           </div>
+           <div className="space-y-3">
+             {activityFeed.length > 0 ? activityFeed.map((log) => (
+               <div key={log.id} className="flex flex-col gap-1 pb-3 border-b border-white/10 last:border-0">
+                 <div className="flex justify-between items-center text-[8px] font-black uppercase text-gray-400">
+                   <span>{log.type.replace('_', ' ')}</span>
+                   <span>{new Date(log.created_at).toLocaleTimeString()}</span>
+                 </div>
+                 <div className="text-xs font-bold font-mono">{log.message}</div>
+               </div>
+             )) : (
+               <div className="text-xs font-bold text-gray-500 uppercase py-2">No recent activity</div>
+             )}
            </div>
          </div>
 

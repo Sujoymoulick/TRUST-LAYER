@@ -20,7 +20,7 @@ import {
   Moon
 } from 'lucide-react';
 import { Component as RocketLoader } from '../components/ui/rocket-loader';
-import mainLogo from '../assets/Trust-layer.png';
+import mainLogo from '../assets/Pramaaan-logo.png';
 
 const PLATFORMS = [
   { name: 'GitHub', icon: <Shield size={20} /> },

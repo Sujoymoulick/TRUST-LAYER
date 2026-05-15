@@ -95,6 +95,11 @@ export default function Admin() {
   const [health, setHealth] = useState<any>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
+  // God Mode Modal State
+  const [selectedUserForScore, setSelectedUserForScore] = useState<UserProfile | null>(null);
+  const [userScoreData, setUserScoreData] = useState<any>(null);
+  const [manualAdjustment, setManualAdjustment] = useState<number>(0);
+  const [scoreModalLoading, setScoreModalLoading] = useState(false);
 
 
 
@@ -255,6 +260,63 @@ export default function Admin() {
       }
     } catch (err) {
       console.error('Health fetch error:', err);
+    }
+  };
+
+  const openScoreModal = async (user: UserProfile) => {
+    setSelectedUserForScore(user);
+    setScoreModalLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = {
+        'Authorization': `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      const res = await fetch(`${VITE_API_BASE_URL}/admin/recalculate`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ userId: user.id })
+      });
+      const result = await res.json();
+      if (result.success) {
+        setUserScoreData(result.data);
+        const { data: profile } = await supabase.from('profiles').select('manual_adjustment').eq('id', user.id).single();
+        setManualAdjustment(profile?.manual_adjustment || 0);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setScoreModalLoading(false);
+    }
+  };
+
+  const handleAdjustScore = async () => {
+    if (!selectedUserForScore) return;
+    setScoreModalLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = {
+        'Authorization': `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      const res = await fetch(`${VITE_API_BASE_URL}/admin/adjust-score`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ userId: selectedUserForScore.id, manualAdjustment })
+      });
+      const result = await res.json();
+      if (result.success) {
+        setUserScoreData(result.data);
+        alert('Score successfully adjusted!');
+      } else {
+         alert('Failed to adjust score');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setScoreModalLoading(false);
     }
   };
 
@@ -451,6 +513,7 @@ export default function Admin() {
                             </td>
                             <td className="text-[10px] font-bold text-gray-400">{new Date(u.updated_at).toLocaleDateString()}</td>
                             <td>
+                              <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow mr-2" title="God Mode"><Shield size={12} /></button>
                               <button className="p-1 border-2 border-black hover:bg-black hover:text-white"><Eye size={12} /></button>
                             </td>
                           </tr>
@@ -494,6 +557,7 @@ export default function Admin() {
                             </td>
                             <td className="text-[10px] font-bold text-gray-400">{new Date(u.updated_at).toLocaleDateString()}</td>
                             <td>
+                              <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow mr-2" title="God Mode"><Shield size={12} /></button>
                               <button className="p-1 border-2 border-black hover:bg-black hover:text-white"><Eye size={12} /></button>
                             </td>
                           </tr>
@@ -782,6 +846,73 @@ export default function Admin() {
           </div>
         </div>
       </div>
+      
+      {/* God Mode Score Modal */}
+      {selectedUserForScore && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+          <div className="brutal-card bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+            <button onClick={() => setSelectedUserForScore(null)} className="absolute top-4 right-4 text-2xl font-black">×</button>
+            <h2 className="font-display text-2xl uppercase border-b-4 border-black pb-4 mb-6">
+              God Mode: <span className="text-brutal-blue">{selectedUserForScore.email}</span>
+            </h2>
+
+            {scoreModalLoading && !userScoreData ? (
+              <div className="py-12 flex justify-center"><Loader2 className="animate-spin text-brutal-blue" size={32} /></div>
+            ) : userScoreData ? (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center bg-black text-white p-4">
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase text-gray-400">Calculated</p>
+                    <p className="font-display text-4xl">{userScoreData.calculatedScore}</p>
+                  </div>
+                  <div className="text-xl font-black">+</div>
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase text-gray-400">Admin Adjust</p>
+                    <p className="font-display text-4xl text-brutal-yellow">{manualAdjustment}</p>
+                  </div>
+                  <div className="text-xl font-black">=</div>
+                  <div className="text-center">
+                    <p className="text-[10px] font-black uppercase text-brutal-blue">Final Score</p>
+                    <p className="font-display text-5xl text-brutal-green">{userScoreData.finalScore}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-display text-sm uppercase mb-3">Trust Signals Breakdown</h3>
+                  <div className="space-y-2">
+                    {Object.entries(userScoreData.signals || {}).map(([key, value]) => (
+                      <div key={key} className="flex justify-between items-center p-3 border-2 border-black bg-gray-50">
+                        <span className="text-[10px] font-black uppercase">{key.replace('_', ' ')}</span>
+                        <span className="font-mono font-bold">{String(value)} pts</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10">
+                  <h3 className="font-display text-sm uppercase mb-3 text-brutal-blue">Manual Override</h3>
+                  <div className="flex gap-4">
+                    <input 
+                      type="number" 
+                      value={manualAdjustment} 
+                      onChange={(e) => setManualAdjustment(Number(e.target.value))}
+                      className="brutal-input flex-1 !text-lg !font-bold"
+                      placeholder="e.g. 100 or -50"
+                    />
+                    <button 
+                      onClick={handleAdjustScore}
+                      disabled={scoreModalLoading}
+                      className="brutal-btn bg-brutal-blue text-white whitespace-nowrap"
+                    >
+                      {scoreModalLoading ? <Loader2 className="animate-spin" /> : 'Apply Adjustment'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
