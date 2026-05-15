@@ -86,7 +86,6 @@ export default function Admin() {
   const { isGuest } = useGuest();
   const [activeTab, setActiveTab] = useState<AdminTab>('activity_stream');
   const [loading, setLoading] = useState(true);
-  const [records, setRecords] = useState<TrustRecord[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [globalStream, setGlobalStream] = useState<GlobalEvent[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
@@ -176,20 +175,19 @@ export default function Admin() {
           if (plansRes.error) setError(`Plans Error: ${plansRes.error.message}`);
 
           const allRecords = trustRes.data || [];
-          setRecords(allRecords);
           setAuditLogs(auditRes.data || []);
           setPlans(plansRes.data || []);
 
           // Combine activities and risks into a single global stream
-          const acts = (activityRes.data || []).map(a => ({ ...a, type: 'activity', severity: 'info' }));
-          const risks = (riskRes.data || []).map(r => ({ id: r.id, user_id: r.user_id, message: `FRAUD FLAG: ${r.fraud_type}`, type: 'risk', severity: r.severity, created_at: r.created_at }));
+          const acts = (activityRes.data || []).map((a: any) => ({ ...a, type: 'activity', severity: 'info' }));
+          const risks = (riskRes.data || []).map((r: any) => ({ id: r.id, user_id: r.user_id, message: `FRAUD FLAG: ${r.fraud_type}`, type: 'risk', severity: r.severity, created_at: r.created_at }));
           const combined = [...acts, ...risks].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
           setGlobalStream(combined);
 
           // Calculate stats
           const verified = allRecords.filter((r: TrustRecord) => r.verification_status === 'verified').length;
           const pending = allRecords.filter((r: TrustRecord) => r.verification_status === 'pending').length;
-          const uniqueUsers = new Set(allRecords.map((r: TrustRecord) => r.metadata?.user_id)).size || userRes.data?.length || 0;
+          const uniqueUsers = new Set(allRecords.map((r: TrustRecord) => r.metadata?.user_id)).size || usersData.data?.length || 0;
 
           setStats({
             totalVerifications: allRecords.length,
