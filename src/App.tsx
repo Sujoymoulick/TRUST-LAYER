@@ -12,6 +12,7 @@ import Passport from './pages/Passport';
 import RiskAnalysis from './pages/RiskAnalysis';
 import ApiDashboard from './pages/ApiDashboard';
 import Admin from './pages/Admin';
+import { AdminGuard } from './components/AdminGuard';
 import Settings from './pages/Settings';
 import WalletDashboard from './pages/WalletDashboard';
 import ConsentVault from './pages/ConsentVault';
@@ -41,7 +42,7 @@ function App() {
                 <Route path="/analytics" element={<RiskAnalysis />} />
                 <Route path="/api" element={<ApiDashboard />} />
                 <Route path="/vault" element={<ConsentVault />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
                 <Route path="/settings" element={<Settings />} />
               </Route>
 

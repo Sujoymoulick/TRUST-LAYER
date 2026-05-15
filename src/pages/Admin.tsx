@@ -61,6 +61,15 @@ interface AuditLog {
   created_at: string;
 }
 
+interface GlobalEvent {
+  id: string;
+  type: 'activity' | 'risk';
+  message: string;
+  severity?: string;
+  created_at: string;
+  user_id: string;
+}
+
 interface Plan {
   id: string;
   name: string;
@@ -69,16 +78,17 @@ interface Plan {
   features: string[];
 }
 
-type AdminTab = 'verifications' | 'users' | 'audit_logs' | 'subscriptions' | 'system_status';
+type AdminTab = 'activity_stream' | 'users' | 'audit_logs' | 'subscriptions' | 'system_status';
 
 
 export default function Admin() {
   const navigate = useNavigate();
   const { isGuest } = useGuest();
-  const [activeTab, setActiveTab] = useState<AdminTab>('verifications');
+  const [activeTab, setActiveTab] = useState<AdminTab>('activity_stream');
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<TrustRecord[]>([]);
-  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [globalStream, setGlobalStream] = useState<GlobalEvent[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -143,23 +153,38 @@ export default function Admin() {
 
         // 1. Initial Fetch
         const loadData = async () => {
-          const [trustRes, userRes, auditRes, plansRes] = await Promise.all([
+          const { data: { session } } = await supabase.auth.getSession();
+          
+          const usersRes = await fetch(`${VITE_API_BASE_URL}/admin/users`, {
+            headers: { 'Authorization': `Bearer ${session?.access_token}` }
+          });
+          const usersData = await usersRes.json();
+          if (usersData.success) {
+            setUsers(usersData.data);
+          }
+
+          const [trustRes, auditRes, plansRes, activityRes, riskRes] = await Promise.all([
             supabase.from('trust_records').select('*').order('created_at', { ascending: false }),
-            supabase.from('profiles').select('*').order('updated_at', { ascending: false }),
             supabase.from('admin_audit_log').select('*').order('created_at', { ascending: false }),
-            supabase.from('plans').select('*').order('monthly_price', { ascending: true })
+            supabase.from('plans').select('*').order('monthly_price', { ascending: true }),
+            supabase.from('activity_logs').select('*').order('created_at', { ascending: false }).limit(30),
+            supabase.from('risk_logs').select('*').order('created_at', { ascending: false }).limit(30)
           ]);
 
           if (trustRes.error) setError(`Verifications Error: ${trustRes.error.message}`);
-          if (userRes.error) setError(`Users Error: ${userRes.error.message}`);
           if (auditRes.error) setError(`Audit Logs Error: ${auditRes.error.message}`);
           if (plansRes.error) setError(`Plans Error: ${plansRes.error.message}`);
 
           const allRecords = trustRes.data || [];
           setRecords(allRecords);
-          setUsers(userRes.data || []);
           setAuditLogs(auditRes.data || []);
           setPlans(plansRes.data || []);
+
+          // Combine activities and risks into a single global stream
+          const acts = (activityRes.data || []).map(a => ({ ...a, type: 'activity', severity: 'info' }));
+          const risks = (riskRes.data || []).map(r => ({ id: r.id, user_id: r.user_id, message: `FRAUD FLAG: ${r.fraud_type}`, type: 'risk', severity: r.severity, created_at: r.created_at }));
+          const combined = [...acts, ...risks].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          setGlobalStream(combined);
 
           // Calculate stats
           const verified = allRecords.filter((r: TrustRecord) => r.verification_status === 'verified').length;
@@ -182,7 +207,9 @@ export default function Admin() {
           .subscribe();
 
         trustChannel = supabase.channel('trust-admin')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'trust_records' }, () => loadData())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'trust_scores' }, () => loadData())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'activity_logs' }, () => loadData())
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'risk_logs' }, () => loadData())
           .subscribe();
 
         auditChannel = supabase.channel('audit-admin')
@@ -320,6 +347,37 @@ export default function Admin() {
     }
   };
 
+  const handleInlineAdjust = async (userId: string, val: number) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = {
+        'Authorization': `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      const res = await fetch(`${VITE_API_BASE_URL}/admin/adjust-score`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ userId, manualAdjustment: val })
+      });
+      const result = await res.json();
+      if (result.success) {
+        // Trigger sync after setting adjustment
+        await fetch(`${VITE_API_BASE_URL}/admin/sync`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ userId })
+        });
+        alert('Score recalculated successfully!');
+        // UI will auto-refresh due to realtime subscription
+      } else {
+         alert('Failed to adjust score');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // Realtime polling: refresh diagnostics every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -406,9 +464,8 @@ export default function Admin() {
         ))}
       </div>
 
-      {/* Tabs */}
       <div className="flex border-b-4 border-black gap-2 overflow-x-auto">
-        {(['verifications', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
+        {(['activity_stream', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
 
           <button
             key={tab}
@@ -419,7 +476,7 @@ export default function Admin() {
                 : 'bg-white text-black hover:bg-gray-100'
             } border-x-2 border-t-2 border-black`}
           >
-            {tab === 'audit_logs' ? 'Audit Logs' : tab === 'system_status' ? 'System Status' : tab}
+            {tab === 'audit_logs' ? 'Audit Logs' : tab === 'activity_stream' ? 'Activity Stream' : tab === 'system_status' ? 'System Status' : tab}
 
           </button>
         ))}
@@ -427,45 +484,30 @@ export default function Admin() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Main Content Area */}
         <div className="lg:col-span-2">
-          {activeTab === 'verifications' && (
-            <div className="brutal-card">
+          {activeTab === 'activity_stream' && (
+            <div className="brutal-card shadow-[6px_6px_0px_#000]">
               <div className="flex items-center justify-between mb-8">
-                <h3 className="font-display text-xl uppercase">Verification Logs</h3>
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-                    <input type="text" placeholder="Search Hash..." className="brutal-input py-1.5 !pl-9 text-xs min-w-[200px]" />
-                  </div>
-                </div>
+                <h3 className="font-display text-xl uppercase">Global Activity Stream</h3>
               </div>
-              <div className="overflow-x-auto">
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>Timestamp</th>
-                      <th>Identity Hash</th>
-                      <th>Method</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {records.map((r) => (
-                      <tr key={r.id} className="hover:bg-gray-50">
-                        <td className="text-[10px] font-bold text-gray-500">{new Date(r.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</td>
-                        <td className="font-mono text-[10px] uppercase truncate max-w-[120px]">{r.identity_hash}</td>
-                        <td className="text-[10px] font-black uppercase">{String(r.metadata?.method || 'Direct API')}</td>
-                        <td>
-                          <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
-                            r.verification_status === 'verified' ? 'bg-brutal-green' : 
-                            r.verification_status === 'pending' ? 'bg-brutal-yellow' : 'bg-brutal-pink'
-                          }`}>{r.verification_status}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-4">
+                {globalStream.map((event) => (
+                  <div key={event.id} className={`p-4 border-4 border-black flex items-start gap-4 ${event.type === 'risk' ? 'bg-[#FF0055]/10' : 'bg-white'}`}>
+                    <div className={`p-2 border-2 border-black ${event.type === 'risk' ? 'bg-[#FF0055] text-white' : 'bg-[#39FF14] text-black'}`}>
+                      {event.type === 'risk' ? <AlertTriangle size={16} /> : <Activity size={16} />}
+                    </div>
+                    <div className="flex-1">
+                      <p className={`font-mono text-xs font-bold uppercase ${event.type === 'risk' ? 'text-[#FF0055]' : 'text-black'}`}>{event.message}</p>
+                      <p className="text-[10px] font-bold text-gray-500 mt-1 uppercase">User ID: <span className="font-mono text-black">{event.user_id.substring(0,8)}</span></p>
+                    </div>
+                    <span className="font-mono text-[8px] font-black uppercase text-gray-400">{new Date(event.created_at).toLocaleString()}</span>
+                  </div>
+                ))}
+                {globalStream.length === 0 && (
+                  <div className="text-center py-12 border-4 border-black border-dashed text-gray-400 font-display uppercase">
+                    No activity recorded
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -534,10 +576,10 @@ export default function Admin() {
                       <thead>
                         <tr>
                           <th>User</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Last Active</th>
-                          <th>Actions</th>
+                          <th>Current Score</th>
+                          <th>Plan</th>
+                          <th>Status</th>
+                          <th>Adjust & Recalculate</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -549,16 +591,36 @@ export default function Admin() {
                               </div>
                               <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
                             </td>
-                            <td className="text-[10px] font-bold text-gray-500">{u.email}</td>
                             <td>
-                              <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-white">
-                                {u.role}
+                              <span className="font-mono text-sm font-bold text-[#39FF14] bg-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#000]">
+                                {u.trust_score?.final_score || 0}
                               </span>
                             </td>
-                            <td className="text-[10px] font-bold text-gray-400">{new Date(u.updated_at).toLocaleDateString()}</td>
                             <td>
-                              <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow mr-2" title="God Mode"><Shield size={12} /></button>
-                              <button className="p-1 border-2 border-black hover:bg-black hover:text-white"><Eye size={12} /></button>
+                              <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-white">
+                                {u.plan || 'Free'}
+                              </span>
+                            </td>
+                            <td className="text-[10px] font-bold text-gray-400">Active</td>
+                            <td>
+                              <div className="flex items-center gap-2">
+                                <input 
+                                  type="number" 
+                                  id={`adj-${u.id}`} 
+                                  defaultValue={u.trust_score?.admin_score_modifier || 0} 
+                                  className="brutal-input !py-1 !px-2 !w-20 !text-xs" 
+                                />
+                                <button 
+                                  onClick={() => {
+                                    const val = (document.getElementById(`adj-${u.id}`) as HTMLInputElement).value;
+                                    handleInlineAdjust(u.id, Number(val));
+                                  }} 
+                                  className="p-1 px-3 font-display text-[10px] uppercase tracking-widest border-2 border-black bg-[#00E5FF] hover:bg-black hover:text-[#00E5FF] shadow-[2px_2px_0px_#000]"
+                                >
+                                  Recalculate
+                                </button>
+                                <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow" title="God Mode Breakdown"><Eye size={14} /></button>
+                              </div>
                             </td>
                           </tr>
                         ))}

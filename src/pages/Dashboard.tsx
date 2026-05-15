@@ -39,6 +39,7 @@ export default function Dashboard() {
   const [realTrustScore, setRealTrustScore] = useState<number | null>(null);
   const [isGlowing, setIsGlowing] = useState(false);
   const [activityFeed, setActivityFeed] = useState<any[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   useEffect(() => {
     // Guest mode: show demo data, never fetch real DB data
     if (isGuest) {
@@ -122,6 +123,10 @@ export default function Dashboard() {
               .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activity_logs', filter: `user_id=eq.${user.id}` }, (payload: any) => {
                 if (payload.new) {
                    setActivityFeed(prev => [payload.new, ...prev].slice(0, 5));
+                   if (payload.new.type === 'admin_adjustment' || payload.new.type === 'admin_sync') {
+                     setToastMessage('Your Pramaaan Trust Score has been updated by the network coordinator.');
+                     setTimeout(() => setToastMessage(null), 6000);
+                   }
                 }
               })
               .subscribe();
@@ -170,8 +175,23 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12">
+    <div className="max-w-6xl mx-auto space-y-8 pb-12 relative">
       
+      {/* Real-time Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-8 right-8 z-50 animate-bounce">
+          <div className="brutal-card !bg-black !text-[#00E5FF] !border-[#00E5FF] shadow-[6px_6px_0px_#00E5FF] flex items-center gap-4 px-6 py-4 max-w-sm">
+            <div className="p-2 border-2 border-[#00E5FF] animate-pulse">
+              <Sparkles size={24} className="text-[#00E5FF]" />
+            </div>
+            <div>
+              <p className="font-display text-sm uppercase tracking-widest text-white">System Override</p>
+              <p className="text-xs font-bold mt-1 font-mono">{toastMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Phase 1: Claim Trust Passport Banner — hide for guests (show sign-up CTA instead) */}
       {!loading && !isGuest && kycStatus === 'not_started' && (
         <div className="brutal-card bg-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
@@ -247,14 +267,14 @@ export default function Dashboard() {
             <TrendingUp size={16} className="text-brutal-green" />
             <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest">Your Trust Score</h3>
           </div>
-          <div className={`relative flex items-center justify-center w-48 h-48 rounded-full border-8 transition-all duration-1000 ${isGlowing ? 'border-transparent shadow-[0_0_30px_#00FFCC,inset_0_0_30px_#9D00FF]' : 'border-[var(--border-color)]'}`}>
-            <div className={`absolute inset-0 rounded-full transition-opacity duration-1000 ${isGlowing ? 'opacity-100 bg-gradient-to-tr from-[#00FFCC]/20 to-[#9D00FF]/20' : 'opacity-0'}`} />
+          <div className={`relative flex items-center justify-center w-48 h-48 rounded-full border-8 transition-all duration-1000 ${isGlowing ? 'border-transparent shadow-[0_0_30px_#00E5FF,inset_0_0_30px_#00E5FF]' : 'border-[var(--border-color)]'}`}>
+            <div className={`absolute inset-0 rounded-full transition-opacity duration-1000 ${isGlowing ? 'opacity-100 bg-[#00E5FF]/20' : 'opacity-0'}`} />
             <div className={`font-display text-7xl leading-none z-10 transition-colors duration-1000 ${isGlowing ? 'text-white' : ''} drop-shadow-md`}>
               {loading ? <Loader2 className="animate-spin" /> : trustScore}
             </div>
           </div>
           <div className="progress-track w-full mt-4">
-            <div className={`progress-fill transition-all duration-1000 ${isGlowing ? 'bg-gradient-to-r from-[#00FFCC] to-[#9D00FF]' : ''}`} style={{ width: `${(trustScore / 1000) * 100}%` }} />
+            <div className={`progress-fill transition-all duration-1000 ${isGlowing ? 'bg-[#00E5FF]' : ''}`} style={{ width: `${(trustScore / 1000) * 100}%` }} />
           </div>
           <div className="flex flex-col gap-3 w-full">
             <span className="font-display text-sm text-brutal-green uppercase tracking-widest">
