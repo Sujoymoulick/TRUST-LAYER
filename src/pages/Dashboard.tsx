@@ -111,15 +111,15 @@ export default function Dashboard() {
             if (logs) setActivityFeed(logs);
 
             // Subscribe to real-time changes
-            const channel = supabase.channel('dashboard_updates')
-              .on('postgres_changes', { event: '*', schema: 'public', table: 'trust_scores', filter: `user_id=eq.${user.id}` }, payload => {
+            supabase.channel('dashboard_updates')
+              .on('postgres_changes', { event: '*', schema: 'public', table: 'trust_scores', filter: `user_id=eq.${user.id}` }, (payload: any) => {
                 if (payload.new && (payload.new as any).final_score !== undefined) {
                    setRealTrustScore((payload.new as any).final_score);
                    setIsGlowing(true);
                    setTimeout(() => setIsGlowing(false), 3000);
                 }
               })
-              .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activity_logs', filter: `user_id=eq.${user.id}` }, payload => {
+              .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activity_logs', filter: `user_id=eq.${user.id}` }, (payload: any) => {
                 if (payload.new) {
                    setActivityFeed(prev => [payload.new, ...prev].slice(0, 5));
                 }
