@@ -556,9 +556,22 @@ export default function Admin() {
                         <h4 className="font-black text-lg uppercase">{app.extracted_data?.fullName || app.profiles?.full_name || 'Unknown User'}</h4>
                         <p className="text-xs font-bold text-gray-500 uppercase">{app.profiles?.email}</p>
                       </div>
-                      <span className="brutal-badge !text-[10px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-yellow text-black">
-                        Pending Review
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {app.sumsub_applicant_id && (
+                          <a 
+                            href={`https://cockpit.sumsub.com/check-applicant/${app.sumsub_applicant_id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 border-2 border-black bg-brutal-blue text-white hover:bg-black transition-colors"
+                            title="Open in Sumsub Cockpit"
+                          >
+                            <ExternalLink size={14} />
+                          </a>
+                        )}
+                        <span className="brutal-badge !text-[10px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-yellow text-black">
+                          Pending Review
+                        </span>
+                      </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-xs">
