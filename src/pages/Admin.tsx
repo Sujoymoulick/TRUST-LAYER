@@ -78,7 +78,7 @@ interface Plan {
   features: string[];
 }
 
-type AdminTab = 'activity_stream' | 'users' | 'audit_logs' | 'subscriptions' | 'system_status';
+type AdminTab = 'activity_stream' | 'verifications' | 'users' | 'audit_logs' | 'subscriptions' | 'system_status';
 
 
 export default function Admin() {
@@ -87,6 +87,7 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState<AdminTab>('activity_stream');
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<any[]>([]);
+  const [kycApps, setKycApps] = useState<any[]>([]);
   const [globalStream, setGlobalStream] = useState<GlobalEvent[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -160,6 +161,14 @@ export default function Admin() {
           const usersData = await usersRes.json();
           if (usersData.success) {
             setUsers(usersData.data);
+          }
+
+          const kycRes = await fetch(`${VITE_API_BASE_URL}/admin/kyc-applications`, {
+            headers: { 'Authorization': `Bearer ${session?.access_token}` }
+          });
+          const kycData = await kycRes.json();
+          if (kycData.success) {
+            setKycApps(kycData.data);
           }
 
           const [trustRes, auditRes, plansRes, activityRes, riskRes] = await Promise.all([
@@ -376,6 +385,29 @@ export default function Admin() {
     }
   };
 
+  const handleKycDecision = async (id: string, decision: 'approve' | 'reject') => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`${VITE_API_BASE_URL}/admin/kyc-applications/${id}/decision`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ decision })
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert(result.message);
+        setKycApps(prev => prev.map(app => app.id === id ? { ...app, status: decision === 'approve' ? 'approved' : 'rejected' } : app));
+      } else {
+        alert(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // Realtime polling: refresh diagnostics every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -463,7 +495,7 @@ export default function Admin() {
       </div>
 
       <div className="flex border-b-4 border-black gap-2 overflow-x-auto">
-        {(['activity_stream', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
+        {(['activity_stream', 'verifications', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
 
           <button
             key={tab}
@@ -504,6 +536,73 @@ export default function Admin() {
                 {globalStream.length === 0 && (
                   <div className="text-center py-12 border-4 border-black border-dashed text-gray-400 font-display uppercase">
                     No activity recorded
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'verifications' && (
+            <div className="brutal-card">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="font-display text-xl uppercase">Manual Verification Queue</h3>
+                <ShieldCheck className="text-brutal-blue" size={20} />
+              </div>
+              <div className="space-y-6">
+                {kycApps.filter(app => app.status === 'pending').map(app => (
+                  <div key={app.id} className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] flex flex-col gap-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-black text-lg uppercase">{app.extracted_data?.fullName || app.profiles?.full_name || 'Unknown User'}</h4>
+                        <p className="text-xs font-bold text-gray-500 uppercase">{app.profiles?.email}</p>
+                      </div>
+                      <span className="brutal-badge !text-[10px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-yellow text-black">
+                        Pending Review
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4 text-xs">
+                      <div>
+                        <p className="font-black uppercase text-gray-400 mb-1">Date of Birth</p>
+                        <p className="font-bold">{app.extracted_data?.dob || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="font-black uppercase text-gray-400 mb-1">Country</p>
+                        <p className="font-bold">{app.extracted_data?.country || 'N/A'}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="font-black uppercase text-gray-400 mb-1">ID Documents</p>
+                        {app.extracted_data?.idDocs?.map((doc: any, i: number) => (
+                           <div key={i} className="flex gap-2 items-center">
+                             <span className="bg-gray-100 px-2 py-1 border border-black font-mono">{doc.idDocType || 'UNKNOWN_DOC'}</span>
+                           </div>
+                        )) || <span className="italic text-gray-400">No doc details extracted</span>}
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-4 mt-2">
+                      <button onClick={() => handleKycDecision(app.id, 'approve')} className="flex-1 py-2 bg-brutal-green border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000] hover:translate-y-[2px] hover:shadow-none transition-all">Approve</button>
+                      <button onClick={() => handleKycDecision(app.id, 'reject')} className="flex-1 py-2 bg-brutal-pink text-white border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000] hover:translate-y-[2px] hover:shadow-none transition-all">Reject</button>
+                    </div>
+                  </div>
+                ))}
+                {kycApps.filter(app => app.status === 'pending').length === 0 && (
+                  <div className="text-center py-12 border-4 border-black border-dashed text-gray-400 font-display uppercase">
+                    Queue is empty
+                  </div>
+                )}
+
+                {kycApps.filter(app => app.status !== 'pending').length > 0 && (
+                  <div className="mt-8">
+                    <h4 className="font-display text-sm uppercase mb-4 text-gray-400">Recently Reviewed</h4>
+                    <div className="space-y-2">
+                      {kycApps.filter(app => app.status !== 'pending').slice(0, 5).map(app => (
+                        <div key={app.id} className="flex items-center justify-between p-2 border-2 border-black bg-gray-50 text-xs font-bold uppercase">
+                          <span>{app.extracted_data?.fullName || app.profiles?.email}</span>
+                          <span className={app.status === 'approved' ? 'text-brutal-green' : 'text-brutal-pink'}>{app.status}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
