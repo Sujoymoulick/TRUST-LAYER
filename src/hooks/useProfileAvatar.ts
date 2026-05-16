@@ -82,7 +82,7 @@ export function useProfileAvatar(userId: string | null): AvatarState {
       const formData = new FormData();
       formData.append('avatar', file);
 
-      const response = await apiFetch('/api/v1/upload/avatar', {
+      const response = await apiFetch('/upload/avatar', {
         method: 'POST',
         body: formData,
       });
@@ -105,7 +105,7 @@ export function useProfileAvatar(userId: string | null): AvatarState {
     setError(null);
     setDeleting(true);
     try {
-      const response = await apiFetch('/api/v1/upload/avatar', {
+      const response = await apiFetch('/upload/avatar', {
         method: 'DELETE',
       });
 
