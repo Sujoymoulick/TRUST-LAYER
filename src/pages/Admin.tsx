@@ -501,22 +501,27 @@ export default function Admin() {
         ))}
       </div>
 
-      <div className="flex border-b-4 border-black gap-2 overflow-x-auto">
-        {(['activity_stream', 'verifications', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
-
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 font-display text-xs sm:text-sm uppercase transition-all whitespace-nowrap ${
-              activeTab === tab 
-                ? 'bg-black text-white' 
-                : 'bg-white text-black hover:bg-gray-100'
-            } border-x-2 border-t-2 border-black`}
-          >
-            {tab === 'audit_logs' ? 'Audit Logs' : tab === 'activity_stream' ? 'Activity Stream' : tab === 'system_status' ? 'System Status' : tab}
-
-          </button>
-        ))}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between border-b-4 border-black gap-4">
+        <div className="flex gap-2 overflow-x-auto w-full lg:w-auto">
+          {(['activity_stream', 'verifications', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-6 py-3 font-display text-xs sm:text-sm uppercase transition-all whitespace-nowrap ${
+                activeTab === tab 
+                  ? 'bg-black text-white' 
+                  : 'bg-white text-black hover:bg-gray-100'
+              } border-x-2 border-t-2 border-black mb-[-4px]`}
+            >
+              {tab === 'audit_logs' ? 'Audit Logs' : tab === 'activity_stream' ? 'Activity Stream' : tab === 'system_status' ? 'System Status' : tab}
+            </button>
+          ))}
+        </div>
+        <div className="hidden lg:flex mb-[-4px] px-6 py-3 bg-brutal-blue text-white border-2 border-black border-b-0 font-display text-xs uppercase tracking-widest items-center gap-3 shadow-[4px_0px_0px_#000]">
+          <Clock size={16} /> 
+          <span className="opacity-70">Production Time:</span>
+          <span className="font-black tabular-nums">{projectAge}</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
