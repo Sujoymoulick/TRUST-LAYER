@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, ShieldCheck, Lock, Wallet, BookOpen } from 'lucide-react';
+import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail } from '../lib/utils';
@@ -26,6 +26,7 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [profileName, setProfileName] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
   useSIWE();
 
@@ -42,7 +43,7 @@ export function DashboardLayout() {
 
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('role, plan')
+          .select('full_name, role, plan')
           .eq('id', user.id)
           .single();
         
@@ -67,6 +68,8 @@ export function DashboardLayout() {
         } else if (error) {
           console.error('Profile fetch error:', error);
         }
+        
+        if (profile?.full_name) setProfileName(profile.full_name);
         
         // If profile is missing (e.g. database trigger failed), fallback to free plan to avoid infinite loop
         const userPlan = profile?.plan || (isAdminEmail(user.email) ? 'pro' : 'free');
@@ -169,19 +172,28 @@ export function DashboardLayout() {
             </div>
             <div className="min-w-0 flex-1">
               <div style={{ fontWeight: 900, fontSize: '0.8rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
-                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
+                {profileName || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
               </div>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
                 {isAdminEmail(user?.email) ? 'ADMINISTRATOR' : `${plan || 'Free'} Plan`}
               </div>
             </div>
-            <button 
-              onClick={() => navigate('/settings')}
-              className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-yellow transition-colors"
-              title="Settings"
-            >
-              <Settings size={14} className="text-[var(--text-primary)]" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button 
+                onClick={() => navigate('/settings')}
+                className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-yellow transition-colors"
+                title="Settings"
+              >
+                <Settings size={14} className="text-[var(--text-primary)]" />
+              </button>
+              <button 
+                onClick={() => navigate('/logout')}
+                className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-pink hover:text-white transition-colors"
+                title="Logout"
+              >
+                <LogOut size={14} className="text-[var(--text-primary)]" />
+              </button>
+            </div>
           </div>
         )}
       </aside>
