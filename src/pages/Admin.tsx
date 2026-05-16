@@ -103,7 +103,6 @@ export default function Admin() {
   const [diagnostics, setDiagnostics] = useState<any>(null);
   const [diagLoading, setDiagLoading] = useState(false);
   const [diagError, setDiagError] = useState<string | null>(null);
-  const [health, setHealth] = useState<any>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
   const [projectAge, setProjectAge] = useState('');
 
@@ -234,7 +233,6 @@ export default function Admin() {
 
     fetchAdminData();
     fetchDiagnostics();
-    fetchHealth();
 
 
     return () => {
@@ -285,19 +283,6 @@ export default function Admin() {
     }
   };
 
-  const fetchHealth = async () => {
-    try {
-      // Health is at /api/health, not under /api/v1
-      const rootUrl = VITE_API_BASE_URL.replace('/api/v1', '');
-      const response = await fetch(`${rootUrl}/api/health`);
-      if (response.ok) {
-        const data = await response.json();
-        setHealth(data);
-      }
-    } catch (err) {
-      console.error('Health fetch error:', err);
-    }
-  };
 
   const openScoreModal = async (user: UserProfile) => {
     setSelectedUserForScore(user);
@@ -435,7 +420,6 @@ export default function Admin() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchDiagnostics();
-      fetchHealth();
     }, 30000);
     return () => clearInterval(interval);
   }, []);
