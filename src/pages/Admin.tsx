@@ -20,7 +20,8 @@ import {
   Database,
   RefreshCw,
   ExternalLink,
-  Fingerprint
+  Fingerprint,
+  Cloud
 } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
 import { VITE_API_BASE_URL } from '../lib/api';
@@ -926,6 +927,28 @@ export default function Admin() {
                           {diagnostics.mongodb?.status === 'connected'
                             ? `${diagnostics.mongodb.latency}ms`
                             : '—'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Cloudinary Health */}
+                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                      <div className="flex items-center gap-2 text-brutal-yellow" style={{ color: '#0078FF' }}>
+                        <Cloud size={18} />
+                        <h4 className="font-display text-sm uppercase">Cloudinary Storage</h4>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
+                          diagnostics.cloudinary?.status === 'connected' ? 'bg-brutal-green' : 'bg-brutal-pink'
+                        }`}>
+                          {diagnostics.cloudinary?.status ?? 'unknown'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold">
+                           {diagnostics.cloudinary?.status === 'connected' ? `${diagnostics.cloudinary.latency}ms` : '—'}
                         </span>
                       </div>
                     </div>
