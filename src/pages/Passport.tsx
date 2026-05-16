@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Loader2, RefreshCw, Edit3, Save, X,
-  ExternalLink, Shield, Globe, BookOpen,
+  Loader2, RefreshCw,
+  ExternalLink, Globe, BookOpen,
   MapPin, Fingerprint, Users, Database,
 } from 'lucide-react';
 import { apiFetch } from '../lib/api';
