@@ -6,7 +6,7 @@ import { DigiLockerVerify } from '../components/DigiLockerVerify';
 import SumsubWebSdk from '@sumsub/websdk-react';
 import { apiFetch } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-import { Link2 } from 'lucide-react';
+
 
 import linkedinLogo from '../assets/social/linkedin.png';
 import googleLogo from '../assets/social/google.png';
