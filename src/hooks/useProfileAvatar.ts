@@ -1,19 +1,18 @@
 /**
  * useProfileAvatar — manages upload, delete, and real-time sync
- * for the profile-images Supabase Storage bucket.
+ * for the profile images via Cloudinary.
  *
- * Storage path:  profile-images/{userId}/avatar.{ext}
- * DB column:     profiles.avatar_url
+ * DB column: profiles.avatar_url
  */
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { apiFetch } from '../lib/api';
 
-const BUCKET = 'profile-images';
-const MAX_BYTES = 10 * 1024 * 1024; // 10 MB (matches bucket limit)
+const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
 
 export interface AvatarState {
-  url: string | null;         // current public URL (storage or fallback)
+  url: string | null;         // current public URL
   uploading: boolean;
   deleting: boolean;
   error: string | null;
@@ -28,15 +27,6 @@ export function useProfileAvatar(userId: string | null): AvatarState {
   const [deleting,  setDeleting ] = useState(false);
   const [error,     setError    ] = useState<string | null>(null);
   const realtimeRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
-
-  // ── Resolve secure URL from a private storage path ────────────────────────
-  async function getSecureUrl(path: string): Promise<string> {
-    // Create a signed URL valid for 10 years
-    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-    if (error || !data) throw new Error('Failed to generate secure URL');
-    // Cache-bust so browser immediately reflects changes
-    return data.signedUrl + '&t=' + Date.now();
-  }
 
   // ── Load initial avatar_url from profiles table ───────────────────────
   const fetchAvatar = useCallback(async () => {
@@ -54,8 +44,6 @@ export function useProfileAvatar(userId: string | null): AvatarState {
     if (!userId) return;
     fetchAvatar();
 
-    // Use a unique channel name per hook instance to prevent
-    // "cannot add callbacks after subscribe" when multiple components use this hook.
     const channelName = `profile-avatar-${userId}-${Math.random().toString(36).substring(7)}`;
 
     const ch = supabase
@@ -71,7 +59,7 @@ export function useProfileAvatar(userId: string | null): AvatarState {
       .subscribe();
 
     realtimeRef.current = ch;
-    return () => { supabase.removeChannel(ch); };
+    return () => { if (ch) supabase.removeChannel(ch); };
   }, [userId, fetchAvatar]);
 
   // ── Upload ─────────────────────────────────────────────────────────────
@@ -91,38 +79,19 @@ export function useProfileAvatar(userId: string | null): AvatarState {
 
     setUploading(true);
     try {
-      // Build a stable path so each upload overwrites the previous
-      const ext  = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-      const path = `${userId}/avatar.${ext}`;
+      const formData = new FormData();
+      formData.append('avatar', file);
 
-      // Remove old file first (ignore errors — may not exist)
-      const { data: listData } = await supabase.storage.from(BUCKET).list(userId);
-      if (listData && listData.length > 0) {
-        const oldPaths = listData.map((f: { name: string }) => `${userId}/${f.name}`);
-        await supabase.storage.from(BUCKET).remove(oldPaths);
+      const response = await apiFetch('/api/v1/upload/avatar', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.success && response.url) {
+        setUrl(response.url);
+      } else {
+        throw new Error(response.error || 'Upload failed');
       }
-
-      // Upload new file
-      const { error: uploadErr } = await supabase.storage
-        .from(BUCKET)
-        .upload(path, file, { upsert: true, contentType: file.type });
-
-      if (uploadErr) throw uploadErr;
-
-      const secureUrl = await getSecureUrl(path);
-
-      // Update profiles table — real-time will propagate
-      const { error: dbErr } = await supabase
-        .from('profiles')
-        .update({ avatar_url: secureUrl })
-        .eq('id', userId);
-
-      if (dbErr) throw dbErr;
-
-      // Also update Supabase auth metadata so DashboardLayout picks it up
-      await supabase.auth.updateUser({ data: { avatar_url: secureUrl } });
-
-      setUrl(secureUrl);
     } catch (e: any) {
       setError(e.message || 'Upload failed');
     } finally {
@@ -136,31 +105,15 @@ export function useProfileAvatar(userId: string | null): AvatarState {
     setError(null);
     setDeleting(true);
     try {
-      // List all files in the user's folder and delete them
-      const { data: listData, error: listErr } = await supabase.storage
-        .from(BUCKET)
-        .list(userId);
+      const response = await apiFetch('/api/v1/upload/avatar', {
+        method: 'DELETE',
+      });
 
-      if (listErr) throw listErr;
-
-      if (listData && listData.length > 0) {
-        const paths = listData.map((f: { name: string }) => `${userId}/${f.name}`);
-        const { error: removeErr } = await supabase.storage.from(BUCKET).remove(paths);
-        if (removeErr) throw removeErr;
+      if (response.success) {
+        setUrl(null);
+      } else {
+        throw new Error(response.error || 'Delete failed');
       }
-
-      // Clear avatar_url in profiles — real-time will propagate
-      const { error: dbErr } = await supabase
-        .from('profiles')
-        .update({ avatar_url: null })
-        .eq('id', userId);
-
-      if (dbErr) throw dbErr;
-
-      // Clear from auth metadata too
-      await supabase.auth.updateUser({ data: { avatar_url: null } });
-
-      setUrl(null);
     } catch (e: any) {
       setError(e.message || 'Delete failed');
     } finally {
