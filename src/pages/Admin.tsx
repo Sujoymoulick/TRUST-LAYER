@@ -397,7 +397,7 @@ export default function Admin() {
 
   // Project Age Counter
   useEffect(() => {
-    const startDate = new Date('2026-04-29T13:19:38+05:30');
+    const startDate = new Date('2026-04-02T00:00:00+05:30');
     
     const updateAge = () => {
       const now = new Date();
@@ -1002,7 +1002,7 @@ export default function Admin() {
                           <p className="text-[10px] font-bold">{new Date(diagnostics.timestamp).toLocaleTimeString()}</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-gray-500 uppercase">Project Age</p>
+                          <p className="text-[8px] font-black text-gray-500 uppercase">Production Time</p>
                           <p className="text-[10px] font-bold tabular-nums">{projectAge}</p>
                         </div>
                       </div>
