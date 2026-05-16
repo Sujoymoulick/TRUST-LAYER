@@ -6,14 +6,27 @@ import { DigiLockerVerify } from '../components/DigiLockerVerify';
 import SumsubWebSdk from '@sumsub/websdk-react';
 import { apiFetch } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
+import { Github } from 'lucide-react';
+
+import linkedinLogo from '../assets/social/linkedin.png';
+import googleLogo from '../assets/social/google.png';
+import stripeLogo from '../assets/social/stripe.png';
+import paypalLogo from '../assets/social/paypal.png';
+import digilockerLogo from '../assets/social/digilocker.png';
+import gmailLogo from '../assets/social/gmail.png';
+import facebookLogo from '../assets/social/facebook.png';
+import instagramLogo from '../assets/social/instagram.png';
 
 const PLATFORMS = [
-  { id: 'github', name: 'GitHub', icon: '🐙', category: 'Professional' },
-  { id: 'linkedin_oidc', name: 'LinkedIn', icon: '🔗', category: 'Professional' },
-  { id: 'google', name: 'Google', icon: '🔍', category: 'Professional' },
-  { id: 'stripe', name: 'Stripe', icon: '💳', category: 'Financial' },
-  { id: 'paypal', name: 'PayPal', icon: '💰', category: 'Financial' },
-  { id: 'digilocker', name: 'DigiLocker', icon: '🇮🇳', category: 'Identity' },
+  { id: 'github', name: 'GitHub', icon: <Github size={32} />, category: 'Professional' },
+  { id: 'linkedin_oidc', name: 'LinkedIn', icon: <img src={linkedinLogo} className="w-10 h-10 object-contain" alt="LinkedIn" />, category: 'Professional' },
+  { id: 'google', name: 'Google', icon: <img src={googleLogo} className="w-10 h-10 object-contain" alt="Google" />, category: 'Professional' },
+  { id: 'gmail', name: 'Gmail', icon: <img src={gmailLogo} className="w-10 h-10 object-contain" alt="Gmail" />, category: 'Professional' },
+  { id: 'stripe', name: 'Stripe', icon: <img src={stripeLogo} className="w-10 h-10 object-contain" alt="Stripe" />, category: 'Financial' },
+  { id: 'paypal', name: 'PayPal', icon: <img src={paypalLogo} className="w-10 h-10 object-contain" alt="PayPal" />, category: 'Financial' },
+  { id: 'digilocker', name: 'DigiLocker', icon: <img src={digilockerLogo} className="w-10 h-10 object-contain" alt="DigiLocker" />, category: 'Identity' },
+  { id: 'facebook', name: 'Facebook', icon: <img src={facebookLogo} className="w-10 h-10 object-contain" alt="Facebook" />, category: 'Social' },
+  { id: 'instagram', name: 'Instagram', icon: <img src={instagramLogo} className="w-10 h-10 object-contain" alt="Instagram" />, category: 'Social' },
 ];
 
 export default function Identity() {
@@ -327,7 +340,7 @@ export default function Identity() {
         The more accounts you link, the higher your Trust Score becomes.
       </p>
 
-      {['Professional', 'Financial', 'Identity'].map(category => (
+      {['Professional', 'Financial', 'Identity', 'Social'].map(category => (
         <div key={category} className="mb-12">
           <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">{category} Signals</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -362,8 +375,8 @@ export default function Identity() {
       <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">Primary Signals</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <div className={`brutal-card flex flex-col items-center gap-4 text-center ${isGuest ? 'bg-brutal-yellow' : 'bg-brutal-green'}`}>
-          <div className="w-16 h-16 border-4 border-black flex items-center justify-center text-3xl bg-white shadow-[4px_4px_0px_#000]">
-            📧
+          <div className="w-16 h-16 border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_#000]">
+            <img src={gmailLogo} className="w-10 h-10 object-contain" alt="Email" />
           </div>
           <div>
             <h3 className="font-display text-lg uppercase">Email</h3>

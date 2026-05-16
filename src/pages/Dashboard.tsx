@@ -6,6 +6,12 @@ import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
+import { Github, Linkedin, Mail, Twitter, Facebook, Instagram } from 'lucide-react';
+
+import linkedinLogo from '../assets/social/linkedin.png';
+import googleLogo from '../assets/social/google.png';
+import facebookLogo from '../assets/social/facebook.png';
+import instagramLogo from '../assets/social/instagram.png';
 
 interface TrustRecord {
   id: string;
@@ -328,11 +334,12 @@ export default function Dashboard() {
           )}
           <div className="grid grid-cols-2 gap-4">
             {[
-              { id: 'github', name: 'GitHub' },
-              { id: 'linkedin_oidc', name: 'LinkedIn' },
-              { id: 'google', name: 'Google' },
-              { id: 'twitter', name: 'Twitter' },
-              { id: 'facebook', name: 'Facebook' },
+              { id: 'github', name: 'GitHub', icon: <Github size={16} /> },
+              { id: 'linkedin_oidc', name: 'LinkedIn', icon: <img src={linkedinLogo} className="w-5 h-5 object-contain" alt="LinkedIn" /> },
+              { id: 'google', name: 'Google', icon: <img src={googleLogo} className="w-5 h-5 object-contain" alt="Google" /> },
+              { id: 'twitter', name: 'Twitter', icon: <Twitter size={16} /> },
+              { id: 'facebook', name: 'Facebook', icon: <img src={facebookLogo} className="w-5 h-5 object-contain" alt="Facebook" /> },
+              { id: 'instagram', name: 'Instagram', icon: <img src={instagramLogo} className="w-5 h-5 object-contain" alt="Instagram" /> },
             ].map(a => {
               const isConnected = !isGuest && connectedProviders.includes(a.id);
               return (
@@ -347,7 +354,7 @@ export default function Dashboard() {
                   }`}
                 >
                   <div className={`w-8 h-8 border-2 border-[var(--border-color)] rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-black text-white' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
-                     {a.name[0]}
+                     {a.icon}
                   </div>
                   {a.name}
                   <span className={`text-[8px] ${isConnected ? 'opacity-100 font-black' : 'opacity-60'}`}>
