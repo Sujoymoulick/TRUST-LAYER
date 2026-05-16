@@ -354,7 +354,7 @@ export default function Dashboard() {
                       : 'bg-[var(--bg-primary)] hover:bg-brutal-yellow hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_var(--border-color)] active:translate-y-0 active:shadow-none'
                   }`}
                 >
-                  <div className={`w-8 h-8 border-2 border-[var(--border-color)] rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-black text-white' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
+                  <div className={`w-8 h-8 border-2 border-[var(--border-color)] rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-white text-black' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
                      {a.icon}
                   </div>
                   {a.name}
