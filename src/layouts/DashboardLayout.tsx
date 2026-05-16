@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen } from 'lucide-react';
+import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, ShieldCheck, Lock, Wallet, BookOpen } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail } from '../lib/utils';
