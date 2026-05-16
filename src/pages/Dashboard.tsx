@@ -6,7 +6,7 @@ import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
-import { Github, Twitter } from 'lucide-react';
+import { Link2 } from 'lucide-react';
 
 import linkedinLogo from '../assets/social/linkedin.png';
 import googleLogo from '../assets/social/google.png';
@@ -334,10 +334,10 @@ export default function Dashboard() {
           )}
           <div className="grid grid-cols-2 gap-4">
             {[
-              { id: 'github', name: 'GitHub', icon: <Github size={16} /> },
+              { id: 'github', name: 'GitHub', icon: <Link2 size={16} /> },
               { id: 'linkedin_oidc', name: 'LinkedIn', icon: <img src={linkedinLogo} className="w-5 h-5 object-contain" alt="LinkedIn" /> },
               { id: 'google', name: 'Google', icon: <img src={googleLogo} className="w-5 h-5 object-contain" alt="Google" /> },
-              { id: 'twitter', name: 'Twitter', icon: <Twitter size={16} /> },
+              { id: 'twitter', name: 'Twitter', icon: <Link2 size={16} /> },
               { id: 'facebook', name: 'Facebook', icon: <img src={facebookLogo} className="w-5 h-5 object-contain" alt="Facebook" /> },
               { id: 'instagram', name: 'Instagram', icon: <img src={instagramLogo} className="w-5 h-5 object-contain" alt="Instagram" /> },
             ].map(a => {

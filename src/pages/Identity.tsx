@@ -6,7 +6,7 @@ import { DigiLockerVerify } from '../components/DigiLockerVerify';
 import SumsubWebSdk from '@sumsub/websdk-react';
 import { apiFetch } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-import { Github } from 'lucide-react';
+import { Link2 } from 'lucide-react';
 
 import linkedinLogo from '../assets/social/linkedin.png';
 import googleLogo from '../assets/social/google.png';
@@ -18,7 +18,7 @@ import facebookLogo from '../assets/social/facebook.png';
 import instagramLogo from '../assets/social/instagram.png';
 
 const PLATFORMS = [
-  { id: 'github', name: 'GitHub', icon: <Github size={32} />, category: 'Professional' },
+  { id: 'github', name: 'GitHub', icon: <Link2 size={32} />, category: 'Professional' },
   { id: 'linkedin_oidc', name: 'LinkedIn', icon: <img src={linkedinLogo} className="w-10 h-10 object-contain" alt="LinkedIn" />, category: 'Professional' },
   { id: 'google', name: 'Google', icon: <img src={googleLogo} className="w-10 h-10 object-contain" alt="Google" />, category: 'Professional' },
   { id: 'gmail', name: 'Gmail', icon: <img src={gmailLogo} className="w-10 h-10 object-contain" alt="Gmail" />, category: 'Professional' },
