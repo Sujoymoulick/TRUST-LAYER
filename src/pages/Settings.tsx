@@ -155,11 +155,17 @@ export default function Settings() {
               <div>
                 <label className="block font-black text-xs uppercase mb-2">Email Address</label>
                 <input 
-                  className="brutal-input" 
+                  className={`brutal-input ${user?.app_metadata?.provider !== 'email' ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}`} 
                   value={profile.email} 
-                  onChange={e => setProfile({...profile, email: e.target.value})}
+                  onChange={e => user?.app_metadata?.provider === 'email' && setProfile({...profile, email: e.target.value})}
                   type="email"
+                  readOnly={user?.app_metadata?.provider !== 'email'}
                 />
+                {user?.app_metadata?.provider !== 'email' && (
+                  <p className="text-[9px] font-bold text-gray-400 mt-1 uppercase tracking-tighter">
+                    Email managed by {user?.app_metadata?.provider}
+                  </p>
+                )}
               </div>
               <div>
                 <label className="block font-black text-xs uppercase mb-2">Phone Number</label>

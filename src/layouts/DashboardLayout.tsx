@@ -19,7 +19,6 @@ const NAV_ITEMS = [
   { to: '/analytics', icon: BarChart2,        label: 'Analytics', guestAllowed: true  },
   { to: '/api',       icon: Code,             label: 'API',       guestAllowed: false },
   { to: '/pricing',   icon: DollarSign,       label: 'Pricing',   guestAllowed: true  },
-  { to: '/settings',  icon: Settings,         label: 'Settings',  guestAllowed: true  },
 ];
 
 export function DashboardLayout() {
@@ -177,11 +176,11 @@ export function DashboardLayout() {
               </div>
             </div>
             <button 
-              onClick={() => navigate('/logout')}
-              className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-pink hover:text-white transition-colors"
-              title="Logout"
+              onClick={() => navigate('/settings')}
+              className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-yellow transition-colors"
+              title="Settings"
             >
-              <LogOut size={14} className="text-[var(--text-primary)]" />
+              <Settings size={14} className="text-[var(--text-primary)]" />
             </button>
           </div>
         )}
