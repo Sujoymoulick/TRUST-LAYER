@@ -105,6 +105,7 @@ export default function Admin() {
   const [diagError, setDiagError] = useState<string | null>(null);
   const [health, setHealth] = useState<any>(null);
   const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
+  const [projectAge, setProjectAge] = useState('');
 
   // God Mode Modal State
   const [selectedUserForScore, setSelectedUserForScore] = useState<UserProfile | null>(null);
@@ -408,6 +409,27 @@ export default function Admin() {
       console.error(err);
     }
   };
+
+  // Project Age Counter
+  useEffect(() => {
+    const startDate = new Date('2026-04-29T13:19:38+05:30');
+    
+    const updateAge = () => {
+      const now = new Date();
+      const diff = now.getTime() - startDate.getTime();
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      
+      setProjectAge(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    };
+    
+    updateAge();
+    const interval = setInterval(updateAge, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Realtime polling: refresh diagnostics every 30 seconds
   useEffect(() => {
@@ -996,8 +1018,8 @@ export default function Admin() {
                           <p className="text-[10px] font-bold">{new Date(diagnostics.timestamp).toLocaleTimeString()}</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-gray-500 uppercase">Uptime</p>
-                          <p className="text-[10px] font-bold">{health?.status === 'up' ? 'Online' : 'Recovering'}</p>
+                          <p className="text-[8px] font-black text-gray-500 uppercase">Project Age</p>
+                          <p className="text-[10px] font-bold tabular-nums">{projectAge}</p>
                         </div>
                       </div>
                     </div>
