@@ -16,9 +16,11 @@ import digilockerLogo from '../assets/social/digilocker.png';
 import gmailLogo from '../assets/social/gmail.png';
 import facebookLogo from '../assets/social/facebook.png';
 import instagramLogo from '../assets/social/instagram.png';
+import githubLogo from '../assets/social/github.png';
+import passportLogo from '../assets/social/passport.png';
 
 const PLATFORMS = [
-  { id: 'github', name: 'GitHub', icon: <Link2 size={32} />, category: 'Professional' },
+  { id: 'github', name: 'GitHub', icon: <img src={githubLogo} className="w-10 h-10 object-contain" alt="GitHub" />, category: 'Professional' },
   { id: 'linkedin_oidc', name: 'LinkedIn', icon: <img src={linkedinLogo} className="w-10 h-10 object-contain" alt="LinkedIn" />, category: 'Professional' },
   { id: 'google', name: 'Google', icon: <img src={googleLogo} className="w-10 h-10 object-contain" alt="Google" />, category: 'Professional' },
   { id: 'gmail', name: 'Gmail', icon: <img src={gmailLogo} className="w-10 h-10 object-contain" alt="Gmail" />, category: 'Professional' },
@@ -218,12 +220,12 @@ export default function Identity() {
       <div className="mb-12 brutal-card bg-white p-6 shadow-[8px_8px_0px_#000]">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6">
-            <div className={`w-16 h-16 border-4 border-black flex items-center justify-center text-3xl ${
+            <div className={`w-16 h-16 border-4 border-black flex items-center justify-center p-3 ${
               kycStatus === 'verified' ? 'bg-brutal-green' : 
               kycStatus === 'pending' ? 'bg-brutal-yellow' : 
               kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-gray-100'
             }`}>
-              {kycStatus === 'verified' ? '✅' : '🛂'}
+              {kycStatus === 'verified' ? '✅' : <img src={passportLogo} className="w-full h-full object-contain" alt="KYC" />}
             </div>
             <div>
               <h3 className="font-display text-xl uppercase">Identity Verification (KYC)</h3>

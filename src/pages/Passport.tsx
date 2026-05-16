@@ -9,15 +9,22 @@ import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
 import { useProfileAvatar } from '../hooks/useProfileAvatar';
 
+import githubLogo from '../assets/social/github.png';
+import linkedinLogo from '../assets/social/linkedin.png';
+import googleLogo from '../assets/social/google.png';
+import facebookLogo from '../assets/social/facebook.png';
+import digilockerLogo from '../assets/social/digilocker.png';
+import gmailLogo from '../assets/social/gmail.png';
+import passportLogo from '../assets/social/passport.png';
+
 /* ─── Provider metadata ──────────────────────────────────────────── */
-const PROVIDER_META: Record<string, { emoji: string; label: string }> = {
-  github:        { emoji: '🐙', label: 'GitHub'     },
-  linkedin_oidc: { emoji: '🔗', label: 'LinkedIn'   },
-  google:        { emoji: '🔍', label: 'Google'     },
-  twitter:       { emoji: '🐦', label: 'Twitter'    },
-  facebook:      { emoji: 'Ⓕ',  label: 'Facebook'   },
-  digilocker:    { emoji: '🇮🇳', label: 'DigiLocker' },
-  email:         { emoji: '📧', label: 'Email'      },
+const PROVIDER_META: Record<string, { logo: string; label: string }> = {
+  github:        { logo: githubLogo,    label: 'GitHub'     },
+  linkedin_oidc: { logo: linkedinLogo,  label: 'LinkedIn'   },
+  google:        { logo: googleLogo,    label: 'Google'     },
+  facebook:      { logo: facebookLogo,  label: 'Facebook'   },
+  digilocker:    { logo: digilockerLogo, label: 'DigiLocker' },
+  email:         { logo: gmailLogo,     label: 'Email'      },
 };
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
@@ -128,7 +135,9 @@ export default function Passport() {
   /* ── edge states ── */
   if (isGuest) return (
     <div className="max-w-md mx-auto pt-20 text-center space-y-6">
-      <div className="text-7xl">🛂</div>
+      <div className="w-24 h-24 border-4 border-black bg-white mx-auto flex items-center justify-center p-4 shadow-[8px_8px_0_#000]">
+        <img src={passportLogo} alt="Passport" className="w-full h-full object-contain" />
+      </div>
       <h2 className="font-display text-4xl uppercase">Trust Passport</h2>
       <p className="text-sm font-bold uppercase text-gray-500">
         Sign in to access your verified identity passport.
@@ -143,7 +152,9 @@ export default function Passport() {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[500px] gap-5">
       <div className="relative">
-        <div className="w-20 h-20 border-4 border-black bg-brutal-yellow flex items-center justify-center text-4xl">🛂</div>
+        <div className="w-20 h-20 border-4 border-black bg-white flex items-center justify-center p-4">
+          <img src={passportLogo} alt="Passport" className="w-full h-full object-contain" />
+        </div>
         <Loader2 className="absolute -top-2 -right-2 animate-spin size-6 text-black" />
       </div>
       <p className="font-display text-xs uppercase tracking-[0.3em] animate-pulse">Assembling Your Passport…</p>
@@ -212,8 +223,8 @@ export default function Passport() {
         {/* ── 1 · HEADER STRIPE ── */}
         <div className="bg-black text-brutal-yellow px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <Shield size={22} className="text-brutal-yellow" />
-            <span className="font-display text-base uppercase tracking-[0.2em]">🛂 Pramaaan Trust Passport</span>
+            <img src={passportLogo} className="w-8 h-8 object-contain" alt="Pramaaan" />
+            <span className="font-display text-base uppercase tracking-[0.2em]">Pramaaan Trust Passport</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs text-white/40">{passport?.passportId}</span>
@@ -355,7 +366,7 @@ export default function Passport() {
                   <div key={i}
                     className="border-2 border-black p-3 bg-white shadow-[4px_4px_0_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all cursor-default">
                     <div className="flex items-start justify-between mb-2">
-                      <span className="text-2xl leading-none">{m.emoji}</span>
+                      <img src={m.logo} className="w-8 h-8 object-contain" alt={m.label} />
                       <span className="bg-brutal-green border border-black text-[8px] font-black uppercase px-1.5 py-0.5">✓ Linked</span>
                     </div>
                     <div className="font-black text-xs uppercase mb-0.5">{m.label}</div>
