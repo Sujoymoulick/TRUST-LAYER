@@ -28,6 +28,7 @@ export function DashboardLayout() {
   const [user, setUser] = useState<any>(null);
   const [profileName, setProfileName] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   useSIWE();
 
   // Real-time avatar from Supabase Storage
@@ -178,21 +179,31 @@ export function DashboardLayout() {
                 {isAdminEmail(user?.email) ? 'ADMINISTRATOR' : `${plan || 'Free'} Plan`}
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="relative">
               <button 
-                onClick={() => navigate('/settings')}
-                className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-yellow transition-colors"
-                title="Settings"
+                onClick={() => setMenuOpen(!menuOpen)}
+                className={`p-1.5 border-2 border-[var(--border-color)] transition-colors ${menuOpen ? 'bg-brutal-yellow' : 'hover:bg-brutal-yellow'}`}
+                title="Account Menu"
               >
                 <Settings size={14} className="text-[var(--text-primary)]" />
               </button>
-              <button 
-                onClick={() => navigate('/logout')}
-                className="p-1.5 border-2 border-[var(--border-color)] hover:bg-brutal-pink hover:text-white transition-colors"
-                title="Logout"
-              >
-                <LogOut size={14} className="text-[var(--text-primary)]" />
-              </button>
+              
+              {menuOpen && (
+                <div className="absolute bottom-full right-0 mb-2 w-32 bg-[var(--bg-primary)] border-2 border-black shadow-[4px_4px_0px_#000] z-50 overflow-hidden">
+                  <button 
+                    onClick={() => { navigate('/settings'); setMenuOpen(false); }}
+                    className="w-full px-3 py-2 text-left text-[10px] font-black uppercase hover:bg-brutal-yellow border-b-2 border-black flex items-center gap-2"
+                  >
+                    <Settings size={12} /> Settings
+                  </button>
+                  <button 
+                    onClick={() => { navigate('/logout'); setMenuOpen(false); }}
+                    className="w-full px-3 py-2 text-left text-[10px] font-black uppercase hover:bg-brutal-pink hover:text-white flex items-center gap-2"
+                  >
+                    <LogOut size={12} /> Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
