@@ -172,8 +172,8 @@ export function DashboardLayout() {
               <div style={{ fontWeight: 900, fontSize: '0.8rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
                 {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'capitalize' }}>
-                {plan || 'Free'} Plan
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                {isAdminEmail(user?.email) ? 'ADMINISTRATOR' : `${plan || 'Free'} Plan`}
               </div>
             </div>
             <button 
