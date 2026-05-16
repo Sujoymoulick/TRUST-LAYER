@@ -6,7 +6,7 @@ import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail } from '../lib/utils';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
-import { Github, Linkedin, Mail, Twitter, Facebook, Instagram } from 'lucide-react';
+import { Github, Twitter } from 'lucide-react';
 
 import linkedinLogo from '../assets/social/linkedin.png';
 import googleLogo from '../assets/social/google.png';
