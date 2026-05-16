@@ -84,12 +84,7 @@ export default function Passport() {
   const userId = passport?.dataSources?.supabaseUserId ?? null;
   const { url: liveAvatarUrl } = useProfileAvatar(userId);
 
-  const [editing,   setEditing  ] = useState(false);
-  const [editName,  setEditName ] = useState('');
-  const [editDob,   setEditDob  ] = useState('');
-  const [editPhone, setEditPhone] = useState('');
-  const [saving,    setSaving   ] = useState(false);
-  const [saveMsg,   setSaveMsg  ] = useState('');
+
 
   /* ── data loader ── */
   const load = useCallback(async (refresh = false) => {
@@ -98,9 +93,6 @@ export default function Passport() {
     try {
       const d = await apiFetch('/passport');
       setPassport(d);
-      setEditName(d.profile?.name  || '');
-      setEditDob(d.identity?.dob   || '');
-      setEditPhone(d.profile?.phone || '');
     } catch (e: any) {
       setError(e.message || 'Failed to load passport');
     } finally {
@@ -114,23 +106,7 @@ export default function Passport() {
     load();
   }, [isGuest, load]);
 
-  /* ── save handler ── */
-  const save = async () => {
-    setSaving(true); setSaveMsg('');
-    try {
-      await apiFetch('/passport/profile', {
-        method: 'PATCH',
-        body: JSON.stringify({ full_name: editName, date_of_birth: editDob, phone: editPhone }),
-      });
-      setSaveMsg('✓ Profile saved');
-      setEditing(false);
-      load(true);
-    } catch (e: any) {
-      setSaveMsg(`✗ ${e.message}`);
-    } finally {
-      setSaving(false);
-    }
-  };
+
 
   /* ── edge states ── */
   if (isGuest) return (
@@ -185,11 +161,6 @@ export default function Passport() {
           <BookOpen size={30} /> Trust Passport
         </h2>
         <div className="flex items-center gap-2 flex-wrap">
-          {saveMsg && (
-            <span className={`px-3 py-1 border-2 border-black font-black text-[10px] uppercase ${saveMsg.startsWith('✓') ? 'bg-brutal-green' : 'bg-brutal-pink'}`}>
-              {saveMsg}
-            </span>
-          )}
           <button
             onClick={() => load(true)} disabled={refreshing}
             className="brutal-btn bg-white size-10 p-0 flex items-center justify-center min-h-0"
@@ -197,23 +168,7 @@ export default function Passport() {
           >
             <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
           </button>
-          {!editing ? (
-            <button onClick={() => setEditing(true)}
-              className="brutal-btn bg-brutal-yellow px-5 py-2 text-xs font-black uppercase flex items-center gap-2">
-              <Edit3 size={13} /> Edit Profile
-            </button>
-          ) : (
-            <>
-              <button onClick={save} disabled={saving}
-                className="brutal-btn bg-brutal-green px-5 py-2 text-xs font-black uppercase flex items-center gap-2">
-                {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />} Save
-              </button>
-              <button onClick={() => { setEditing(false); setSaveMsg(''); }}
-                className="brutal-btn bg-white size-10 p-0 flex items-center justify-center min-h-0">
-                <X size={14} />
-              </button>
-            </>
-          )}
+
         </div>
       </div>
 
@@ -254,27 +209,6 @@ export default function Passport() {
 
           {/* Name + identifiers */}
           <div className="flex-1 p-6 space-y-5">
-            {editing ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="block font-black text-[10px] uppercase text-gray-400 mb-1">Full Name</label>
-                  <input className="brutal-input w-full text-xl font-black uppercase" value={editName}
-                    onChange={e => setEditName(e.target.value)} placeholder="Your legal name" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-black text-[10px] uppercase text-gray-400 mb-1">Date of Birth</label>
-                    <input type="date" className="brutal-input w-full" value={editDob}
-                      onChange={e => setEditDob(e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="block font-black text-[10px] uppercase text-gray-400 mb-1">Phone</label>
-                    <input className="brutal-input w-full" value={editPhone}
-                      onChange={e => setEditPhone(e.target.value)} placeholder="+91 00000 00000" />
-                  </div>
-                </div>
-              </div>
-            ) : (
               <>
                 <div>
                   <div className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Full Name</div>
@@ -290,7 +224,6 @@ export default function Passport() {
                   <Cell label="Valid Until" value={fmt(passport?.expiresAt)} />
                 </div>
               </>
-            )}
           </div>
 
           {/* Trust score */}
