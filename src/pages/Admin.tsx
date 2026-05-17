@@ -517,11 +517,6 @@ export default function Admin() {
             </button>
           ))}
         </div>
-        <div className="hidden lg:flex mb-[-4px] px-6 py-3 bg-brutal-blue text-white border-2 border-black border-b-0 font-display text-xs uppercase tracking-widest items-center gap-3 shadow-[4px_0px_0px_#000]">
-          <Clock size={16} /> 
-          <span className="opacity-70">Production Time:</span>
-          <span className="font-black tabular-nums">{projectAge}</span>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -664,8 +659,8 @@ export default function Admin() {
                         {users.filter(u => u.role === 'admin').map((u) => (
                           <tr key={u.id} className="hover:bg-gray-50">
                             <td className="flex items-center gap-2">
-                              <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden">
-                                <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" />
+                              <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden flex-shrink-0">
+                                <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" className="w-full h-full object-cover" />
                               </div>
                               <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
                             </td>
@@ -708,8 +703,8 @@ export default function Admin() {
                         {users.filter(u => u.role === 'user').map((u) => (
                           <tr key={u.id} className="hover:bg-gray-50">
                             <td className="flex items-center gap-2">
-                              <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden">
-                                <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" />
+                              <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden flex-shrink-0">
+                                <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" className="w-full h-full object-cover" />
                               </div>
                               <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
                             </td>
@@ -1048,6 +1043,18 @@ export default function Admin() {
               <button className="brutal-btn bg-white w-full py-3 text-xs flex items-center justify-center gap-2">
                 <Shield size={16} /> Protocol Refresh
               </button>
+            </div>
+          </div>
+
+          <div className="brutal-card !bg-brutal-blue !text-white shadow-[4px_4px_0px_#000] p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Clock size={20} className="shrink-0" />
+              <div className="font-display text-xs uppercase tracking-widest leading-tight">
+                Production<br />Time:
+              </div>
+            </div>
+            <div className="font-display text-sm font-black uppercase tracking-widest tabular-nums text-right leading-tight">
+              {projectAge}
             </div>
           </div>
         </div>

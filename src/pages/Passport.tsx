@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Loader2, RefreshCw,
-  ExternalLink, Globe, BookOpen,
+  Globe, BookOpen,
   MapPin, Fingerprint, Users, Database,
 } from 'lucide-react';
 import { apiFetch } from '../lib/api';
@@ -291,6 +291,15 @@ export default function Passport() {
 
         {/* ── 4 · CONNECTED APPS ── */}
         <Section title={`Connected Apps & Identities — ${apps.length} linked`} icon={Database}>
+          <div className="flex justify-between items-center mb-5 pb-3 border-b-2 border-black border-dashed">
+            <span className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Reputation Integrations</span>
+            <button 
+              onClick={() => navigate('/connected-apps')}
+              className="flex items-center gap-1.5 bg-brutal-yellow text-black border-2 border-black px-3.5 py-1.5 font-display text-[9px] uppercase tracking-wider font-black shadow-[3px_3px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all active:translate-y-[2px]"
+            >
+              <Database size={11} className="shrink-0" /> Check Authentication →
+            </button>
+          </div>
           {apps.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {apps.map((app: any, i: number) => {
@@ -315,12 +324,6 @@ export default function Passport() {
                       }`}>
                         {app.source === 'supabase' ? 'OAuth' : 'Neo4j'}
                       </span>
-                      {app.profileUrl && (
-                        <a href={app.profileUrl} target="_blank" rel="noopener noreferrer"
-                          className="text-gray-300 hover:text-black transition-colors">
-                          <ExternalLink size={11} />
-                        </a>
-                      )}
                     </div>
                   </div>
                 );

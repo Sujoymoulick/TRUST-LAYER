@@ -9,6 +9,7 @@ import Pricing from './pages/Pricing';
 import Dashboard from './pages/Dashboard';
 import Identity from './pages/Identity';
 import Passport from './pages/Passport';
+import ConnectedApps from './pages/ConnectedApps';
 import RiskAnalysis from './pages/RiskAnalysis';
 import ApiDashboard from './pages/ApiDashboard';
 import Admin from './pages/Admin';
@@ -18,6 +19,7 @@ import WalletDashboard from './pages/WalletDashboard';
 import ConsentVault from './pages/ConsentVault';
 import PublicProfile from './pages/PublicProfile';
 import Logout from './pages/Logout';
+import Feedback from './pages/Feedback';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
@@ -39,11 +41,13 @@ function App() {
                 <Route path="/wallet" element={<WalletDashboard />} />
                 <Route path="/identity" element={<Identity />} />
                 <Route path="/passport" element={<Passport />} />
+                <Route path="/connected-apps" element={<ConnectedApps />} />
                 <Route path="/analytics" element={<RiskAnalysis />} />
                 <Route path="/api" element={<ApiDashboard />} />
                 <Route path="/vault" element={<ConsentVault />} />
                 <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/feedback" element={<Feedback />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />
