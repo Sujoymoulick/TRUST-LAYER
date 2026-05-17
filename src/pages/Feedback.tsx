@@ -11,7 +11,9 @@ import {
   X,
   Loader2,
   Lock,
-  Activity
+  Activity,
+  Trash2,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { isAdminEmail } from '../lib/utils';
@@ -34,6 +36,7 @@ interface FeedbackPost {
   content: string;
   screenshotUrl: string | null;
   category: 'thought' | 'issue' | 'lag' | 'delay';
+  status: 'pending' | 'resolved';
   replies: Reply[];
   createdAt: string;
   updatedAt: string;
@@ -45,6 +48,7 @@ export default function Feedback() {
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   
   // Form fields
   const [content, setContent] = useState('');
@@ -66,10 +70,33 @@ export default function Feedback() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setIsAdmin(isAdminEmail(user.email));
+        setCurrentUserId(user.id);
       }
     }
     loadUserData();
     fetchFeedback();
+
+    const pollInterval = setInterval(() => {
+      async function poll() {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const res = await fetch(`${VITE_API_BASE_URL}/feedback`, {
+            headers: {
+              'Authorization': `Bearer ${session?.access_token}`
+            }
+          });
+          const data = await res.json();
+          if (data.success) {
+            setPosts(data.data);
+          }
+        } catch (err) {
+          console.warn('Background feed poll failed:', err);
+        }
+      }
+      poll();
+    }, 4000);
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   const fetchFeedback = async () => {
@@ -188,6 +215,52 @@ export default function Feedback() {
       alert('An error occurred. Please try again.');
     } finally {
       setReplyLoadingMap(prev => ({ ...prev, [postId]: false }));
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (window.confirm('Are you sure you want to delete this feedback message?')) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch(`${VITE_API_BASE_URL}/feedback/${postId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setPosts(prev => prev.filter(p => p._id !== postId));
+        } else {
+          alert(data.error || 'Failed to delete post.');
+        }
+      } catch (err) {
+        console.error('Error deleting post:', err);
+        alert('An error occurred while deleting.');
+      }
+    }
+  };
+
+  const handleResolvePost = async (postId: string) => {
+    if (!isAdmin) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`${VITE_API_BASE_URL}/feedback/${postId}/resolve`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPosts(prev => prev.map(p => p._id === postId ? data.data : p));
+      } else {
+        alert(data.error || 'Failed to resolve post.');
+      }
+    } catch (err) {
+      console.error('Error resolving post:', err);
+      alert('An error occurred.');
     }
   };
 
@@ -417,9 +490,45 @@ export default function Feedback() {
                           </div>
                         </div>
                         
-                        <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-black ${styles.badge}`}>
-                          {styles.label}
-                        </span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {/* Admin Mark Resolved Action */}
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleResolvePost(post._id)}
+                              className={`border-2 border-black px-2 py-0.5 text-[8px] font-black uppercase transition-all shadow-[1.5px_1.5px_0px_#000] active:translate-y-[1px] active:shadow-none flex items-center gap-1 ${
+                                post.status === 'resolved'
+                                  ? 'bg-brutal-green text-black'
+                                  : 'bg-white hover:bg-gray-100 text-black'
+                              }`}
+                              title={post.status === 'resolved' ? "Mark unresolved/pending" : "Mark resolved"}
+                            >
+                              <CheckCircle2 size={10} className="shrink-0" />
+                              {post.status === 'resolved' ? 'RESOLVED' : 'RESOLVE'}
+                            </button>
+                          )}
+
+                          {/* Standard User Resolved Badge */}
+                          {!isAdmin && post.status === 'resolved' && (
+                            <span className="bg-brutal-green text-black border-2 border-black text-[8px] font-black uppercase px-2 py-0.5 shadow-[1.5px_1.5px_0px_#000] flex items-center gap-1">
+                              ✓ Resolved
+                            </span>
+                          )}
+
+                          {/* Delete Action (Creator or Admin) */}
+                          {(post.userId === currentUserId || isAdmin) && (
+                            <button
+                              onClick={() => handleDeletePost(post._id)}
+                              className="bg-white hover:bg-brutal-pink border-2 border-black text-black hover:text-white p-1 shadow-[1.5px_1.5px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all flex items-center justify-center"
+                              title="Delete Feedback Post"
+                            >
+                              <Trash2 size={10} />
+                            </button>
+                          )}
+
+                          <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-black ${styles.badge}`}>
+                            {styles.label}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Post Content */}
