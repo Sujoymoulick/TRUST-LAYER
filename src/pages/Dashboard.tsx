@@ -110,11 +110,16 @@ export default function Dashboard() {
           try {
             if (isAdminEmail(user.email)) {
               setOversightLoading(true);
-              const oversight = await apiFetch('/admin/oversight');
-              if (oversight && oversight.success) {
-                setOversightData(oversight.data);
+              try {
+                const oversight = await apiFetch('/admin/oversight');
+                if (oversight && oversight.success) {
+                  setOversightData(oversight.data);
+                }
+              } catch (err) {
+                console.error('Error fetching oversight data:', err);
+              } finally {
+                setOversightLoading(false);
               }
-              setOversightLoading(false);
             } else {
               const scoreData = await apiFetch('/trust-score');
               if (scoreData && scoreData.score) {
