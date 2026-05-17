@@ -10,16 +10,16 @@ import { useGuest } from '../context/GuestContext';
 // ... (PLANS, FEATURES, etc.)
 
 const FEATURES = [
-  { label: 'Trust Score', free: true, pro: true, proplus: true, business: true },
-  { label: 'Identity Linking', free: '2 accounts', pro: 'Unlimited', proplus: 'Unlimited', business: 'Unlimited' },
-  { label: 'Behavior Insights', free: false, pro: true, proplus: true, business: true },
-  { label: 'Fraud Detection', free: false, pro: false, proplus: true, business: true },
-  { label: 'Real-time Updates', free: false, pro: false, proplus: true, business: true },
-  { label: 'API Access', free: '500 calls', pro: '10K calls', proplus: '50K calls', business: 'Unlimited' },
-  { label: 'Analytics Dashboard', free: 'Basic', pro: 'Standard', proplus: 'Advanced', business: 'Custom' },
-  { label: 'Bulk Verification', free: false, pro: false, proplus: false, business: true },
-  { label: 'Team Collaboration', free: false, pro: false, proplus: false, business: true },
-  { label: 'Support', free: 'Community', pro: 'Email', proplus: 'Priority', business: 'Dedicated' },
+  { label: 'Trust Score', free: true, pro: true, proplus: true, business: true, admin: true },
+  { label: 'Identity Linking', free: '2 accounts', pro: 'Unlimited', proplus: 'Unlimited', business: 'Unlimited', admin: 'Unlimited' },
+  { label: 'Behavior Insights', free: false, pro: true, proplus: true, business: true, admin: true },
+  { label: 'Fraud Detection', free: false, pro: false, proplus: true, business: true, admin: true },
+  { label: 'Real-time Updates', free: false, pro: false, proplus: true, business: true, admin: true },
+  { label: 'API Access', free: '500 calls', pro: '10K calls', proplus: '50K calls', business: 'Unlimited', admin: 'Unlimited' },
+  { label: 'Analytics Dashboard', free: 'Basic', pro: 'Standard', proplus: 'Advanced', business: 'Custom', admin: 'Custom (Admin)' },
+  { label: 'Bulk Verification', free: false, pro: false, proplus: false, business: true, admin: true },
+  { label: 'Team Collaboration', free: false, pro: false, proplus: false, business: true, admin: true },
+  { label: 'Support', free: 'Community', pro: 'Email', proplus: 'Priority', business: 'Dedicated', admin: 'Founder Support' },
 ];
 
 const FAQS = [
@@ -95,17 +95,30 @@ export default function Pricing() {
           monthly: dbPlan.monthly_price,
           yearly: dbPlan.yearly_price,
           // Merge with UI-only visual properties from the original constant if needed
-          color: dbPlan.id === 'business' ? '#0A1B3F' : (dbPlan.id === 'proplus' ? '#FFE600' : '#fff'),
-          btnColor: dbPlan.id === 'pro' ? '#0057FF' : (dbPlan.id === 'business' ? '#FFE600' : '#000'),
+          color: dbPlan.id === 'admin' ? '#FF60B5' : (dbPlan.id === 'business' ? '#0A1B3F' : (dbPlan.id === 'proplus' ? '#FFE600' : '#fff')),
+          btnColor: dbPlan.id === 'admin' ? '#000' : (dbPlan.id === 'pro' ? '#0057FF' : (dbPlan.id === 'business' ? '#FFE600' : '#000')),
           btnText: dbPlan.id === 'pro' || dbPlan.id === 'business' ? '#fff' : '#FFE600',
           highlight: dbPlan.id === 'proplus',
-          cta: dbPlan.id === 'free' ? 'Get Started' : (dbPlan.id === 'pro' ? 'Upgrade to Pro' : (dbPlan.id === 'proplus' ? 'Get Pro Plus' : 'Contact Sales')),
-          tag: dbPlan.id === 'proplus' ? 'Best Value' : (dbPlan.id === 'business' ? 'For Teams' : null),
+          cta: dbPlan.id === 'admin' ? 'Activate Admin Elite' : (dbPlan.id === 'free' ? 'Get Started' : (dbPlan.id === 'pro' ? 'Upgrade to Pro' : (dbPlan.id === 'proplus' ? 'Get Pro Plus' : 'Contact Sales'))),
+          tag: dbPlan.id === 'admin' ? 'Designated Admin Only' : (dbPlan.id === 'proplus' ? 'Best Value' : (dbPlan.id === 'business' ? 'For Teams' : null)),
         }));
         setPlans(uiPlans);
       }
     }
     fetchPlans();
+
+    // Set up Realtime Subscription for plans table
+    const plansChannel = supabase
+      .channel('public-plans')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'plans' }, () => {
+        console.log('Real-time plans change detected on Pricing page');
+        fetchPlans();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(plansChannel);
+    };
   }, [isGuest]);
 
   const handlePlanSelect = async (planId: string) => {
@@ -124,8 +137,8 @@ export default function Pricing() {
         return;
       }
 
-      // If it's a paid plan, show UPI modal
-      if (planId !== 'free') {
+      // If it's a paid plan (and NOT the admin plan for designated admins), show UPI modal
+      if (planId !== 'free' && (planId !== 'admin' || !isAdmin)) {
         const selectedPlan = plans.find(p => p.id === planId);
         if (selectedPlan) {
           setShowUpi({
@@ -138,6 +151,7 @@ export default function Pricing() {
         }
       }
 
+      // If it's free or admin plan (since designated admins get full access), apply directly
       const { error } = await supabase
         .from('profiles')
         .update({ plan: planId })
@@ -241,7 +255,7 @@ export default function Pricing() {
           margin: '0 auto',
           alignItems: 'end',
         }}>
-          {plans.map(plan => {
+          {plans.filter(plan => isAdmin || plan.id !== 'admin').map(plan => {
             const price = yearly ? plan.yearly : plan.monthly;
             const isBlack = plan.color === '#0A1B3F';
             const textColor = isBlack ? '#fff' : '#000';
@@ -408,17 +422,18 @@ export default function Pricing() {
                   <th style={{ padding: '16px 20px', background: '#000', color: '#fff', fontFamily: "'Archivo Black', sans-serif", fontSize: '0.85rem', textTransform: 'uppercase', textAlign: 'left', borderRight: '3px solid #333' }}>
                     Feature
                   </th>
-                  {['Free', 'Pro', 'Pro Plus', 'Business'].map((h, i) => (
+                  {['Free', 'Pro', 'Pro Plus', 'Business', ...(isAdmin ? ['Admin Elite'] : [])].map((h, i) => (
                     <th key={h} style={{
                       padding: '16px 20px', textAlign: 'center',
-                      background: i === 2 ? '#FFE600' : '#000',
-                      color: i === 2 ? '#000' : '#fff',
+                      background: h === 'Admin Elite' ? '#FF60B5' : (i === 2 ? '#FFE600' : '#000'),
+                      color: h === 'Admin Elite' || i === 2 ? '#000' : '#fff',
                       fontFamily: "'Archivo Black', sans-serif", fontSize: '0.85rem',
                       textTransform: 'uppercase',
-                      borderRight: i < 3 ? '3px solid #333' : 'none',
+                      borderRight: i < (isAdmin ? 4 : 3) ? '3px solid #333' : 'none',
                     }}>
                       {h}
                       {i === 2 && <div style={{ fontWeight: 700, fontSize: '0.65rem', marginTop: 2, textTransform: 'none', fontFamily: "'Public Sans', sans-serif" }}>⭐ Best Value</div>}
+                      {h === 'Admin Elite' && <div style={{ fontWeight: 700, fontSize: '0.65rem', marginTop: 2, textTransform: 'none', fontFamily: "'Public Sans', sans-serif" }}>👑 Dynamic Admin</div>}
                     </th>
                   ))}
                 </tr>
@@ -429,14 +444,14 @@ export default function Pricing() {
                     <td style={{ padding: '14px 20px', fontWeight: 700, fontSize: '0.88rem', borderBottom: '2px solid #000', borderRight: '3px solid #000' }}>
                       {row.label}
                     </td>
-                    {(['free', 'pro', 'proplus', 'business'] as const).map((key, j) => (
+                    {(isAdmin ? (['free', 'pro', 'proplus', 'business', 'admin'] as const) : (['free', 'pro', 'proplus', 'business'] as const)).map((key, j) => (
                       <td key={key} style={{
                         padding: '14px 20px', textAlign: 'center',
                         borderBottom: '2px solid #000',
-                        borderRight: j < 3 ? '2px solid #ddd' : 'none',
-                        background: j === 2 ? 'rgba(255,230,0,0.08)' : 'transparent',
+                        borderRight: j < (isAdmin ? 4 : 3) ? '2px solid #ddd' : 'none',
+                        background: key === 'admin' ? 'rgba(255,96,181,0.08)' : (j === 2 ? 'rgba(255,230,0,0.08)' : 'transparent'),
                       }}>
-                        <FeatureCell val={row[key]} />
+                        <FeatureCell val={row[key as keyof typeof row] as any} />
                       </td>
                     ))}
                   </tr>

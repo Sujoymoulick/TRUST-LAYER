@@ -111,6 +111,7 @@ export default function Admin() {
   const [userScoreData, setUserScoreData] = useState<any>(null);
   const [manualAdjustment, setManualAdjustment] = useState<number>(0);
   const [scoreModalLoading, setScoreModalLoading] = useState(false);
+  const [selectedUserPlan, setSelectedUserPlan] = useState<string>('free');
 
 
 
@@ -124,6 +125,7 @@ export default function Admin() {
     let profileChannel: any;
     let trustChannel: any;
     let auditChannel: any;
+    let plansChannel: any;
 
     async function fetchAdminData() {
       try {
@@ -186,7 +188,36 @@ export default function Admin() {
 
           const allRecords = trustRes.data || [];
           setAuditLogs(auditRes.data || []);
-          setPlans(plansRes.data || []);
+          
+          let dbPlans = plansRes.data || [];
+          const hasAdminPlan = dbPlans.some((p: any) => p.id === 'admin');
+          if (!hasAdminPlan) {
+            console.log('Inserting/upserting hidden admin plan into database...');
+            const { data: insertedPlan, error: insertError } = await supabase
+              .from('plans')
+              .insert([
+                {
+                  id: 'admin',
+                  name: 'Admin Elite',
+                  monthly_price: 9999,
+                  yearly_price: 7999,
+                  features: [
+                    'Unlimited API access',
+                    'Full system oversight',
+                    'Real-time risk warnings',
+                    'Bespoke KYC control',
+                    'Dedicated tech founder support'
+                  ]
+                }
+              ])
+              .select();
+            if (!insertError && insertedPlan) {
+              dbPlans = [...dbPlans, ...insertedPlan].sort((a, b) => a.monthly_price - b.monthly_price);
+            } else {
+              console.error('Failed to auto-insert admin plan:', insertError);
+            }
+          }
+          setPlans(dbPlans);
 
           // Combine activities and risks into a single global stream
           const acts = (activityRes.data || []).map((a: any) => ({ ...a, type: 'activity', severity: 'info' }));
@@ -224,6 +255,10 @@ export default function Admin() {
           .on('postgres_changes', { event: '*', schema: 'public', table: 'admin_audit_log' }, () => loadData())
           .subscribe();
 
+        plansChannel = supabase.channel('plans-admin')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'plans' }, () => loadData())
+          .subscribe();
+
       } catch (err) {
         console.error('Admin initialization error:', err);
       } finally {
@@ -240,6 +275,7 @@ export default function Admin() {
       if (profileChannel) supabase.removeChannel(profileChannel);
       if (trustChannel) supabase.removeChannel(trustChannel);
       if (auditChannel) supabase.removeChannel(auditChannel);
+      if (plansChannel) supabase.removeChannel(plansChannel);
     };
   }, [navigate, isGuest]);
 
@@ -302,8 +338,9 @@ export default function Admin() {
       const result = await res.json();
       if (result.success) {
         setUserScoreData(result.data);
-        const { data: profile } = await supabase.from('profiles').select('manual_adjustment').eq('id', user.id).single();
+        const { data: profile } = await supabase.from('profiles').select('manual_adjustment, plan').eq('id', user.id).single();
         setManualAdjustment(profile?.manual_adjustment || 0);
+        setSelectedUserPlan(profile?.plan || 'free');
       }
     } catch (err) {
       console.error(err);
@@ -327,12 +364,32 @@ export default function Admin() {
         headers,
         body: JSON.stringify({ userId: selectedUserForScore.id, manualAdjustment })
       });
+
+      // Update their subscription plan in the profiles table
+      const { error: planError } = await supabase
+        .from('profiles')
+        .update({ plan: selectedUserPlan })
+        .eq('id', selectedUserForScore.id);
+      
+      if (planError) {
+        console.error('Plan update error:', planError);
+      }
+
       const result = await res.json();
       if (result.success) {
         setUserScoreData(result.data);
-        alert('Score successfully adjusted!');
+        alert('Score and Subscription Plan adjusted successfully!');
+        setSelectedUserForScore(null);
+        // Refresh site users table
+        const usersRes = await fetch(`${VITE_API_BASE_URL}/admin/users`, {
+          headers: { 'Authorization': `Bearer ${session?.access_token}` }
+        });
+        const usersData = await usersRes.json();
+        if (usersData.success) {
+          setUsers(usersData.data);
+        }
       } else {
-         alert('Failed to adjust score');
+        alert('Failed to adjust user profile.');
       }
     } catch (err) {
       console.error(err);
@@ -1114,24 +1171,42 @@ export default function Admin() {
                   </div>
                 </div>
 
-                <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10">
-                  <h3 className="font-display text-sm uppercase mb-3 text-brutal-blue">Manual Override</h3>
-                  <div className="flex gap-4">
-                    <input 
-                      type="number" 
-                      value={manualAdjustment} 
-                      onChange={(e) => setManualAdjustment(Number(e.target.value))}
-                      className="brutal-input flex-1 !text-lg !font-bold"
-                      placeholder="e.g. 100 or -50"
-                    />
-                    <button 
-                      onClick={handleAdjustScore}
-                      disabled={scoreModalLoading}
-                      className="brutal-btn bg-brutal-blue text-white whitespace-nowrap"
-                    >
-                      {scoreModalLoading ? <Loader2 className="animate-spin" /> : 'Apply Adjustment'}
-                    </button>
+                <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10 space-y-4">
+                  <div>
+                    <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Trust Score Override</h3>
+                    <div className="flex gap-4">
+                      <input 
+                        type="number" 
+                        value={manualAdjustment} 
+                        onChange={(e) => setManualAdjustment(Number(e.target.value))}
+                        className="brutal-input flex-1 !text-lg !font-bold"
+                        placeholder="e.g. 100 or -50"
+                      />
+                    </div>
                   </div>
+
+                  <div className="border-t-2 border-dashed border-brutal-blue/30 pt-3">
+                    <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Subscription Plan Override</h3>
+                    <select
+                      value={selectedUserPlan}
+                      onChange={(e) => setSelectedUserPlan(e.target.value)}
+                      className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
+                    >
+                      {plans.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.id})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button 
+                    onClick={handleAdjustScore}
+                    disabled={scoreModalLoading}
+                    className="w-full brutal-btn bg-brutal-blue text-white uppercase text-xs py-3 mt-2 font-display tracking-wider flex items-center justify-center gap-2"
+                  >
+                    {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Apply God Mode Overrides'}
+                  </button>
                 </div>
               </div>
             ) : null}
