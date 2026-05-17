@@ -3,7 +3,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen, MessageSquare, Database } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
-import { isAdminEmail } from '../lib/utils';
+import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
 import mainLogo from '../assets/Pramaaan-logo.png';
 import { SafetyMonitor } from '../components/SafetyMonitor';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -108,11 +108,11 @@ export function DashboardLayout() {
         ].join(' ')}
       >
         {/* Logo */}
-        <div className="p-5 border-b-[3px] border-[var(--border-color)] flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b-[3px] border-[var(--border-color)] flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="flex items-center gap-2">
-              <img src={mainLogo} alt="Pramaaan Logo" className="h-8 w-auto object-contain" />
-              <span className="font-display text-lg uppercase italic font-black text-[var(--text-primary)]">Pramaaan</span>
+            <span className="flex items-center gap-1.5 sm:gap-2">
+              <img src={mainLogo} alt="Pramaaan Logo" className="h-6 sm:h-8 w-auto object-contain" />
+              <span className="font-display text-base sm:text-lg uppercase italic font-black text-[var(--text-primary)] tracking-tight">Pramaaan</span>
             </span>
             {isGuest && (
               <div className="mt-1 inline-block text-center" style={{ background: '#FFE600', border: '2px solid #000', padding: '2px 10px', fontFamily: "'Archivo Black', sans-serif", fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#000' }}>
@@ -178,7 +178,7 @@ export function DashboardLayout() {
                 {profileName || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
               </div>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                {isAdminEmail(user?.email) ? 'ADMINISTRATOR' : `${plan || 'Free'} Plan`}
+                {isAdminEmail(user?.email) ? (getAdminRoleTitle(user?.email) || 'ADMINISTRATOR') : `${plan || 'Free'} Plan`}
               </div>
             </div>
             <div className="relative">

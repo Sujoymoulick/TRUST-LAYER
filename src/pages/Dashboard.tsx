@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { Loader2, Sparkles, TrendingUp, BookOpen, ShieldAlert } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GraphVisualization } from '../components/GraphVisualization';
-import { isAdminEmail } from '../lib/utils';
+import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
 import { Link2 } from 'lucide-react';
@@ -47,6 +47,7 @@ export default function Dashboard() {
   const [isGlowing, setIsGlowing] = useState(false);
   const [activityFeed, setActivityFeed] = useState<any[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
   // Admin Oversight Dashboard data
   const [oversightData, setOversightData] = useState<any>(null);
@@ -77,6 +78,9 @@ export default function Dashboard() {
         }
         
         setIsOwner(isAdminEmail(user?.email));
+        if (user?.email) {
+          setUserEmail(user.email);
+        }
 
         if (user) {
           const providers = user.identities?.map((identity: any) => identity.provider) || [];
@@ -392,7 +396,7 @@ export default function Dashboard() {
                 <div className="flex items-center gap-2">
                   <Sparkles size={16} className={(!isGuest && (plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-[var(--text-secondary)]'} />
                   <span className="font-black uppercase text-[10px] tracking-wider text-[var(--text-primary)]">
-                    {isGuest ? 'Guest Access' : (isOwner ? 'Administrator' : `${plan || 'Free'} Plan`)}
+                    {isGuest ? 'Guest Access' : (isOwner ? (getAdminRoleTitle(userEmail) || 'Administrator') : `${plan || 'Free'} Plan`)}
                   </span>
                 </div>
                 
