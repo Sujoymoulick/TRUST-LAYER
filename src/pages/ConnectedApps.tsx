@@ -12,6 +12,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ConsentVaultModal } from '../components/ConsentVaultModal';
 
 import githubLogo from '../assets/social/github.png';
 import linkedinLogo from '../assets/social/linkedin.png';
@@ -35,6 +36,7 @@ export default function ConnectedApps() {
   const [connectedApps, setConnectedApps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [linkingProvider, setLinkingProvider] = useState<string | null>(null);
+  const [consentModalProvider, setConsentModalProvider] = useState<string | null>(null);
 
   useEffect(() => {
     if (isGuest) {
@@ -188,7 +190,7 @@ export default function ConnectedApps() {
                     </div>
                   ) : (
                     <button
-                      onClick={() => handleConnect(prov.id)}
+                      onClick={() => setConsentModalProvider(prov.name)}
                       disabled={linkingProvider === prov.id || isGuest}
                       className="bg-brutal-yellow hover:bg-black text-black hover:text-brutal-yellow border-2 border-black px-4 py-2 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1.5"
                     >
@@ -207,6 +209,21 @@ export default function ConnectedApps() {
           })}
         </div>
       )}
+
+      {/* Interstitial Consent Vault Modal */}
+      <ConsentVaultModal
+        isOpen={consentModalProvider !== null}
+        onClose={() => setConsentModalProvider(null)}
+        providerName={consentModalProvider || ''}
+        onSuccess={() => {
+          if (consentModalProvider) {
+            const matchedProv = PROVIDERS.find(p => p.name === consentModalProvider);
+            if (matchedProv) {
+              handleConnect(matchedProv.id);
+            }
+          }
+        }}
+      />
     </div>
   );
 }

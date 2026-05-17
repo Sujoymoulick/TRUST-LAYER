@@ -22,6 +22,7 @@ import Logout from './pages/Logout';
 import Feedback from './pages/Feedback';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { ConsentBanner } from './components/ConsentBanner';
 
 function App() {
   return (
@@ -52,8 +53,9 @@ function App() {
 
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-            <Analytics />
-            <SpeedInsights />
+             <ConsentBanner />
+             <Analytics />
+             <SpeedInsights />
           </BrowserRouter>
         </GuestProvider>
       </Web3Provider>

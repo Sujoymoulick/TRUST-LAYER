@@ -8,6 +8,7 @@ import {
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
 import { useProfileAvatar } from '../hooks/useProfileAvatar';
+import { PermissionsPanel } from '../components/PermissionsPanel';
 
 import githubLogo from '../assets/social/github.png';
 import linkedinLogo from '../assets/social/linkedin.png';
@@ -415,6 +416,14 @@ export default function Passport() {
             ))}
           </div>
         </div>
+
+        {/* B2C Privacy Vault & Auditing Panel */}
+        {!isGuest && (
+          <div className="mt-8">
+            <PermissionsPanel />
+          </div>
+        )}
+
       </div>
     </div>
   );
