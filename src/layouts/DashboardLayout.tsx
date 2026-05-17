@@ -239,11 +239,104 @@ export function DashboardLayout() {
           </div>
 
           <div className="flex items-center gap-4">
-            <ConnectButton 
-              accountStatus="address"
-              showBalance={false}
-              chainStatus="icon"
-            />
+            <ConnectButton.Custom>
+              {({
+                account,
+                chain,
+                openAccountModal,
+                openChainModal,
+                openConnectModal,
+                authenticationStatus,
+                mounted,
+              }) => {
+                const ready = mounted && authenticationStatus !== 'loading';
+                const connected =
+                  ready &&
+                  account &&
+                  chain &&
+                  (!authenticationStatus ||
+                    authenticationStatus === 'authenticated');
+
+                return (
+                  <div
+                    {...(!ready && {
+                      'aria-hidden': true,
+                      'style': {
+                        opacity: 0,
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                      },
+                    })}
+                  >
+                    {(() => {
+                      if (!connected) {
+                        return (
+                          <button
+                            onClick={openConnectModal}
+                            className="bg-brutal-yellow text-black border-2 border-black font-black uppercase text-[10px] px-2.5 sm:px-4 py-1.5 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+                            type="button"
+                          >
+                            <span className="hidden sm:inline">Connect Wallet</span>
+                            <span className="inline sm:hidden">Connect</span>
+                          </button>
+                        );
+                      }
+
+                      if (chain.unsupported) {
+                        return (
+                          <button
+                            onClick={openChainModal}
+                            className="bg-brutal-pink text-white border-2 border-black font-black uppercase text-[10px] px-2.5 sm:px-4 py-1.5 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+                            type="button"
+                          >
+                            Wrong Network
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={openChainModal}
+                            className="bg-white hover:bg-gray-50 text-black border-2 border-black font-black uppercase text-[10px] px-2 py-1 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1 whitespace-nowrap"
+                            type="button"
+                          >
+                            {chain.hasIcon && (
+                              <div
+                                style={{
+                                  background: chain.iconBackground,
+                                  width: 12,
+                                  height: 12,
+                                  borderRadius: 999,
+                                  overflow: 'hidden',
+                                }}
+                              >
+                                {chain.iconUrl && (
+                                  <img
+                                    alt={chain.name ?? 'Chain icon'}
+                                    src={chain.iconUrl}
+                                    style={{ width: 12, height: 12 }}
+                                  />
+                                )}
+                              </div>
+                            )}
+                            <span className="hidden md:inline">{chain.name}</span>
+                          </button>
+
+                          <button
+                            onClick={openAccountModal}
+                            className="bg-brutal-blue text-white border-2 border-black font-black uppercase text-[10px] px-2.5 sm:px-4 py-1.5 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+                            type="button"
+                          >
+                            {account.displayName}
+                          </button>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                );
+              }}
+            </ConnectButton.Custom>
             <button className="p-2 hover:bg-[var(--text-primary)]/10 rounded-full transition-colors">
               <Bell size={20} className="text-[var(--text-primary)]" />
             </button>
