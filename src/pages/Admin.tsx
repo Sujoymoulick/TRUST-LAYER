@@ -23,7 +23,7 @@ import {
   Fingerprint,
   Cloud
 } from 'lucide-react';
-import { isAdminEmail } from '../lib/utils';
+import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
 import { VITE_API_BASE_URL } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
 
@@ -651,6 +651,7 @@ export default function Admin() {
                           <th>User</th>
                           <th>Email</th>
                           <th>Role</th>
+                          <th>Designation</th>
                           <th>Last Active</th>
                           <th>Actions</th>
                         </tr>
@@ -670,6 +671,17 @@ export default function Admin() {
                                 {u.role}
                               </span>
                             </td>
+                            <td>
+                              {getAdminRoleTitle(u.email) ? (
+                                <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-black ${
+                                  getAdminRoleTitle(u.email) === 'Founder' ? 'bg-brutal-green text-black' : 'bg-brutal-yellow text-black'
+                                } shadow-[1px_1px_0px_#000]`}>
+                                  {getAdminRoleTitle(u.email)}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">—</span>
+                              )}
+                            </td>
                             <td className="text-[10px] font-bold text-gray-400">{new Date(u.updated_at).toLocaleDateString()}</td>
                             <td>
                               <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow mr-2" title="God Mode"><Shield size={12} /></button>
@@ -678,7 +690,7 @@ export default function Admin() {
                           </tr>
                         ))}
                         {users.filter(u => u.role === 'admin').length === 0 && (
-                          <tr><td colSpan={5} className="text-center py-4 text-[10px] font-bold text-gray-400 uppercase">No administrators found.</td></tr>
+                          <tr><td colSpan={6} className="text-center py-4 text-[10px] font-bold text-gray-400 uppercase">No administrators found.</td></tr>
                         )}
                       </tbody>
                     </table>
