@@ -52,6 +52,7 @@ interface UserProfile {
   avatar_url: string | null;
   role: 'user' | 'admin';
   updated_at: string;
+  institution_email?: string | null;
 }
 
 interface AuditLog {
@@ -82,6 +83,13 @@ interface Plan {
 
 type AdminTab = 'activity_stream' | 'verifications' | 'users' | 'audit_logs' | 'subscriptions' | 'system_status';
 
+const getInstitutionEmail = (email: string) => {
+  const normalized = email.toLowerCase().trim();
+  if (normalized === 'sujoymoulick05@gmail.com') return 'sujoy.moulick2024@iem.edu.in';
+  if (normalized === 'somnath.uem0@gmail.com') return 'somnath.das2024@iem.edu.in';
+  if (normalized === 'basakarnab430@gmail.com') return 'arnab.basak2024@iem.edu.in';
+  return null;
+};
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -708,6 +716,7 @@ export default function Admin() {
                         <tr>
                           <th>User</th>
                           <th>Email</th>
+                          <th>Institution Mail</th>
                           <th>Role</th>
                           <th>Designation</th>
                           <th>Last Active</th>
@@ -724,6 +733,15 @@ export default function Admin() {
                               <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
                             </td>
                             <td className="text-[10px] font-bold text-gray-500">{u.email}</td>
+                            <td>
+                              {(u.institution_email || getInstitutionEmail(u.email)) ? (
+                                <span className="text-[10px] font-bold text-gray-500 lowercase select-all border border-dashed border-gray-300 px-1.5 py-0.5 bg-gray-50 font-mono">
+                                  {u.institution_email || getInstitutionEmail(u.email)}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">—</span>
+                              )}
+                            </td>
                             <td>
                               <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-blue text-white">
                                 {u.role}
@@ -748,7 +766,7 @@ export default function Admin() {
                           </tr>
                         ))}
                         {users.filter(u => u.role === 'admin').length === 0 && (
-                          <tr><td colSpan={6} className="text-center py-4 text-[10px] font-bold text-gray-400 uppercase">No administrators found.</td></tr>
+                          <tr><td colSpan={7} className="text-center py-4 text-[10px] font-bold text-gray-400 uppercase">No administrators found.</td></tr>
                         )}
                       </tbody>
                     </table>
@@ -1070,6 +1088,32 @@ export default function Admin() {
                         <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">
                            {diagnostics.sumsub?.status === 'reachable' ? `${diagnostics.sumsub.latency}ms` : '—'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Razorpay Gateway Health */}
+                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                      <div className="flex items-center gap-2 text-blue-500">
+                        <DollarSign size={18} />
+                        <h4 className="font-display text-sm uppercase">Razorpay Gateway</h4>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
+                          diagnostics.razorpay?.status === 'connected' ? 'bg-brutal-green text-black' :
+                          diagnostics.razorpay?.status === 'not_configured' ? 'bg-gray-100 text-gray-400' : 'bg-brutal-pink text-white'
+                        }`}>
+                          {diagnostics.razorpay?.status === 'connected' ? 'connected' :
+                           diagnostics.razorpay?.status === 'not_configured' ? 'not configured' :
+                           diagnostics.razorpay?.status === 'unauthorized' ? 'invalid keys' : 
+                           (diagnostics.razorpay?.status ?? 'unknown')}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold">
+                           {diagnostics.razorpay?.status === 'connected' ? `${diagnostics.razorpay.latency}ms` : '—'}
                         </span>
                       </div>
                     </div>

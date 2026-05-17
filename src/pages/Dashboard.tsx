@@ -13,6 +13,7 @@ import googleLogo from '../assets/social/google.png';
 import facebookLogo from '../assets/social/facebook.png';
 import instagramLogo from '../assets/social/instagram.png';
 import githubLogo from '../assets/social/github.png';
+import twitterLogo from '../assets/social/twitter.png';
 
 interface TrustRecord {
   id: string;
@@ -455,7 +456,7 @@ export default function Dashboard() {
               { id: 'github', name: 'GitHub', icon: <img src={githubLogo} className="w-5 h-5 object-contain" alt="GitHub" /> },
               { id: 'linkedin_oidc', name: 'LinkedIn', icon: <img src={linkedinLogo} className="w-5 h-5 object-contain" alt="LinkedIn" /> },
               { id: 'google', name: 'Google', icon: <img src={googleLogo} className="w-5 h-5 object-contain" alt="Google" /> },
-              { id: 'twitter', name: 'Twitter', icon: <Link2 size={16} /> },
+              { id: 'twitter', name: 'Twitter', icon: <img src={twitterLogo} className="w-5 h-5 object-contain" alt="Twitter" /> },
               { id: 'facebook', name: 'Facebook', icon: <img src={facebookLogo} className="w-5 h-5 object-contain" alt="Facebook" /> },
               { id: 'instagram', name: 'Instagram', icon: <img src={instagramLogo} className="w-5 h-5 object-contain" alt="Instagram" /> },
             ].map(a => {

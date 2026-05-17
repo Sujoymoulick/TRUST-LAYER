@@ -75,6 +75,7 @@ export default function Pricing() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const [showUpi, setShowUpi] = useState<{ amount: number; planId: string; planName: string } | null>(null);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info'; callback?: () => void } | null>(null);
   const navigate = useNavigate();
   const { isGuest } = useGuest();
 
@@ -199,7 +200,10 @@ export default function Pricing() {
       // 2. Load dynamic SDK Script
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
-        alert('Razorpay SDK failed to load. Please verify your internet connection.');
+        setNotification({
+          message: 'Razorpay SDK failed to load. Please verify your internet connection.',
+          type: 'error'
+        });
         return;
       }
 
@@ -223,11 +227,17 @@ export default function Pricing() {
 
             if (updateErr) throw updateErr;
 
-            alert(`Successfully upgraded to ${selectedPlan.name}!`);
-            navigate('/dashboard');
+            setNotification({
+              message: `Successfully upgraded to ${selectedPlan.name}!`,
+              type: 'success',
+              callback: () => navigate('/dashboard')
+            });
           } catch (updateErr: any) {
             console.error('Database plan sync failed:', updateErr);
-            alert('Your payment was successful, but we failed to update your profile. Please contact Support.');
+            setNotification({
+              message: 'Your payment was successful, but we failed to update your profile. Please contact Support.',
+              type: 'error'
+            });
           } finally {
             setLoading(null);
           }
@@ -246,7 +256,10 @@ export default function Pricing() {
 
     } catch (err) {
       console.error('Plan selection error:', err);
-      alert('Failed to select plan. Please try again.');
+      setNotification({
+        message: 'Failed to select plan. Please try again.',
+        type: 'error'
+      });
     } finally {
       setLoading(null);
     }
@@ -411,10 +424,16 @@ export default function Pricing() {
                           setLoading(plan.id);
                           const { error } = await supabase.from('plans').update({ monthly_price: m, yearly_price: y }).eq('id', plan.id);
                           if (!error) {
-                            alert(`${plan.name} updated!`);
-                            window.location.reload();
+                            setNotification({
+                              message: `${plan.name} updated!`,
+                              type: 'success',
+                              callback: () => window.location.reload()
+                            });
                           } else {
-                            alert(error.message);
+                            setNotification({
+                              message: error.message,
+                              type: 'error'
+                            });
                           }
                           setLoading(null);
                         }}
@@ -646,6 +665,103 @@ export default function Pricing() {
           {loading === 'free' ? <Loader2 className="animate-spin" size={20} /> : 'Get Started for Free →'}
         </button>
       </div>
+
+      {/* ── CUSTOM NEO-BRUTALIST NOTIFICATION MODAL ── */}
+      {notification && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          background: 'rgba(0, 0, 0, 0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 99999, padding: 24, backdropFilter: 'blur(5px)'
+        }}>
+          <div style={{
+            background: '#fff',
+            border: '4px solid #000',
+            boxShadow: '12px 12px 0px #000',
+            maxWidth: 460,
+            width: '100%',
+            position: 'relative',
+            fontFamily: "'Public Sans', sans-serif",
+            animation: 'modalSlideIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+          }}>
+            {/* Header / Accent Bar */}
+            <div style={{
+              background: notification.type === 'success' ? '#00FF00' : (notification.type === 'error' ? '#FF60B5' : '#FFE600'),
+              borderBottom: '4px solid #000',
+              padding: '16px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12
+            }}>
+              <span style={{ fontSize: '1.4rem' }}>
+                {notification.type === 'success' ? '⚡' : (notification.type === 'error' ? '🚨' : 'ℹ️')}
+              </span>
+              <span style={{
+                fontFamily: "'Archivo Black', sans-serif",
+                fontSize: '1.1rem',
+                textTransform: 'uppercase',
+                color: '#000',
+                letterSpacing: '0.05em'
+              }}>
+                {notification.type === 'success' ? 'SYSTEM SUCCESS' : (notification.type === 'error' ? 'SYSTEM ERROR' : 'SYSTEM NOTICE')}
+              </span>
+            </div>
+
+            {/* Content */}
+            <div style={{ padding: '32px 24px', textAlign: 'center' }}>
+              <p style={{
+                fontWeight: 800,
+                color: '#000',
+                fontSize: '1.05rem',
+                lineHeight: 1.6,
+                margin: '0 0 28px',
+                wordBreak: 'break-word'
+              }}>
+                {notification.message}
+              </p>
+
+              {/* Action Button */}
+              <button
+                onClick={() => {
+                  const cb = notification.callback;
+                  setNotification(null);
+                  if (cb) cb();
+                }}
+                style={{
+                  background: '#FFE600',
+                  color: '#000',
+                  border: '3px solid #000',
+                  padding: '12px 40px',
+                  fontFamily: "'Archivo Black', sans-serif",
+                  fontSize: '0.9rem',
+                  textTransform: 'uppercase',
+                  boxShadow: '4px 4px 0px #000',
+                  cursor: 'pointer',
+                  letterSpacing: '0.05em',
+                  transition: 'transform 0.08s, box-shadow 0.08s',
+                  outline: 'none'
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLElement).style.transform = 'translate(2px, 2px)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = '2px 2px 0px #000';
+                  (e.currentTarget as HTMLElement).style.background = '#000';
+                  (e.currentTarget as HTMLElement).style.color = '#FFE600';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLElement).style.transform = '';
+                  (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #000';
+                  (e.currentTarget as HTMLElement).style.background = '#FFE600';
+                  (e.currentTarget as HTMLElement).style.color = '#000';
+                }}
+              >
+                Acknowledge
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
