@@ -1,0 +1,23 @@
+{
+  "name": "@pramaaan/sdk",
+  "version": "1.0.0",
+  "description": "Official high-performance Node.js B2B SDK wrapper for Pramaaan Trust Verification Layer.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "keywords": [
+    "pramaaan",
+    "trustscore",
+    "identity",
+    "verification",
+    "reputation",
+    "b2b",
+    "sdk"
+  ],
+  "author": "Pramaaan Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.8"
+  }
+}
