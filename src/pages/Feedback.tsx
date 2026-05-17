@@ -13,7 +13,8 @@ import {
   Lock,
   Activity,
   Trash2,
-  CheckCircle2
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { isAdminEmail } from '../lib/utils';
@@ -62,6 +63,7 @@ export default function Feedback() {
   // Reply states indexed by post id
   const [replyTextMap, setReplyTextMap] = useState<Record<string, string>>({});
   const [replyLoadingMap, setReplyLoadingMap] = useState<Record<string, boolean>>({});
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -218,26 +220,31 @@ export default function Feedback() {
     }
   };
 
-  const handleDeletePost = async (postId: string) => {
-    if (window.confirm('Are you sure you want to delete this feedback message?')) {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const res = await fetch(`${VITE_API_BASE_URL}/feedback/${postId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${session?.access_token}`
-          }
-        });
-        const data = await res.json();
-        if (data.success) {
-          setPosts(prev => prev.filter(p => p._id !== postId));
-        } else {
-          alert(data.error || 'Failed to delete post.');
+  const handleDeletePost = (postId: string) => {
+    setDeleteConfirmId(postId);
+  };
+
+  const confirmDeletePost = async () => {
+    if (!deleteConfirmId) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`${VITE_API_BASE_URL}/feedback/${deleteConfirmId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
         }
-      } catch (err) {
-        console.error('Error deleting post:', err);
-        alert('An error occurred while deleting.');
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPosts(prev => prev.filter(p => p._id !== deleteConfirmId));
+      } else {
+        alert(data.error || 'Failed to delete post.');
       }
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      alert('An error occurred while deleting.');
+    } finally {
+      setDeleteConfirmId(null);
     }
   };
 
@@ -619,6 +626,37 @@ export default function Feedback() {
           )}
         </div>
       </div>
+
+      {/* Brutalist Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-sm w-full p-6 flex flex-col gap-6">
+            <div className="flex items-center gap-3 text-brutal-pink">
+              <AlertTriangle size={32} />
+              <h3 className="font-display text-2xl uppercase leading-none">Delete Post?</h3>
+            </div>
+            
+            <p className="text-xs font-bold uppercase text-gray-600 tracking-widest leading-relaxed">
+              Are you sure you want to delete this feedback message? This action is permanent and will instantly remove any associated screenshots and replies.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mt-2">
+              <button 
+                onClick={() => setDeleteConfirmId(null)}
+                className="brutal-btn flex-1 bg-gray-100 text-black px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmDeletePost}
+                className="brutal-btn flex-1 bg-brutal-pink text-white px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
