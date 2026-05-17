@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen, MessageSquare, Database } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
@@ -19,7 +19,15 @@ const NAV_ITEMS = [
   { to: '/connected-apps', icon: Database,   label: 'Connected Apps', guestAllowed: false },
   { to: '/vault',     icon: Lock,            label: 'Consent Vault', guestAllowed: false },
   { to: '/analytics', icon: BarChart2,        label: 'Analytics', guestAllowed: true  },
-  { to: '/api',       icon: Code,             label: 'API',       guestAllowed: false },
+  {
+    label: 'DEV Tools',
+    icon: Code,
+    guestAllowed: false,
+    submenu: [
+      { to: '/developer/portal', label: 'Developer Portal' },
+      { to: '/developer/keys', label: 'Personal Keys' },
+    ]
+  },
   { to: '/pricing',   icon: DollarSign,       label: 'Pricing',   guestAllowed: true  },
   { to: '/feedback',  icon: MessageSquare,    label: 'Feedback',  guestAllowed: true  },
 ];
@@ -27,6 +35,7 @@ const NAV_ITEMS = [
 export function DashboardLayout() {
   const { isGuest, exitGuest } = useGuest();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [profileName, setProfileName] = useState<string | null>(null);
@@ -137,17 +146,52 @@ export function DashboardLayout() {
 
         {/* Nav items */}
         <nav className="flex-1 overflow-y-auto">
-          {visibleNavItems.map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={closeSidebar}
-              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-            >
-              <Icon size={17} />
-              <span>{label}</span>
-            </NavLink>
-          ))}
+          {visibleNavItems.map((item) => {
+            if (item.submenu) {
+              const isSubmenuActive = pathname.startsWith('/developer');
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className="flex flex-col">
+                  <div className={`nav-link cursor-pointer hover:bg-brutal-yellow/10 ${isSubmenuActive ? 'text-black font-black bg-zinc-100 border-l-[6px] border-black' : ''}`}>
+                    <Icon size={17} />
+                    <span>{item.label}</span>
+                  </div>
+                  <div className="flex flex-col border-l-[3px] border-black/20 ml-[23px] my-1 gap-1">
+                    {item.submenu.map((sub: any) => (
+                      <NavLink
+                        key={sub.to}
+                        to={sub.to}
+                        onClick={closeSidebar}
+                        className={({ isActive }) => 
+                          `pl-4 py-2 text-xs font-black uppercase tracking-wider block transition-all border-b border-black/5 last:border-b-0 ${
+                            isActive 
+                              ? 'text-black bg-brutal-yellow border-r-2 border-black font-black shadow-[2px_2px_0px_#000] translate-x-1' 
+                              : 'text-zinc-600 hover:text-black hover:bg-brutal-yellow/20'
+                          }`
+                        }
+                      >
+                        {sub.label}
+                      </NavLink>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            
+            const Icon = item.icon;
+            const to = item.to || '';
+            return (
+              <NavLink
+                key={to}
+                to={to}
+                onClick={closeSidebar}
+                className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+              >
+                <Icon size={17} />
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
           
           {/* Admin Console - Only visible to the owner (never to guests) */}
           {!isGuest && isAdminEmail(user?.email) && (
@@ -369,18 +413,23 @@ export function DashboardLayout() {
 
         {/* Mobile bottom nav */}
         <nav className="lg:hidden flex-shrink-0 flex border-t-[3px] border-[var(--border-color)] bg-[var(--bg-primary)]" style={{ minHeight: 60 }}>
-          {visibleNavItems.slice(0, 5).map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `flex-1 flex flex-col items-center justify-center gap-1 py-2 border-r-[2px] border-[var(--border-color)] last:border-r-0 text-[0.55rem] font-black uppercase tracking-wide no-underline transition-colors ${isActive ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`
-              }
-            >
-              <Icon size={18} />
-              <span>{label}</span>
-            </NavLink>
-          ))}
+          {visibleNavItems.slice(0, 5).map((item) => {
+            const to = item.to || item.submenu?.[0]?.to || '';
+            const Icon = item.icon;
+            const label = item.label;
+            return (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `flex-1 flex flex-col items-center justify-center gap-1 py-2 border-r-[2px] border-[var(--border-color)] last:border-r-0 text-[0.55rem] font-black uppercase tracking-wide no-underline transition-colors ${isActive ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`
+                }
+              >
+                <Icon size={18} />
+                <span>{label}</span>
+              </NavLink>
+            );
+          })}
         </nav>
 
       </div>

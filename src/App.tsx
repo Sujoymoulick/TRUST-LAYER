@@ -13,6 +13,7 @@ import ConnectedApps from './pages/ConnectedApps';
 import VerificationCenter from './pages/VerificationCenter';
 import RiskAnalysis from './pages/RiskAnalysis';
 import ApiDashboard from './pages/ApiDashboard';
+import PersonalKeys from './pages/PersonalKeys';
 import Admin from './pages/Admin';
 import { AdminGuard } from './components/AdminGuard';
 import Settings from './pages/Settings';
@@ -48,7 +49,9 @@ function App() {
                 <Route path="/passport" element={<Passport />} />
                 <Route path="/connected-apps" element={<ConnectedApps />} />
                 <Route path="/analytics" element={<RiskAnalysis />} />
-                <Route path="/api" element={<ApiDashboard />} />
+                <Route path="/api" element={<Navigate to="/developer/portal" replace />} />
+                <Route path="/developer/portal" element={<ApiDashboard />} />
+                <Route path="/developer/keys" element={<PersonalKeys />} />
                 <Route path="/vault" element={<ConsentVault />} />
                 <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
                 <Route path="/settings" element={<Settings />} />
