@@ -74,8 +74,17 @@ export function DashboardLayout() {
         
         if (profile?.full_name) setProfileName(profile.full_name);
         
-        // If profile is missing (e.g. database trigger failed), fallback to free plan to avoid infinite loop
-        const userPlan = profile?.plan || (isAdminEmail(user.email) ? 'pro' : 'free');
+        let userPlan = profile?.plan || 'free';
+        if (user.email && isAdminEmail(user.email) && userPlan !== 'admin') {
+          console.log('Upgrading admin to Admin Elite plan in DB...');
+          const { error: upgradeError } = await supabase
+            .from('profiles')
+            .update({ plan: 'admin' })
+            .eq('id', user.id);
+          if (!upgradeError) {
+            userPlan = 'admin';
+          }
+        }
         setPlan(userPlan);
       }
     }
@@ -178,7 +187,7 @@ export function DashboardLayout() {
                 {profileName || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
               </div>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                {isAdminEmail(user?.email) ? (getAdminRoleTitle(user?.email) || 'ADMINISTRATOR') : `${plan || 'Free'} Plan`}
+                {isAdminEmail(user?.email) ? `${getAdminRoleTitle(user?.email) || 'ADMINISTRATOR'} (Admin Elite)` : `${plan === 'admin' ? 'Admin Elite' : (plan || 'Free')} Plan`}
               </div>
             </div>
             <div className="relative">

@@ -92,7 +92,19 @@ export default function Dashboard() {
             .select('plan, kyc_status')
             .eq('id', user.id)
             .single();
-          setPlan(profile?.plan || 'free');
+          
+          let userPlan = profile?.plan || 'free';
+          if (user.email && isAdminEmail(user.email) && userPlan !== 'admin') {
+            console.log('Upgrading admin to Admin Elite plan in DB...');
+            const { error: upgradeError } = await supabase
+              .from('profiles')
+              .update({ plan: 'admin' })
+              .eq('id', user.id);
+            if (!upgradeError) {
+              userPlan = 'admin';
+            }
+          }
+          setPlan(userPlan);
           setKycStatus(profile?.kyc_status || 'not_started');
         }
 
@@ -394,9 +406,9 @@ export default function Dashboard() {
               
               <div className="flex items-center justify-between p-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)] shadow-[4px_4px_0px_var(--border-color)]">
                 <div className="flex items-center gap-2">
-                  <Sparkles size={16} className={(!isGuest && (plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-[var(--text-secondary)]'} />
+                  <Sparkles size={16} className={(!isGuest && (plan === 'admin' || plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-[var(--text-secondary)]'} />
                   <span className="font-black uppercase text-[10px] tracking-wider text-[var(--text-primary)]">
-                    {isGuest ? 'Guest Access' : (isOwner ? (getAdminRoleTitle(userEmail) || 'Administrator') : `${plan || 'Free'} Plan`)}
+                    {isGuest ? 'Guest Access' : (isOwner ? `${getAdminRoleTitle(userEmail) || 'Administrator'} (Admin Elite)` : `${plan === 'admin' ? 'Admin Elite' : (plan || 'Free')} Plan`)}
                   </span>
                 </div>
                 
