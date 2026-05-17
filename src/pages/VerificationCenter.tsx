@@ -305,11 +305,11 @@ export default function VerificationCenter() {
 
   const getCategoryLabel = (cat: string) => {
     switch (cat) {
-      case 'ENTERPRISE_TRUSTED': return { label: 'Enterprise Elite', color: 'text-indigo-400 bg-indigo-950 border-indigo-700' };
-      case 'VERIFIED_TRUSTED': return { label: 'Verified Trusted', color: 'text-emerald-400 bg-emerald-950 border-emerald-700' };
-      case 'HIGH_TRUST': return { label: 'High Reputation', color: 'text-blue-400 bg-blue-950 border-blue-700' };
-      case 'MODERATE_TRUST': return { label: 'Moderate Trust', color: 'text-amber-400 bg-amber-950 border-amber-700' };
-      default: return { label: 'Baseline Identity', color: 'text-rose-400 bg-rose-950 border-rose-700' };
+      case 'ENTERPRISE_TRUSTED': return { label: 'Enterprise Elite', color: 'text-indigo-700 bg-indigo-50 border-indigo-300 dark:text-indigo-400 dark:bg-indigo-950/40 dark:border-indigo-800' };
+      case 'VERIFIED_TRUSTED': return { label: 'Verified Trusted', color: 'text-emerald-700 bg-emerald-50 border-emerald-300 dark:text-emerald-400 dark:bg-emerald-950/40 dark:border-emerald-800' };
+      case 'HIGH_TRUST': return { label: 'High Reputation', color: 'text-blue-700 bg-blue-50 border-blue-300 dark:text-blue-400 dark:bg-blue-950/40 dark:border-blue-800' };
+      case 'MODERATE_TRUST': return { label: 'Moderate Trust', color: 'text-amber-700 bg-amber-50 border-amber-300 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-800' };
+      default: return { label: 'Baseline Identity', color: 'text-rose-700 bg-rose-50 border-rose-300 dark:text-rose-400 dark:bg-rose-950/40 dark:border-rose-800' };
     }
   };
 
@@ -381,9 +381,9 @@ export default function VerificationCenter() {
               </svg>
               {/* Score text absolute center */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Score Index</span>
+                <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Score Index</span>
                 <span className="text-4xl sm:text-5xl font-display font-black text-black dark:text-white tracking-tight">{score}</span>
-                <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Range: 300 - 850</span>
+                <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Range: 300 - 850</span>
               </div>
             </div>
             
@@ -394,10 +394,10 @@ export default function VerificationCenter() {
           </div>
 
           <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 text-center">
-            <div className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">Weight Distribution</div>
+            <div className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">Weight Distribution</div>
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
               <div className="bg-zinc-50 dark:bg-zinc-800/40 p-1.5 border border-zinc-200 dark:border-zinc-700">
-                <div className="font-bold text-zinc-400">ID</div>
+                <div className="font-bold text-zinc-500 dark:text-zinc-400">ID</div>
                 <div className="font-black text-zinc-700 dark:text-zinc-300">{breakdown.identity}%</div>
               </div>
               <div className="bg-zinc-50 dark:bg-zinc-800/40 p-1.5 border border-zinc-200 dark:border-zinc-700">
@@ -462,9 +462,9 @@ export default function VerificationCenter() {
                     <div>
                       <div className="flex items-center gap-1.5">
                         <span className="font-display font-black text-sm text-black dark:text-white uppercase">{prov.name}</span>
-                        <span className="text-[8px] font-extrabold uppercase px-1.5 py-0.25 bg-zinc-200 dark:bg-zinc-800 text-zinc-500">{prov.category}</span>
+                        <span className="text-[8px] font-extrabold uppercase px-1.5 py-0.25 bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">{prov.category}</span>
                       </div>
-                      <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-1 max-w-md font-medium leading-relaxed">{prov.desc}</p>
+                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 max-w-md font-medium leading-relaxed">{prov.desc}</p>
                     </div>
                   </div>
 
@@ -511,7 +511,7 @@ export default function VerificationCenter() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="border-2 border-black p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-[4px]">
-            <span className="text-[9px] font-bold text-zinc-400 uppercase">Aggregated Threat Rating</span>
+            <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">Aggregated Threat Rating</span>
             <div className="flex items-center gap-2 mt-1">
               <span className={`text-2xl font-black uppercase tracking-tight ${
                 riskLevel === 'CRITICAL' ? 'text-red-600' :
@@ -520,11 +520,11 @@ export default function VerificationCenter() {
               }`}>{riskLevel}</span>
               <span className="text-[10px] font-extrabold uppercase bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5">Real-time signals</span>
             </div>
-            <p className="text-[10px] text-zinc-500 mt-2 font-medium">Derived via multi-platform activity frequency, legal name validation checks, and repository link consistency.</p>
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Derived via multi-platform activity frequency, legal name validation checks, and repository link consistency.</p>
           </div>
 
           <div className="md:col-span-2 border-2 border-black p-4 rounded-[4px] space-y-3">
-            <span className="text-[9px] font-bold text-zinc-400 uppercase block">Active System Flags & Penalties</span>
+            <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase block">Active System Flags & Penalties</span>
             {fraudPenalties.length === 0 ? (
               <div className="flex items-center gap-2 text-emerald-500 py-2">
                 <CheckCircle className="w-5 h-5 flex-shrink-0" />
@@ -565,9 +565,9 @@ export default function VerificationCenter() {
                 }`}>
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                 </div>
-                <div className="text-[10px] font-bold text-zinc-400 font-mono">{new Date(timeItem.timestamp).toLocaleString()}</div>
+                <div className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 font-mono">{new Date(timeItem.timestamp).toLocaleString()}</div>
                 <h4 className="text-xs font-black uppercase tracking-wider text-black dark:text-white mt-1">{timeItem.title}</h4>
-                <p className="text-[10px] text-zinc-500 mt-0.5 max-w-2xl font-medium">{timeItem.description}</p>
+                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-2xl font-medium">{timeItem.description}</p>
               </div>
             ))}
           </div>
