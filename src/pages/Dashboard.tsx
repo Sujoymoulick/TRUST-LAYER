@@ -6,7 +6,6 @@ import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
-import { Link2 } from 'lucide-react';
 
 import linkedinLogo from '../assets/social/linkedin.png';
 import googleLogo from '../assets/social/google.png';
