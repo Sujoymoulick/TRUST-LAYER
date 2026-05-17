@@ -41,6 +41,14 @@ export function DashboardLayout() {
   const [profileName, setProfileName] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [devToolsOpen, setDevToolsOpen] = useState(pathname.startsWith('/developer'));
+
+  useEffect(() => {
+    if (pathname.startsWith('/developer')) {
+      setDevToolsOpen(true);
+    }
+  }, [pathname]);
+
   useSIWE();
 
   // Real-time avatar from Supabase Storage
@@ -152,28 +160,38 @@ export function DashboardLayout() {
               const Icon = item.icon;
               return (
                 <div key={item.label} className="flex flex-col">
-                  <div className={`nav-link cursor-pointer hover:bg-brutal-yellow/10 ${isSubmenuActive ? 'text-black font-black bg-zinc-100 border-l-[6px] border-black' : ''}`}>
-                    <Icon size={17} />
-                    <span>{item.label}</span>
+                  <div 
+                    onClick={() => setDevToolsOpen(!devToolsOpen)}
+                    className={`nav-link cursor-pointer hover:bg-brutal-yellow/10 flex items-center justify-between select-none ${isSubmenuActive ? 'text-black font-black bg-zinc-100 border-l-[6px] border-black' : ''}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icon size={17} />
+                      <span>{item.label}</span>
+                    </div>
+                    <span className={`text-[9px] font-black text-black/50 transition-transform duration-200 mr-2 ${devToolsOpen ? 'rotate-90' : ''}`}>
+                      ▶
+                    </span>
                   </div>
-                  <div className="flex flex-col border-l-[3px] border-black/20 ml-[23px] my-1 gap-1">
-                    {item.submenu.map((sub: any) => (
-                      <NavLink
-                        key={sub.to}
-                        to={sub.to}
-                        onClick={closeSidebar}
-                        className={({ isActive }) => 
-                          `pl-4 py-2 text-xs font-black uppercase tracking-wider block transition-all border-b border-black/5 last:border-b-0 ${
-                            isActive 
-                              ? 'text-black bg-brutal-yellow border-r-2 border-black font-black shadow-[2px_2px_0px_#000] translate-x-1' 
-                              : 'text-zinc-600 hover:text-black hover:bg-brutal-yellow/20'
-                          }`
-                        }
-                      >
-                        {sub.label}
-                      </NavLink>
-                    ))}
-                  </div>
+                  {devToolsOpen && (
+                    <div className="flex flex-col border-l-[3px] border-black/20 ml-[23px] my-1 gap-1">
+                      {item.submenu.map((sub: any) => (
+                        <NavLink
+                          key={sub.to}
+                          to={sub.to}
+                          onClick={closeSidebar}
+                          className={({ isActive }) => 
+                            `pl-4 py-2 text-xs font-black uppercase tracking-wider block transition-all border-b border-black/5 last:border-b-0 ${
+                              isActive 
+                                ? 'text-black bg-brutal-yellow border-r-2 border-black font-black shadow-[2px_2px_0px_#000] translate-x-1' 
+                                : 'text-zinc-600 hover:text-black hover:bg-brutal-yellow/20'
+                            }`
+                          }
+                        >
+                          {sub.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             }
