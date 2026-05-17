@@ -5,6 +5,7 @@ import { Loader2, ArrowRight } from 'lucide-react';
 import { isAdminEmail } from '../lib/utils';
 import { UPIPayment } from '../components/UPIPayment';
 import { useGuest } from '../context/GuestContext';
+import { VITE_API_BASE_URL } from '../lib/api';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 // ... (PLANS, FEATURES, etc.)
@@ -121,6 +122,21 @@ export default function Pricing() {
     };
   }, [isGuest]);
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if ((window as any).Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handlePlanSelect = async (planId: string) => {
     // Guest users: redirect to login/signup
     if (isGuest) {
@@ -137,30 +153,97 @@ export default function Pricing() {
         return;
       }
 
-      // If it's a paid plan (and NOT the admin plan for designated admins), show UPI modal
-      if (planId !== 'free' && (planId !== 'admin' || !isAdmin)) {
-        const selectedPlan = plans.find(p => p.id === planId);
-        if (selectedPlan) {
-          setShowUpi({
-            amount: yearly ? selectedPlan.yearly * 12 : selectedPlan.monthly,
-            planId: planId,
-            planName: selectedPlan.name
-          });
-          setLoading(null);
-          return;
-        }
+      // If it's free or admin plan (since designated admins get full access), apply directly
+      if (planId === 'free' || (planId === 'admin' && isAdmin)) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ plan: planId })
+          .eq('id', user.id);
+
+        if (error) throw error;
+        
+        // Success - redirect to dashboard
+        navigate('/dashboard');
+        return;
       }
 
-      // If it's free or admin plan (since designated admins get full access), apply directly
-      const { error } = await supabase
-        .from('profiles')
-        .update({ plan: planId })
-        .eq('id', user.id);
+      // ── Razorpay Payment Checkout ──
+      const selectedPlan = plans.find(p => p.id === planId);
+      if (!selectedPlan) {
+        throw new Error('Selected plan not found');
+      }
 
-      if (error) throw error;
-      
-      // Success - redirect to dashboard
-      navigate('/dashboard');
+      const amountToPay = yearly ? selectedPlan.yearly * 12 : selectedPlan.monthly;
+
+      // 1. Fetch Supabase session authorization token
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      // Connect endpoint through VITE_API_BASE_URL (removing /secure if nested to target the base router path)
+      const baseApiUrl = VITE_API_BASE_URL.replace('/api/v1/secure', '/api/v1');
+      const orderRes = await fetch(`${baseApiUrl}/payment/razorpay/order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({ amount: amountToPay, planId })
+      });
+
+      if (!orderRes.ok) {
+        throw new Error('Failed to create billing order on backend.');
+      }
+
+      const orderData = await orderRes.json();
+
+      // 2. Load dynamic SDK Script
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert('Razorpay SDK failed to load. Please verify your internet connection.');
+        return;
+      }
+
+      // 3. Configure Checkout Options
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'Pramaaan Trust passport',
+        description: `Upgrade to ${selectedPlan.name} Subscription`,
+        image: 'https://raw.githubusercontent.com/Sujoymoulick/TRUST-LAYER/main/frontend/public/logo.png',
+        order_id: orderData.isMock ? undefined : orderData.orderId,
+        handler: async function () {
+          try {
+            setLoading(planId);
+            // 4. Update the user plan dynamically in Supabase on success
+            const { error: updateErr } = await supabase
+              .from('profiles')
+              .update({ plan: planId })
+              .eq('id', user.id);
+
+            if (updateErr) throw updateErr;
+
+            alert(`Successfully upgraded to ${selectedPlan.name}!`);
+            navigate('/dashboard');
+          } catch (updateErr: any) {
+            console.error('Database plan sync failed:', updateErr);
+            alert('Your payment was successful, but we failed to update your profile. Please contact Support.');
+          } finally {
+            setLoading(null);
+          }
+        },
+        prefill: {
+          name: user.user_metadata?.full_name || '',
+          email: user.email || '',
+        },
+        theme: {
+          color: '#FFE600', // Pramaaan signature high-contrast bright brand yellow
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+
     } catch (err) {
       console.error('Plan selection error:', err);
       alert('Failed to select plan. Please try again.');
