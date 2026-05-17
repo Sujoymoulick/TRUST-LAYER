@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import Identity from './pages/Identity';
 import Passport from './pages/Passport';
 import ConnectedApps from './pages/ConnectedApps';
+import VerificationCenter from './pages/VerificationCenter';
 import RiskAnalysis from './pages/RiskAnalysis';
 import ApiDashboard from './pages/ApiDashboard';
 import Admin from './pages/Admin';
@@ -39,6 +40,7 @@ function App() {
 
               <Route element={<DashboardLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/verification-center" element={<VerificationCenter />} />
                 <Route path="/wallet" element={<WalletDashboard />} />
                 <Route path="/identity" element={<Identity />} />
                 <Route path="/passport" element={<Passport />} />

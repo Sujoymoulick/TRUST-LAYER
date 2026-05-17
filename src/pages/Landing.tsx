@@ -20,6 +20,7 @@ import {
   Moon
 } from 'lucide-react';
 import { Component as RocketLoader } from '../components/ui/rocket-loader';
+import { CircularTestimonialsDemo } from '../components/ui/demo';
 import mainLogo from '../assets/Pramaaan-logo.png';
 
 const PLATFORMS = [
@@ -261,6 +262,22 @@ export default function Landing() {
           </div>
         {/* @ts-ignore */}
         </marquee>
+      </section>
+
+      {/* TESTIMONIALS SECTION */}
+      <section className="relative z-20 border-b-2 border-[var(--border-color)] bg-[var(--bg-primary)] py-20 px-6 md:px-12 flex flex-col items-center justify-center">
+        <div className="max-w-7xl mx-auto w-full space-y-12">
+          <div className="text-center max-w-xl mx-auto">
+            <span className="bg-brutal-blue border-2 border-black text-white px-3 py-1 text-[10px] font-black uppercase tracking-wider">REVIEWS</span>
+            <h2 className="font-display text-4xl sm:text-6xl font-black uppercase italic tracking-tighter mt-4">
+              WHAT PEOPLE SAY
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 mt-2 font-medium uppercase">
+              Hear from global developers, critical reviewers, and enterprise integrators.
+            </p>
+          </div>
+          <CircularTestimonialsDemo />
+        </div>
       </section>
 
       {/* Footer */}

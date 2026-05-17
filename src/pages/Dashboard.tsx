@@ -13,6 +13,7 @@ import facebookLogo from '../assets/social/facebook.png';
 import instagramLogo from '../assets/social/instagram.png';
 import githubLogo from '../assets/social/github.png';
 import twitterLogo from '../assets/social/twitter.png';
+import guestmodeLogo from '../assets/guestmode logo.gif';
 
 interface TrustRecord {
   id: string;
@@ -282,8 +283,8 @@ export default function Dashboard() {
       {isGuest && (
         <div className="brutal-card bg-black text-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#FFE600]">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 border-4 border-brutal-yellow bg-white flex items-center justify-center text-3xl">
-              👁
+            <div className="w-16 h-16 border-4 border-brutal-yellow bg-white flex items-center justify-center overflow-hidden">
+              <img src={guestmodeLogo} alt="Guest Mode Logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <h4 className="font-display text-xl uppercase leading-none text-brutal-yellow">You're Viewing Demo Data</h4>

@@ -12,6 +12,7 @@ import { useProfileAvatar } from '../hooks/useProfileAvatar';
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', guestAllowed: true },
+  { to: '/verification-center', icon: ShieldCheck, label: 'Verification Center', guestAllowed: true },
   { to: '/wallet',    icon: Wallet,          label: 'Wallet',    guestAllowed: false },
   { to: '/identity',  icon: User,            label: 'Identity',  guestAllowed: true  },
   { to: '/passport',  icon: BookOpen,        label: 'Passport',  guestAllowed: false },
