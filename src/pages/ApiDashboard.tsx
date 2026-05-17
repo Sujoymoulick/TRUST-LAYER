@@ -1,18 +1,34 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Copy, Loader2, Key, CheckCircle, Trash2, Plus, AlertTriangle, EyeOff, Lock } from 'lucide-react';
+import {
+  Copy,
+  Loader2,
+  Key,
+  CheckCircle,
+  Trash2,
+  Plus,
+  AlertTriangle,
+  EyeOff,
+  Lock,
+  Shield,
+  Activity,
+  Code,
+  Clock,
+  Globe,
+  ArrowUpRight,
+  BarChart2
+} from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
 
-interface ApiKey {
-  _id: string;
+interface B2bApp {
+  id: string;
   name: string;
-  apiId: string;
-  keyHint: string;
-  lastUsed: string | null;
-  status: string;
+  description: string | null;
+  sandboxKeyHint: string;
+  productionKeyHint: string;
   createdAt: string;
 }
 
@@ -20,200 +36,229 @@ export default function ApiDashboard() {
   const { isGuest } = useGuest();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [records, setRecords] = useState<any[]>([]);
-  
-  // New API Key States
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [newKeyData, setNewKeyData] = useState<{ apiId: string; secretKey: string; name: string } | null>(null);
-  const [copied, setCopied] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
+  // Portal State Data
+  const [apps, setApps] = useState<B2bApp[]>([]);
+  const [metrics, setMetrics] = useState<any>(null);
+  
+  // Registration Form
+  const [newAppName, setNewAppName] = useState('');
+  const [newAppDesc, setNewAppDesc] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [showRegModal, setShowRegModal] = useState(false);
+
+  // Keys Display Modal
+  const [generatedApp, setGeneratedApp] = useState<any>(null);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  // Revoke App Modal
+  const [appToRevoke, setAppToRevoke] = useState<B2bApp | null>(null);
+  const [isRevoking, setIsRevoking] = useState(false);
+
   useEffect(() => {
-    // Guest mode: no API key fetching
     if (isGuest) {
       setLoading(false);
       return;
     }
 
-    async function fetchData() {
+    async function initializePortal() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           setUserId(user.id);
-          await fetchApiKeys(user.id);
+          await fetchAppsAndMetrics(user.id);
         }
-
-        const { data, error } = await supabase
-          .from('trust_records')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        if (error) throw error;
-        setRecords(data || []);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error('Failed to load Developer Portal:', err);
       } finally {
         setLoading(false);
       }
     }
-    fetchData();
+
+    initializePortal();
   }, [isGuest]);
 
-  const fetchApiKeys = async (uid: string) => {
+  const fetchAppsAndMetrics = async (uid: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/keys?ownerId=${uid}`);
-      if (response.ok) {
-        const keys = await response.json();
-        setApiKeys(keys);
+      // List Developer Apps
+      const appsRes = await fetch(`${API_BASE_URL}/developer/apps?userId=${uid}`);
+      if (appsRes.ok) {
+        const appsData = await appsRes.json();
+        setApps(appsData.data || []);
+      }
+
+      // Fetch Telemetry metrics
+      const metricsRes = await fetch(`${API_BASE_URL}/developer/metrics?userId=${uid}`);
+      if (metricsRes.ok) {
+        const metricsData = await metricsRes.json();
+        setMetrics(metricsData.data || null);
       }
     } catch (err) {
-      console.error('Failed to fetch API keys:', err);
+      console.error('Failed to fetch apps/metrics:', err);
     }
   };
 
-  const handleGenerateKey = async () => {
-    if (!userId) return;
-    setIsGenerating(true);
+  const handleCreateApp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId || !newAppName.trim()) return;
+    setIsRegistering(true);
+
     try {
-      const response = await fetch(`${API_BASE_URL}/keys/generate`, {
+      const response = await fetch(`${API_BASE_URL}/developer/apps`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ownerId: userId, name: 'Production Key' })
+        body: JSON.stringify({
+          name: newAppName,
+          description: newAppDesc,
+          userId
+        })
       });
+
       if (response.ok) {
         const data = await response.json();
-        setNewKeyData(data);
-        await fetchApiKeys(userId); // Refresh the list
+        setGeneratedApp(data);
+        setShowRegModal(false);
+        setNewAppName('');
+        setNewAppDesc('');
+        await fetchAppsAndMetrics(userId);
       }
     } catch (err) {
-      console.error('Failed to generate key:', err);
+      console.error('Failed to create application:', err);
     } finally {
-      setIsGenerating(false);
+      setIsRegistering(false);
     }
   };
 
-  const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
-
-  const confirmRevokeKey = async () => {
-    if (!userId || !keyToRevoke) return;
+  const handleRevokeApp = async () => {
+    if (!userId || !appToRevoke) return;
+    setIsRevoking(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/keys/${keyToRevoke}?ownerId=${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/developer/apps/${appToRevoke.id}?userId=${userId}`, {
         method: 'DELETE'
       });
       if (response.ok) {
-        await fetchApiKeys(userId);
+        setAppToRevoke(null);
+        await fetchAppsAndMetrics(userId);
       }
     } catch (err) {
-      console.error('Failed to revoke key:', err);
+      console.error('Failed to revoke app:', err);
     } finally {
-      setKeyToRevoke(null);
+      setIsRevoking(false);
     }
   };
 
-  const handleCopy = (text: string) => {
+  const handleCopy = (text: string, type: 'sb' | 'prod') => {
     navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedKey(type);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="animate-spin size-12" />
+        <Loader2 className="animate-spin text-zinc-800 size-12" />
       </div>
     );
   }
 
-  // Guest Mode: show locked placeholder
+  // Guest Mode placeholder
   if (isGuest) {
     return (
-      <div className="max-w-4xl mx-auto space-y-8 pb-20">
+      <div className="max-w-6xl mx-auto space-y-8 pb-20">
         <div>
-          <h2 className="font-display text-3xl uppercase">API Dashboard</h2>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your Pramaaan production access.</p>
+          <h2 className="font-display text-3xl uppercase">B2B Developer Portal</h2>
+          <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Integrate Pramaaan Trustlayer into third-party apps.</p>
         </div>
 
         <div className="brutal-card shadow-[8px_8px_0px_#000] flex flex-col items-center text-center py-16 gap-6">
           <div className="w-20 h-20 border-4 border-black bg-brutal-yellow flex items-center justify-center shadow-[6px_6px_0px_#000]">
             <Lock size={40} />
           </div>
-          <h3 className="font-display text-2xl uppercase">API Keys Locked</h3>
+          <h3 className="font-display text-2xl uppercase">Developer Suite Locked</h3>
           <p className="font-bold text-gray-600 uppercase text-xs tracking-widest max-w-sm leading-relaxed">
-            API key management is only available to registered users. Create a free account to generate and manage your production keys.
+            API key generation, HMAC payload signing credentials, and integration telemetry logs are reserved for registered users.
           </p>
           <button
             onClick={() => navigate('/login')}
             className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase"
           >
-            Create Free Account →
+            Create Developer Account →
           </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="brutal-card">
-            <h3 className="font-display text-lg uppercase mb-6">API Utilization</h3>
-            <div className="h-40 relative border-b-4 border-l-4 border-black ml-8 mb-4 opacity-30 blur-sm">
-              <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
-                <path d="M0,80 L40,70 L80,85 L120,40 L160,60 L200,20 L240,45 L280,30 L320,65 L360,40 L400,50" fill="none" stroke="#0057FF" strokeWidth="4" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <div className="flex justify-between font-black text-[10px] uppercase text-gray-300">
-              <span>Current Month</span>
-              <span>— Total Calls</span>
-            </div>
-          </div>
-
-          <div className="brutal-card flex flex-col justify-center gap-4 bg-brutal-navy text-white">
-            <h3 className="font-display text-xl uppercase">Developer Docs</h3>
-            <p className="text-xs font-bold leading-relaxed opacity-80 uppercase">
-              Integrate the Pramaaan protocol into your own applications using our high-performance SDK.
-            </p>
-            <button className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-2 text-xs">
-              Read API Docs →
-            </button>
-          </div>
         </div>
       </div>
     );
   }
 
+  // Pure SVG brutalist time-series chart points generator
+  const getChartPath = (daily: any) => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const values = days.map(d => daily?.[d] || 0);
+    const maxVal = Math.max(...values, 5);
+    
+    // Convert 7 coordinates to SVG line coordinates
+    return values.map((val, idx) => {
+      const x = (idx * 60) + 20;
+      const y = 90 - ((val / maxVal) * 70);
+      return `${x},${y}`;
+    }).join(' ');
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-20 relative">
-      {/* Brutalist Revoke Confirmation Modal */}
-      {keyToRevoke && (
+    <div className="max-w-6xl mx-auto space-y-8 pb-20 relative">
+      
+      {/* ─── MODAL 1: REGISTER APPLICATION ─── */}
+      {showRegModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-sm w-full p-6 flex flex-col gap-6">
-            <div className="flex items-center gap-3 text-red-500">
-              <AlertTriangle size={32} />
-              <h3 className="font-display text-2xl uppercase leading-none">Revoke Key?</h3>
-            </div>
+          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-md w-full p-6 flex flex-col gap-6">
+            <h3 className="font-display text-2xl uppercase leading-none">Register New App</h3>
             
-            <p className="text-xs font-bold uppercase text-gray-600 tracking-widest leading-relaxed">
-              Are you sure you want to revoke this API key? This action is permanent and cannot be undone. Applications using this key will lose access immediately.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 mt-2">
-              <button 
-                onClick={() => setKeyToRevoke(null)}
-                className="brutal-btn flex-1 bg-gray-100 text-black px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={confirmRevokeKey}
-                className="brutal-btn flex-1 bg-red-500 text-white px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
-              >
-                Yes, Revoke
-              </button>
-            </div>
+            <form onSubmit={handleCreateApp} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Application Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Acme Web Platform"
+                  value={newAppName}
+                  onChange={(e) => setNewAppName(e.target.value)}
+                  className="w-full border-2 border-black p-3 font-bold text-xs uppercase"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Description (Optional)</label>
+                <textarea
+                  placeholder="e.g. Unified payment check logic"
+                  value={newAppDesc}
+                  onChange={(e) => setNewAppDesc(e.target.value)}
+                  className="w-full border-2 border-black p-3 font-bold text-xs uppercase h-20"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowRegModal(false)}
+                  className="brutal-btn flex-1 bg-zinc-100 text-black px-4 py-3 font-black uppercase text-[10px]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isRegistering}
+                  className="brutal-btn flex-1 bg-brutal-green text-black px-4 py-3 font-black uppercase text-[10px] flex items-center justify-center gap-2"
+                >
+                  {isRegistering ? <Loader2 className="animate-spin size-4" /> : 'Register App'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* Glassmorphism Modal for New Key */}
-      {newKeyData && (
+      {/* ─── MODAL 2: CREDENTIALS GENERATED SCREEN ─── */}
+      {generatedApp && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="bg-[#111] border border-white/20 shadow-2xl rounded-2xl max-w-lg w-full overflow-hidden flex flex-col">
             <div className="p-6 border-b border-white/10 bg-white/5 flex items-center gap-3">
@@ -221,173 +266,352 @@ export default function ApiDashboard() {
                 <Key size={24} />
               </div>
               <div>
-                <h3 className="text-white font-display text-xl uppercase tracking-wider">New API Key Generated</h3>
-                <p className="text-white/60 text-xs">Save this key securely.</p>
+                <h3 className="text-white font-display text-xl uppercase tracking-wider">Credentials Generated</h3>
+                <p className="text-white/60 text-xs">Copy and store keys securely now.</p>
               </div>
             </div>
-            
-            <div className="p-8 space-y-6">
+
+            <div className="p-6 space-y-6">
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex gap-3 text-red-200">
-                <AlertTriangle className="shrink-0 text-red-400" />
-                <p className="text-sm">This is the <strong>only time</strong> we will show you this secret key. If you lose it, you will need to generate a new one.</p>
+                <AlertTriangle className="shrink-0 text-red-400 size-5" />
+                <p className="text-xs">
+                  This is the <strong>only time</strong> we will display these keys cleartext. If you lose them, you will need to regenerate new application key pairs.
+                </p>
               </div>
 
+              {/* Sandbox Key */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-white/70 uppercase tracking-widest">Secret Key</label>
+                <label className="text-[10px] font-bold text-white/70 uppercase tracking-widest">Sandbox API Key</label>
                 <div className="flex gap-2">
-                  <div className="flex-1 bg-black border border-white/10 rounded-lg p-3 font-mono text-sm text-white break-all flex items-center gap-2">
-                    <EyeOff size={16} className="text-white/40 shrink-0" />
-                    {newKeyData.secretKey}
+                  <div className="flex-1 bg-black border border-white/10 rounded-lg p-3 font-mono text-xs text-white break-all flex items-center gap-2">
+                    <EyeOff size={14} className="text-white/40 shrink-0" />
+                    {generatedApp.sandboxKey}
                   </div>
+                  <button
+                    onClick={() => handleCopy(generatedApp.sandboxKey, 'sb')}
+                    className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors shrink-0"
+                  >
+                    {copiedKey === 'sb' ? <CheckCircle size={16} className="text-brutal-green" /> : <Copy size={16} />}
+                  </button>
                 </div>
               </div>
 
+              {/* Production Key */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-white/70 uppercase tracking-widest">API ID (Public)</label>
-                <div className="bg-black border border-white/10 rounded-lg p-3 font-mono text-sm text-white/60 break-all">
-                  {newKeyData.apiId}
+                <label className="text-[10px] font-bold text-white/70 uppercase tracking-widest">Production API Key</label>
+                <div className="flex gap-2">
+                  <div className="flex-1 bg-black border border-white/10 rounded-lg p-3 font-mono text-xs text-white break-all flex items-center gap-2">
+                    <EyeOff size={14} className="text-white/40 shrink-0" />
+                    {generatedApp.productionKey}
+                  </div>
+                  <button
+                    onClick={() => handleCopy(generatedApp.productionKey, 'prod')}
+                    className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors shrink-0"
+                  >
+                    {copiedKey === 'prod' ? <CheckCircle size={16} className="text-brutal-green" /> : <Copy size={16} />}
+                  </button>
                 </div>
               </div>
-
-              <button 
-                onClick={() => handleCopy(newKeyData.secretKey)}
-                className={`w-full py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all ${
-                  copied ? 'bg-brutal-green text-black shadow-[0_0_15px_rgba(0,255,100,0.5)]' : 'bg-white text-black hover:bg-gray-200'
-                }`}
-              >
-                {copied ? <><CheckCircle size={20} /> Copied to Clipboard</> : <><Copy size={20} /> Copy Secret Key</>}
-              </button>
             </div>
 
             <div className="p-4 bg-black border-t border-white/10 flex justify-end">
-              <button 
-                onClick={() => setNewKeyData(null)}
-                className="text-white/70 hover:text-white px-4 py-2 font-bold text-sm transition-colors"
+              <button
+                onClick={() => setGeneratedApp(null)}
+                className="text-white/70 hover:text-white px-4 py-2 font-bold text-xs transition-colors uppercase tracking-wider"
               >
-                I have saved my key securely
+                I have saved these keys securely
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <div>
-        <h2 className="font-display text-3xl uppercase">API Dashboard</h2>
-        <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Manage your Pramaaan production access.</p>
+      {/* ─── MODAL 3: REVOKE APPLICATION CONFIRMATION ─── */}
+      {appToRevoke && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-sm w-full p-6 flex flex-col gap-6">
+            <div className="flex items-center gap-3 text-red-500">
+              <AlertTriangle size={32} />
+              <h3 className="font-display text-2xl uppercase leading-none">Revoke App?</h3>
+            </div>
+            
+            <p className="text-xs font-bold uppercase text-gray-500 tracking-widest leading-relaxed">
+              Are you sure you want to revoke <strong>{appToRevoke.name}</strong>? This is permanent. All B2B API requests using sandbox or production credentials of this app will fail instantly.
+            </p>
+            
+            <div className="flex gap-4 pt-2">
+              <button 
+                onClick={() => setAppToRevoke(null)}
+                className="brutal-btn flex-1 bg-zinc-100 text-black px-4 py-3 font-black uppercase text-[10px]"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleRevokeApp}
+                disabled={isRevoking}
+                className="brutal-btn flex-1 bg-red-500 text-white px-4 py-3 font-black uppercase text-[10px] flex items-center justify-center gap-2"
+              >
+                {isRevoking ? <Loader2 className="animate-spin size-4" /> : 'Yes, Revoke'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── HEADER ─── */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="font-display text-3xl uppercase flex items-center gap-2">
+            <Code size={32} /> B2B Developer Portal
+          </h2>
+          <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Generate encrypted API key credentials, review telemetry charts, and integrate verify widgets.</p>
+        </div>
+        <button
+          onClick={() => setShowRegModal(true)}
+          className="brutal-btn bg-brutal-yellow text-black text-xs px-6 py-3 flex items-center gap-2 font-black uppercase shadow-[4px_4px_0px_#000]"
+        >
+          <Plus size={16} /> Register B2B App
+        </button>
       </div>
 
-      <div className="brutal-card shadow-[8px_8px_0px_#000]">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-display text-lg uppercase flex items-center gap-2">
-            <Key size={20} /> API Keys
-          </h3>
-          <button 
-            onClick={handleGenerateKey}
-            disabled={isGenerating}
-            className="brutal-btn bg-brutal-yellow text-black text-xs px-4 py-2 flex items-center gap-2 disabled:opacity-50"
-          >
-            {isGenerating ? <Loader2 className="animate-spin size-4" /> : <Plus size={16} />}
-            Generate Key
-          </button>
+      {/* ─── ROW 1: METRICS HIGHLIGHT CARDS ─── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        {/* Card 1: Total Calls */}
+        <div className="brutal-card p-6 flex items-center gap-4 bg-white border-4 border-black shadow-[6px_6px_0px_#000]">
+          <div className="p-3 bg-brutal-blue/15 text-brutal-blue border-2 border-black">
+            <Activity size={24} />
+          </div>
+          <div>
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total API Transactions</h4>
+            <span className="text-2xl font-display uppercase tracking-wide text-black">{metrics?.totalCalls || 0}</span>
+          </div>
         </div>
 
-        {apiKeys.length === 0 ? (
-          <div className="text-center py-8 border-2 border-dashed border-gray-300 bg-gray-50">
-            <p className="text-gray-500 font-bold uppercase text-xs">No active API keys found.</p>
+        {/* Card 2: Average Latency */}
+        <div className="brutal-card p-6 flex items-center gap-4 bg-white border-4 border-black shadow-[6px_6px_0px_#000]">
+          <div className="p-3 bg-brutal-yellow/15 text-brutal-yellow border-2 border-black">
+            <Clock size={24} />
+          </div>
+          <div>
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Average Gateway Latency</h4>
+            <span className="text-2xl font-display uppercase tracking-wide text-black">{metrics?.averageLatency || 0}ms</span>
+          </div>
+        </div>
+
+        {/* Card 3: Integrators Status */}
+        <div className="brutal-card p-6 flex items-center gap-4 bg-white border-4 border-black shadow-[6px_6px_0px_#000]">
+          <div className="p-3 bg-brutal-green/15 text-brutal-green border-2 border-black">
+            <Globe size={24} />
+          </div>
+          <div>
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Registered B2B Apps</h4>
+            <span className="text-2xl font-display uppercase tracking-wide text-black">{apps.length} Active</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ─── ROW 2: ACTIVE B2B APPLICATIONS LIST ─── */}
+      <div className="brutal-card p-6 bg-white border-4 border-black shadow-[8px_8px_0px_#000]">
+        <h3 className="font-display text-lg uppercase flex items-center gap-2 mb-6">
+          <Shield size={20} /> Registered Applications
+        </h3>
+
+        {apps.length === 0 ? (
+          <div className="text-center py-10 border-2 border-dashed border-zinc-300 bg-zinc-50">
+            <p className="text-zinc-500 font-bold uppercase text-xs">No B2B integrations active. Register your first application above!</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {apiKeys.map(key => (
-              <div key={key._id} className="border-2 border-black p-4 bg-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold">{key.name}</span>
-                    {key.status === 'active' && <span className="bg-brutal-green text-black text-[10px] uppercase font-black px-2 py-0.5">Active</span>}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {apps.map(app => (
+              <div key={app.id} className="border-3 border-black p-4 bg-zinc-50 flex flex-col justify-between gap-4 shadow-[4px_4px_0px_#000]">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-black text-sm uppercase text-black">{app.name}</h4>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase mt-0.5">{app.description || 'No description provided'}</p>
+                    </div>
+                    <span className="bg-zinc-200 text-black text-[9px] font-mono px-2 py-0.5 border border-black uppercase font-bold">
+                      ID: {app.id}
+                    </span>
                   </div>
-                  <div className="font-mono text-xs text-gray-600 bg-gray-100 px-2 py-1 inline-block">
-                    {key.apiId}
-                  </div>
-                  <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-                    Secret: sk_live_****{key.keyHint} • Created: {new Date(key.createdAt).toLocaleDateString()}
+
+                  <div className="space-y-1.5 pt-2">
+                    {/* Sandbox hint */}
+                    <div className="flex justify-between items-center text-[10px] bg-white p-2 border border-black font-mono text-zinc-600">
+                      <span>SANDBOX:</span>
+                      <span className="font-black text-black">{app.sandboxKeyHint}</span>
+                    </div>
+                    {/* Prod hint */}
+                    <div className="flex justify-between items-center text-[10px] bg-white p-2 border border-black font-mono text-zinc-600">
+                      <span>PRODUCTION:</span>
+                      <span className="font-black text-black">{app.productionKeyHint}</span>
+                    </div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setKeyToRevoke(key._id)}
-                  className="text-red-500 hover:bg-red-50 p-2 border-2 border-transparent hover:border-red-500 transition-colors self-end md:self-auto"
-                  title="Revoke Key"
-                >
-                  <Trash2 size={18} />
-                </button>
+
+                <div className="flex justify-between items-center pt-2 border-t border-dashed border-black">
+                  <span className="text-[9px] font-bold text-zinc-400 uppercase">Created: {new Date(app.createdAt).toLocaleDateString()}</span>
+                  <button
+                    onClick={() => setAppToRevoke(app)}
+                    className="text-red-500 hover:bg-red-50 p-2 border-2 border-transparent hover:border-black transition-all"
+                    title="Revoke Application"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="brutal-card">
-          <h3 className="font-display text-lg uppercase mb-6">API Utilization</h3>
-          <div className="h-40 relative border-b-4 border-l-4 border-black ml-8 mb-4">
-            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
-              <path
-                d="M0,80 L40,70 L80,85 L120,40 L160,60 L200,20 L240,45 L280,30 L320,65 L360,40 L400,50"
-                fill="none"
-                stroke="#0057FF"
-                strokeWidth="4"
-                strokeLinejoin="round"
-              />
-            </svg>
+      {/* ─── ROW 3: CHARTS & WIDGET CODE ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left: SVG Telemetry Chart */}
+        <div className="brutal-card lg:col-span-2 p-6 bg-white border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col justify-between">
+          <div>
+            <h3 className="font-display text-lg uppercase flex items-center gap-2 mb-6">
+              <BarChart2 size={20} /> Telemetry Volume (Last 7 Days)
+            </h3>
+
+            {/* SVG Brutalist Polyline Chart */}
+            <div className="border-4 border-black p-4 bg-zinc-50 relative aspect-[2.5/1] overflow-hidden flex items-end">
+              <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                {/* Horizontal Guide Lines */}
+                <line x1="0" y1="20" x2="400" y2="20" stroke="#ddd" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="55" x2="400" y2="55" stroke="#ddd" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="0" y1="90" x2="400" y2="90" stroke="#ccc" strokeWidth="2" />
+
+                {/* Neo-brutalist Bold Chart Stroke */}
+                {metrics?.dailyVolume ? (
+                  <>
+                    {/* Shadow block */}
+                    <polygon
+                      points={`20,90 ${getChartPath(metrics.dailyVolume)} 380,90`}
+                      fill="rgba(0, 255, 102, 0.08)"
+                    />
+                    <polyline
+                      fill="none"
+                      stroke="#000"
+                      strokeWidth="6"
+                      points={getChartPath(metrics.dailyVolume)}
+                      strokeLinecap="square"
+                    />
+                    <polyline
+                      fill="none"
+                      stroke="#00FF66"
+                      strokeWidth="3"
+                      points={getChartPath(metrics.dailyVolume)}
+                      strokeLinecap="square"
+                    />
+                  </>
+                ) : (
+                  <text x="50" y="50" fill="#999" fontSize="12" fontWeight="bold">NO TELEMETRY SIGNALS CAPTURED</text>
+                )}
+              </svg>
+            </div>
           </div>
-          <div className="flex justify-between font-black text-[10px] uppercase text-gray-400">
-            <span>Current Month</span>
-            <span>{records.length * 12} Total Calls</span>
+
+          <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400 tracking-wider mt-4 pt-2 border-t border-zinc-100">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
+              <span key={d} className={metrics?.dailyVolume?.[d] ? 'text-black font-black' : ''}>{d} ({metrics?.dailyVolume?.[d] || 0})</span>
+            ))}
           </div>
         </div>
 
-        <div className="brutal-card flex flex-col justify-center gap-4 bg-brutal-navy text-white">
-          <h3 className="font-display text-xl uppercase">Developer Docs</h3>
-          <p className="text-xs font-bold leading-relaxed opacity-80 uppercase">
-            Integrate the Pramaaan protocol into your own applications using our high-performance SDK.
-          </p>
-          <button className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-2 text-xs">
-            Read API Docs →
+        {/* Right: Embeddable Login Widget Code */}
+        <div className="brutal-card p-6 bg-brutal-navy text-white border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col justify-between gap-6">
+          <div className="space-y-4">
+            <h3 className="font-display text-lg uppercase text-brutal-yellow">Verify Widget Code</h3>
+            <p className="text-xs font-bold leading-relaxed opacity-90 uppercase">
+              Embed our high-contrast, premium B2B third-party verify button directly inside your project structure.
+            </p>
+            
+            {/* HTML code snippet block */}
+            <div className="bg-black/50 border-2 border-black p-3 rounded-none font-mono text-[10px] text-brutal-green break-all overflow-y-auto max-h-24">
+              {`<LoginWithTrustLayerButton
+  clientId="${apps[0]?.id || 'YOUR_APP_ID'}"
+  redirectUri="https://yourdomain.com/callback"
+  codeChallenge="PKCE_CHALLENGE"
+/>`}
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              if (apps[0]) {
+                const code = `<LoginWithTrustLayerButton\n  clientId="${apps[0].id}"\n  redirectUri="https://yourdomain.com/callback"\n  codeChallenge="PKCE_CHALLENGE"\n/>`;
+                navigator.clipboard.writeText(code);
+                alert('Widget code block copied to clipboard!');
+              } else {
+                alert('Please register a B2B Application first to populate the client ID.');
+              }
+            }}
+            className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-3 text-xs font-black uppercase flex items-center gap-2 border-2 border-black"
+          >
+            Copy Snippet <ArrowUpRight size={16} />
           </button>
         </div>
+
       </div>
 
-      <div className="brutal-card p-0 overflow-hidden shadow-[8px_8px_0px_#000]">
-        <h3 className="font-display text-lg uppercase p-4 border-b-4 border-black bg-gray-50">Recent API Transactions</h3>
+      {/* ─── ROW 4: RECENT API TRANSACTION LOGS ─── */}
+      <div className="brutal-card p-0 overflow-hidden border-4 border-black shadow-[8px_8px_0px_#000] bg-white">
+        <h3 className="font-display text-lg uppercase p-4 border-b-4 border-black bg-zinc-50 flex items-center gap-2">
+          <Activity size={20} /> Real-Time B2B API Transaction Logs
+        </h3>
+        
         <div className="overflow-x-auto">
           <table className="data-table">
             <thead>
               <tr>
                 <th>Method</th>
-                <th>Hash</th>
+                <th>App</th>
+                <th>Endpoint</th>
+                <th>Latency</th>
+                <th>Environment</th>
                 <th>Timestamp</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {records.length > 0 ? (
-                records.map((r) => (
-                  <tr key={r.id}>
-                    <td className="uppercase font-mono text-xs font-black">POST /verify</td>
-                    <td className="font-mono text-[10px]">{r.identity_hash.substring(0, 16)}...</td>
-                    <td className="font-bold text-xs">{new Date(r.created_at).toLocaleTimeString()}</td>
+              {metrics?.recentLogs && metrics.recentLogs.length > 0 ? (
+                metrics.recentLogs.map((log: any) => (
+                  <tr key={log.id}>
+                    <td className="uppercase font-mono text-xs font-black text-black">
+                      <span className={`px-2 py-0.5 border border-black ${log.method === 'POST' ? 'bg-brutal-blue/10 text-brutal-blue' : 'bg-zinc-100 text-black'}`}>
+                        {log.method}
+                      </span>
+                    </td>
+                    <td className="font-bold text-xs">{log.appName}</td>
+                    <td className="font-mono text-xs text-zinc-500">{log.endpoint}</td>
+                    <td className="font-bold text-xs">{log.duration}ms</td>
                     <td>
-                      <div className={`w-4 h-4 border-2 border-black mx-auto ${r.verification_status === 'verified' ? 'bg-brutal-green' : 'bg-brutal-pink'}`} />
+                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 border ${log.environment === 'production' ? 'bg-brutal-yellow/20 text-yellow-700 border-yellow-700' : 'bg-zinc-200 border-zinc-400'}`}>
+                        {log.environment}
+                      </span>
+                    </td>
+                    <td className="font-bold text-xs">{new Date(log.createdAt).toLocaleTimeString()}</td>
+                    <td>
+                      <div className={`w-6 h-6 border-2 border-black flex items-center justify-center font-bold text-[10px] ${log.status >= 400 ? 'bg-brutal-pink text-black' : 'bg-brutal-green text-black'}`}>
+                        {log.status}
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="text-center py-8 text-gray-400 font-bold uppercase">No API logs found</td>
+                  <td colSpan={7} className="text-center py-10 text-zinc-400 font-bold uppercase">No gateway transactions recorded. Verify your API credentials.</td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
       </div>
+
     </div>
   );
 }

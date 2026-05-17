@@ -21,6 +21,7 @@ import ConsentVault from './pages/ConsentVault';
 import PublicProfile from './pages/PublicProfile';
 import Logout from './pages/Logout';
 import Feedback from './pages/Feedback';
+import OauthConsent from './pages/OauthConsent';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ConsentBanner } from './components/ConsentBanner';
@@ -37,6 +38,7 @@ function App() {
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/profile" element={<PublicProfile />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="/oauth/consent" element={<OauthConsent />} />
 
               <Route element={<DashboardLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
