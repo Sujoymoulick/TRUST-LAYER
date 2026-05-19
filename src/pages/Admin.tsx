@@ -476,7 +476,7 @@ export default function Admin() {
             .select('id, email, full_name, role, plan, avatar_url, updated_at, institution_email, status');
           if (profiles) {
             setUsers(prev => prev.map(u => {
-              const match = profiles.find(p => p.id === u.id);
+              const match = profiles.find((p: any) => p.id === u.id);
               return match ? { ...u, ...match } : u;
             }));
           }
@@ -488,7 +488,7 @@ export default function Admin() {
           .select('id, email, full_name, role, plan, avatar_url, updated_at, institution_email, status');
         if (profiles) {
           setUsers(prev => prev.map(u => {
-            const match = profiles.find(p => p.id === u.id);
+            const match = profiles.find((p: any) => p.id === u.id);
             return match ? { ...u, ...match } : u;
           }));
         }
