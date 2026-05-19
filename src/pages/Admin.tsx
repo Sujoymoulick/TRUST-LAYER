@@ -53,6 +53,7 @@ interface UserProfile {
   role: 'user' | 'admin';
   updated_at: string;
   institution_email?: string | null;
+  status?: string | null;
 }
 
 interface AuditLog {
@@ -91,6 +92,29 @@ const getInstitutionEmail = (email: string) => {
   return null;
 };
 
+const renderStatusBadge = (status?: string | null) => {
+  const s = status || 'active';
+  if (s === 'suspended') {
+    return (
+      <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-pink text-white shadow-[1px_1px_0px_#000] font-black">
+        suspended
+      </span>
+    );
+  }
+  if (s === 'paused') {
+    return (
+      <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-yellow text-black shadow-[1px_1px_0px_#000] font-black">
+        paused
+      </span>
+    );
+  }
+  return (
+    <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-[#39FF14] text-black shadow-[1px_1px_0px_#000] font-black">
+      active
+    </span>
+  );
+};
+
 export default function Admin() {
   const navigate = useNavigate();
   const { isGuest } = useGuest();
@@ -121,6 +145,7 @@ export default function Admin() {
   const [manualAdjustment, setManualAdjustment] = useState<number>(0);
   const [scoreModalLoading, setScoreModalLoading] = useState(false);
   const [selectedUserPlan, setSelectedUserPlan] = useState<string>('free');
+  const [selectedUserStatus, setSelectedUserStatus] = useState<string>('active');
 
 
 
@@ -347,9 +372,10 @@ export default function Admin() {
       const result = await res.json();
       if (result.success) {
         setUserScoreData(result.data);
-        const { data: profile } = await supabase.from('profiles').select('manual_adjustment, plan').eq('id', user.id).single();
+        const { data: profile } = await supabase.from('profiles').select('manual_adjustment, plan, status').eq('id', user.id).single();
         setManualAdjustment(profile?.manual_adjustment || 0);
         setSelectedUserPlan(profile?.plan || 'free');
+        setSelectedUserStatus(profile?.status || 'active');
       }
     } catch (err) {
       console.error(err);
@@ -374,20 +400,23 @@ export default function Admin() {
         body: JSON.stringify({ userId: selectedUserForScore.id, manualAdjustment })
       });
 
-      // Update their subscription plan in the profiles table
-      const { error: planError } = await supabase
+      // Update their subscription plan and status in the profiles table
+      const { error: profileUpdateError } = await supabase
         .from('profiles')
-        .update({ plan: selectedUserPlan })
+        .update({ 
+          plan: selectedUserPlan,
+          status: selectedUserStatus
+        })
         .eq('id', selectedUserForScore.id);
       
-      if (planError) {
-        console.error('Plan update error:', planError);
+      if (profileUpdateError) {
+        console.error('Profile plan/status update error:', profileUpdateError);
       }
 
       const result = await res.json();
       if (result.success) {
         setUserScoreData(result.data);
-        alert('Score and Subscription Plan adjusted successfully!');
+        alert('Score, Subscription, and Account Status adjusted successfully!');
         setSelectedUserForScore(null);
         // Refresh site users table
         const usersRes = await fetch(`${VITE_API_BASE_URL}/admin/users`, {
@@ -402,6 +431,48 @@ export default function Admin() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setScoreModalLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUserForScore) return;
+    
+    const confirm1 = window.confirm(`WARNING: Are you absolutely sure you want to PERMANENTLY DELETE ${selectedUserForScore.email}?\n\nThis action cannot be undone and will erase all data, trust scores, and logins!`);
+    if (!confirm1) return;
+
+    const confirm2 = window.confirm(`FINAL CONFIRMATION: Are you really sure you want to completely purge ${selectedUserForScore.email} from the system? Click OK to proceed.`);
+    if (!confirm2) return;
+
+    setScoreModalLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`${VITE_API_BASE_URL}/admin/users/${selectedUserForScore.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('User account permanently deleted successfully.');
+        setSelectedUserForScore(null);
+        // Refresh site users table
+        const usersRes = await fetch(`${VITE_API_BASE_URL}/admin/users`, {
+          headers: { 'Authorization': `Bearer ${session?.access_token}` }
+        });
+        const usersData = await usersRes.json();
+        if (usersData.success) {
+          setUsers(usersData.data);
+        }
+      } else {
+        alert(`Deletion failed: ${result.error || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert(`Deletion failed: ${err.message}`);
     } finally {
       setScoreModalLoading(false);
     }
@@ -806,7 +877,7 @@ export default function Admin() {
                                 {u.plan || 'Free'}
                               </span>
                             </td>
-                            <td className="text-[10px] font-bold text-gray-400">Active</td>
+                            <td>{renderStatusBadge(u.status)}</td>
                             <td>
                               <div className="flex items-center gap-2">
                                 <input 
@@ -1267,6 +1338,19 @@ export default function Admin() {
                     </select>
                   </div>
 
+                  <div className="border-t-2 border-dashed border-brutal-blue/30 pt-3">
+                    <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Account Status Override</h3>
+                    <select
+                      value={selectedUserStatus}
+                      onChange={(e) => setSelectedUserStatus(e.target.value)}
+                      className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
+                    >
+                      <option value="active">ACTIVE</option>
+                      <option value="paused">PAUSED</option>
+                      <option value="suspended">SUSPENDED</option>
+                    </select>
+                  </div>
+
                   <button 
                     onClick={handleAdjustScore}
                     disabled={scoreModalLoading}
@@ -1274,6 +1358,17 @@ export default function Admin() {
                   >
                     {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Apply God Mode Overrides'}
                   </button>
+
+                  <div className="border-t-2 border-dashed border-red-500/30 pt-3 mt-4">
+                    <h3 className="font-display text-sm uppercase mb-2 text-red-600 font-black">Danger Zone</h3>
+                    <button 
+                      onClick={handleDeleteUser}
+                      disabled={scoreModalLoading}
+                      className="w-full brutal-btn bg-brutal-pink text-white uppercase text-xs py-3 font-display tracking-wider flex items-center justify-center gap-2 hover:bg-black hover:text-brutal-pink transition-colors font-black"
+                    >
+                      {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Permanently Delete Account'}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : null}
