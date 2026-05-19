@@ -414,42 +414,45 @@ export default function Admin() {
     let newScoreData = null;
 
     try {
-      // 1. Update plan, status, and manual adjustment in profiles table directly (highly reliable)
-      const { error: profileUpdateError } = await supabase
-        .from('profiles')
-        .update({ 
-          manual_adjustment: manualAdjustment,
-          plan: selectedUserPlan,
-          status: selectedUserStatus
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = {
+        'Authorization': `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json'
+      };
+
+      // 1. Update status and plan securely via backend (bypasses RLS using service role)
+      const statusRes = await fetch(`${VITE_API_BASE_URL}/admin/users/${selectedUserForScore.id}/status`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ 
+          status: selectedUserStatus,
+          plan: selectedUserPlan
         })
-        .eq('id', selectedUserForScore.id);
-      
-      if (profileUpdateError) {
-        throw profileUpdateError;
+      });
+
+      if (!statusRes.ok) {
+        const errData = await statusRes.json().catch(() => ({}));
+        throw new Error(errData.error || `Backend status update failed with HTTP ${statusRes.status}`);
       }
 
-      // 2. Try to sync/recalculate on the backend
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const headers = {
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json'
-        };
-        
-        const res = await fetch(`${VITE_API_BASE_URL}/admin/adjust-score`, {
-          method: 'PATCH',
-          headers,
-          body: JSON.stringify({ userId: selectedUserForScore.id, manualAdjustment })
-        });
+      // 2. Adjust manual trust score modifier securely via backend
+      const scoreRes = await fetch(`${VITE_API_BASE_URL}/admin/adjust-score`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ 
+          userId: selectedUserForScore.id, 
+          manualAdjustment 
+        })
+      });
 
-        if (res.ok) {
-          const result = await res.json();
-          if (result.success) {
-            newScoreData = result.data;
-          }
+      if (scoreRes.ok) {
+        const result = await scoreRes.json();
+        if (result.success) {
+          newScoreData = result.data;
         }
-      } catch (backendErr) {
-        console.warn('Backend adjust-score failed or offline, but profile details were updated in DB:', backendErr);
+      } else {
+        const errData = await scoreRes.json().catch(() => ({}));
+        throw new Error(errData.error || `Backend score adjustment failed with HTTP ${scoreRes.status}`);
       }
 
       // 3. Refresh user score data if successfully recalculated
