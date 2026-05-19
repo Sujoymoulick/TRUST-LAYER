@@ -357,6 +357,28 @@ export default function Admin() {
   const openScoreModal = async (user: UserProfile) => {
     setSelectedUserForScore(user);
     setScoreModalLoading(true);
+    setUserScoreData(null); // Reset from previous user
+    
+    // 1. Fetch profile details directly from Supabase (highly reliable, no backend dependency)
+    try {
+      const { data: profile, error: profileErr } = await supabase
+        .from('profiles')
+        .select('manual_adjustment, plan, status')
+        .eq('id', user.id)
+        .single();
+      
+      if (profileErr) {
+        console.error('Supabase profile fetch error:', profileErr);
+      }
+      
+      setManualAdjustment(profile?.manual_adjustment || 0);
+      setSelectedUserPlan(profile?.plan || 'free');
+      setSelectedUserStatus(profile?.status || 'active');
+    } catch (profileErr) {
+      console.error('Failed to load profile directly:', profileErr);
+    }
+    
+    // 2. Fetch ML recalculation / score breakdown from backend
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const headers = {
@@ -369,16 +391,18 @@ export default function Admin() {
         headers,
         body: JSON.stringify({ userId: user.id })
       });
-      const result = await res.json();
-      if (result.success) {
-        setUserScoreData(result.data);
-        const { data: profile } = await supabase.from('profiles').select('manual_adjustment, plan, status').eq('id', user.id).single();
-        setManualAdjustment(profile?.manual_adjustment || 0);
-        setSelectedUserPlan(profile?.plan || 'free');
-        setSelectedUserStatus(profile?.status || 'active');
+      if (res.ok) {
+        const result = await res.json();
+        if (result.success) {
+          setUserScoreData(result.data);
+        } else {
+          console.warn('Backend recalculation failed, but continuing with manual profile adjustments:', result.error);
+        }
+      } else {
+        console.warn(`Backend recalculation HTTP ${res.status}`);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Recalculation error:', err);
     } finally {
       setScoreModalLoading(false);
     }
@@ -387,50 +411,76 @@ export default function Admin() {
   const handleAdjustScore = async () => {
     if (!selectedUserForScore) return;
     setScoreModalLoading(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const headers = {
-        'Authorization': `Bearer ${session?.access_token}`,
-        'Content-Type': 'application/json'
-      };
-      
-      const res = await fetch(`${VITE_API_BASE_URL}/admin/adjust-score`, {
-        method: 'PATCH',
-        headers,
-        body: JSON.stringify({ userId: selectedUserForScore.id, manualAdjustment })
-      });
+    let newScoreData = null;
 
-      // Update their subscription plan and status in the profiles table
+    try {
+      // 1. Update plan, status, and manual adjustment in profiles table directly (highly reliable)
       const { error: profileUpdateError } = await supabase
         .from('profiles')
         .update({ 
+          manual_adjustment: manualAdjustment,
           plan: selectedUserPlan,
           status: selectedUserStatus
         })
         .eq('id', selectedUserForScore.id);
       
       if (profileUpdateError) {
-        console.error('Profile plan/status update error:', profileUpdateError);
+        throw profileUpdateError;
       }
 
-      const result = await res.json();
-      if (result.success) {
-        setUserScoreData(result.data);
-        alert('Score, Subscription, and Account Status adjusted successfully!');
-        setSelectedUserForScore(null);
-        // Refresh site users table
+      // 2. Try to sync/recalculate on the backend
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers = {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        };
+        
+        const res = await fetch(`${VITE_API_BASE_URL}/admin/adjust-score`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify({ userId: selectedUserForScore.id, manualAdjustment })
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          if (result.success) {
+            newScoreData = result.data;
+          }
+        }
+      } catch (backendErr) {
+        console.warn('Backend adjust-score failed or offline, but profile details were updated in DB:', backendErr);
+      }
+
+      // 3. Refresh user score data if successfully recalculated
+      if (newScoreData) {
+        setUserScoreData(newScoreData);
+      }
+
+      alert('Score, Subscription, and Account Status adjusted successfully!');
+      setSelectedUserForScore(null);
+
+      // Refresh site users table
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
         const usersRes = await fetch(`${VITE_API_BASE_URL}/admin/users`, {
           headers: { 'Authorization': `Bearer ${session?.access_token}` }
         });
         const usersData = await usersRes.json();
         if (usersData.success) {
           setUsers(usersData.data);
+        } else {
+          // Fallback refresh directly from profiles table
+          fetchAdminData();
         }
-      } else {
-        alert('Failed to adjust user profile.');
+      } catch (err) {
+        // Fallback refresh directly from profiles table
+        fetchAdminData();
       }
-    } catch (err) {
-      console.error(err);
+
+    } catch (err: any) {
+      console.error('Adjust score error:', err);
+      alert(`Adjustment failed: ${err.message || err}`);
     } finally {
       setScoreModalLoading(false);
     }
@@ -1276,102 +1326,119 @@ export default function Admin() {
               God Mode: <span className="text-brutal-blue">{selectedUserForScore.email}</span>
             </h2>
 
-            {scoreModalLoading && !userScoreData ? (
-              <div className="py-12 flex justify-center"><Loader2 className="animate-spin text-brutal-blue" size={32} /></div>
-            ) : userScoreData ? (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center bg-black text-white p-4">
-                  <div className="text-center">
-                    <p className="text-[10px] font-black uppercase text-gray-400">Calculated</p>
-                    <p className="font-display text-4xl">{userScoreData.calculatedScore}</p>
-                  </div>
-                  <div className="text-xl font-black">+</div>
-                  <div className="text-center">
-                    <p className="text-[10px] font-black uppercase text-gray-400">Admin Adjust</p>
-                    <p className="font-display text-4xl text-brutal-yellow">{manualAdjustment}</p>
-                  </div>
-                  <div className="text-xl font-black">=</div>
-                  <div className="text-center">
-                    <p className="text-[10px] font-black uppercase text-brutal-blue">Final Score</p>
-                    <p className="font-display text-5xl text-brutal-green">{userScoreData.finalScore}</p>
-                  </div>
+            <div className="space-y-6">
+              {/* Recalculate/ML Breakdown Section */}
+              {scoreModalLoading && !userScoreData ? (
+                <div className="py-12 flex flex-col justify-center items-center gap-3 bg-gray-50 border-2 border-black border-dashed p-6 shadow-[2px_2px_0px_#000]">
+                  <Loader2 className="animate-spin text-brutal-blue" size={24} />
+                  <span className="text-[10px] font-black uppercase tracking-wider">Recalculating ML trust signals...</span>
                 </div>
-
-                <div>
-                  <h3 className="font-display text-sm uppercase mb-3">Trust Signals Breakdown</h3>
-                  <div className="space-y-2">
-                    {Object.entries(userScoreData.signals || {}).map(([key, value]) => (
-                      <div key={key} className="flex justify-between items-center p-3 border-2 border-black bg-gray-50">
-                        <span className="text-[10px] font-black uppercase">{key.replace('_', ' ')}</span>
-                        <span className="font-mono font-bold">{String(value)} pts</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10 space-y-4">
-                  <div>
-                    <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Trust Score Override</h3>
-                    <div className="flex gap-4">
-                      <input 
-                        type="number" 
-                        value={manualAdjustment} 
-                        onChange={(e) => setManualAdjustment(Number(e.target.value))}
-                        className="brutal-input flex-1 !text-lg !font-bold"
-                        placeholder="e.g. 100 or -50"
-                      />
+              ) : userScoreData ? (
+                <>
+                  <div className="flex justify-between items-center bg-black text-white p-4 shadow-[4px_4px_0px_#000] border-2 border-black">
+                    <div className="text-center">
+                      <p className="text-[10px] font-black uppercase text-gray-400">Calculated</p>
+                      <p className="font-display text-4xl">{userScoreData.calculatedScore}</p>
+                    </div>
+                    <div className="text-xl font-black">+</div>
+                    <div className="text-center">
+                      <p className="text-[10px] font-black uppercase text-gray-400">Admin Adjust</p>
+                      <p className="font-display text-4xl text-brutal-yellow">{manualAdjustment}</p>
+                    </div>
+                    <div className="text-xl font-black">=</div>
+                    <div className="text-center">
+                      <p className="text-[10px] font-black uppercase text-brutal-blue">Final Score</p>
+                      <p className="font-display text-5xl text-brutal-green">{userScoreData.finalScore}</p>
                     </div>
                   </div>
 
-                  <div className="border-t-2 border-dashed border-brutal-blue/30 pt-3">
-                    <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Subscription Plan Override</h3>
-                    <select
-                      value={selectedUserPlan}
-                      onChange={(e) => setSelectedUserPlan(e.target.value)}
-                      className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
-                    >
-                      {plans.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} ({p.id})
-                        </option>
+                  <div>
+                    <h3 className="font-display text-xs uppercase mb-3 text-gray-600">Trust Signals Breakdown</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {Object.entries(userScoreData.signals || {}).map(([key, value]) => (
+                        <div key={key} className="flex justify-between items-center p-3 border-2 border-black bg-gray-50 shadow-[2px_2px_0px_#000]">
+                          <span className="text-[9px] font-black uppercase">{key.replace(/_/g, ' ')}</span>
+                          <span className="font-mono font-bold text-xs">{String(value)} pts</span>
+                        </div>
                       ))}
-                    </select>
+                    </div>
                   </div>
-
-                  <div className="border-t-2 border-dashed border-brutal-blue/30 pt-3">
-                    <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Account Status Override</h3>
-                    <select
-                      value={selectedUserStatus}
-                      onChange={(e) => setSelectedUserStatus(e.target.value)}
-                      className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
-                    >
-                      <option value="active">ACTIVE</option>
-                      <option value="paused">PAUSED</option>
-                      <option value="suspended">SUSPENDED</option>
-                    </select>
+                </>
+              ) : (
+                <div className="p-4 border-4 border-black bg-brutal-yellow text-black font-bold text-xs uppercase space-y-2 shadow-[4px_4px_0px_#000]">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle size={18} />
+                    <span className="font-display text-sm uppercase">ML Recalculation Offline</span>
                   </div>
+                  <p className="text-[10px] font-bold font-sans normal-case leading-relaxed text-gray-800">
+                    The database recalculation service is currently offline or unreachable. Live trust signals are unavailable, but local profile adjustments (scores, subscriptions, and status overrides) remain fully functional.
+                  </p>
+                </div>
+              )}
 
-                  <button 
-                    onClick={handleAdjustScore}
-                    disabled={scoreModalLoading}
-                    className="w-full brutal-btn bg-brutal-blue text-white uppercase text-xs py-3 mt-2 font-display tracking-wider flex items-center justify-center gap-2"
-                  >
-                    {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Apply God Mode Overrides'}
-                  </button>
-
-                  <div className="border-t-2 border-dashed border-red-500/30 pt-3 mt-4">
-                    <h3 className="font-display text-sm uppercase mb-2 text-red-600 font-black">Danger Zone</h3>
-                    <button 
-                      onClick={handleDeleteUser}
-                      disabled={scoreModalLoading}
-                      className="w-full brutal-btn bg-brutal-pink text-white uppercase text-xs py-3 font-display tracking-wider flex items-center justify-center gap-2 hover:bg-black hover:text-brutal-pink transition-colors font-black"
-                    >
-                      {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Permanently Delete Account'}
-                    </button>
+              {/* God Mode Overrides Section - Always Visible */}
+              <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10 space-y-4 shadow-[4px_4px_0px_#000]">
+                <div>
+                  <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Trust Score Override</h3>
+                  <div className="flex gap-4">
+                    <input 
+                      type="number" 
+                      value={manualAdjustment} 
+                      onChange={(e) => setManualAdjustment(Number(e.target.value))}
+                      className="brutal-input flex-1 !text-lg !font-bold"
+                      placeholder="e.g. 100 or -50"
+                    />
                   </div>
                 </div>
+
+                <div className="border-t-2 border-dashed border-brutal-blue/30 pt-3">
+                  <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Subscription Plan Override</h3>
+                  <select
+                    value={selectedUserPlan}
+                    onChange={(e) => setSelectedUserPlan(e.target.value)}
+                    className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
+                  >
+                    {plans.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} ({p.id})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="border-t-2 border-dashed border-brutal-blue/30 pt-3">
+                  <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Account Status Override</h3>
+                  <select
+                    value={selectedUserStatus}
+                    onChange={(e) => setSelectedUserStatus(e.target.value)}
+                    className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
+                  >
+                    <option value="active">ACTIVE</option>
+                    <option value="paused">PAUSED</option>
+                    <option value="suspended">SUSPENDED</option>
+                  </select>
+                </div>
+
+                <button 
+                  onClick={handleAdjustScore}
+                  disabled={scoreModalLoading}
+                  className="w-full brutal-btn bg-brutal-blue text-white uppercase text-xs py-3 mt-2 font-display tracking-wider flex items-center justify-center gap-2 hover:bg-black hover:text-white"
+                >
+                  {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Apply God Mode Overrides'}
+                </button>
+
+                <div className="border-t-2 border-dashed border-red-500/30 pt-3 mt-4">
+                  <h3 className="font-display text-sm uppercase mb-2 text-red-600 font-black">Danger Zone</h3>
+                  <button 
+                    onClick={handleDeleteUser}
+                    disabled={scoreModalLoading}
+                    className="w-full brutal-btn bg-brutal-pink text-white uppercase text-xs py-3 font-display tracking-wider flex items-center justify-center gap-2 hover:bg-black hover:text-brutal-pink transition-colors font-black"
+                  >
+                    {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Permanently Delete Account'}
+                  </button>
+                </div>
               </div>
-            ) : null}
+            </div>
           </div>
         </div>
       )}
