@@ -40,6 +40,7 @@ export function DashboardLayout() {
   const [user, setUser] = useState<any>(null);
   const [profileName, setProfileName] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>('active');
   const [menuOpen, setMenuOpen] = useState(false);
   const [devToolsOpen, setDevToolsOpen] = useState(pathname.startsWith('/developer'));
 
@@ -64,7 +65,7 @@ export function DashboardLayout() {
 
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('full_name, role, plan')
+          .select('full_name, role, plan, status')
           .eq('id', user.id)
           .single();
         
@@ -78,7 +79,8 @@ export function DashboardLayout() {
               full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
               avatar_url: user.user_metadata?.avatar_url,
               role: isAdminEmail(user.email) ? 'admin' : 'user',
-              plan: 'free'
+              plan: 'free',
+              status: 'active'
             }]);
             
           if (insertError) {
@@ -91,6 +93,7 @@ export function DashboardLayout() {
         }
         
         if (profile?.full_name) setProfileName(profile.full_name);
+        if (profile?.status) setStatus(profile.status);
         
         let userPlan = profile?.plan || 'free';
         if (user.email && isAdminEmail(user.email) && userPlan !== 'admin') {
@@ -109,12 +112,109 @@ export function DashboardLayout() {
     if (!isGuest) getUserAndProfile();
   }, [isGuest, navigate]);
 
+  // Real-time subscription to listen specifically to the current user's status changes
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const channel = supabase
+      .channel(`profile-status-${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `id=eq.${user.id}`,
+        },
+        (payload) => {
+          console.log('Realtime profile status update received:', payload);
+          if (payload.new && typeof payload.new.status === 'string') {
+            setStatus(payload.new.status);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
   const visibleNavItems = isGuest
     ? NAV_ITEMS.filter(item => item.guestAllowed)
     : NAV_ITEMS;
 
   const handleSignIn = () => { exitGuest(); navigate('/login'); };
   const closeSidebar = () => setSidebarOpen(false);
+
+  // If user is administrative block or suspended, render full screen Neo-Brutalist overlay
+  if (!isGuest && (status === 'suspended' || status === 'paused')) {
+    const isSuspended = status === 'suspended';
+    return (
+      <div 
+        className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center p-4 md:p-8 min-h-screen w-full transition-all duration-300 ${
+          isSuspended ? 'bg-[#FF60B5]' : 'bg-[#FFE600]'
+        }`}
+        style={{ fontFamily: "'Public Sans', sans-serif" }}
+      >
+        <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#000_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+
+        <div className="relative w-full max-w-2xl bg-white border-[4px] border-black p-6 md:p-10 shadow-[8px_8px_0px_#000] text-black text-center z-10 animate-in fade-in zoom-in-95 duration-200">
+          
+          <div className="inline-flex items-center gap-2 px-4 py-2 border-3 border-black bg-black text-white font-display text-xs md:text-sm uppercase tracking-wider mb-6 shadow-[2px_2px_0px_rgba(255,255,255,0.2)]">
+            <Lock size={16} className={isSuspended ? 'text-[#FF60B5]' : 'text-[#FFE600]'} />
+            <span>Administrative Action Enforced</span>
+          </div>
+
+          <h1 className="font-display text-3xl md:text-5xl uppercase tracking-tighter leading-none mb-4 break-words">
+            {isSuspended ? 'Account Suspended' : 'Account Paused'}
+          </h1>
+
+          <div className="border-3 border-black bg-zinc-100 p-4 md:p-6 mb-8 text-left shadow-[4px_4px_0px_#000]">
+            <p className="font-bold text-sm md:text-base leading-relaxed mb-4 text-black">
+              {isSuspended ? (
+                <>
+                  Your account has been <span className="underline decoration-[#FF60B5] decoration-4 font-black">permanently suspended</span> by the network administration for protocol violations, suspicious activities, or score irregularities.
+                </>
+              ) : (
+                <>
+                  Your account has been <span className="underline decoration-[#FFE600] decoration-4 font-black">temporarily paused</span> by the network administration. Standard capabilities are disabled until review completion.
+                </>
+              )}
+            </p>
+            <div className="text-xs text-zinc-600 font-bold border-t-2 border-black/10 pt-4 flex flex-col gap-1">
+              <div><strong>USER IDENTIFIER:</strong> {user?.email}</div>
+              <div><strong>ENFORCEMENT SYSTEM:</strong> God Mode Terminal</div>
+              <div><strong>REAL-TIME STATUS:</strong> <span className="uppercase text-black font-black">{status}</span></div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              onClick={() => navigate('/logout')}
+              className="brutal-btn w-full sm:w-auto bg-black text-white hover:bg-zinc-800 transition-colors"
+            >
+              <LogOut size={16} />
+              <span>Log Out & Exit</span>
+            </button>
+            <a
+              href="/"
+              className="brutal-btn w-full sm:w-auto bg-white text-black hover:bg-zinc-100 transition-colors"
+              style={{ boxShadow: '4px 4px 0px #000' }}
+            >
+              <BookOpen size={16} />
+              <span>Public Website</span>
+            </a>
+          </div>
+
+        </div>
+
+        <div className="mt-8 text-center font-display text-xs uppercase tracking-widest text-black/60 select-none z-10">
+          Pramaaan Trust Layer • Security Protocol v2.4
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-full overflow-hidden" style={{ fontFamily: "'Public Sans', sans-serif" }}>

@@ -27,6 +27,8 @@ export interface Database {
           full_name: string | null;
           avatar_url: string | null;
           role: 'user' | 'admin';
+          plan?: string | null;
+          status?: string | null;
           updated_at: string;
         };
         Insert: Omit<Database['public']['Tables']['profiles']['Row'], 'updated_at'>;
