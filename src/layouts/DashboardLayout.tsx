@@ -126,7 +126,7 @@ export function DashboardLayout() {
           table: 'profiles',
           filter: `id=eq.${user.id}`,
         },
-        (payload) => {
+        (payload: any) => {
           console.log('Realtime profile status update received:', payload);
           if (payload.new && typeof payload.new.status === 'string') {
             setStatus(payload.new.status);
