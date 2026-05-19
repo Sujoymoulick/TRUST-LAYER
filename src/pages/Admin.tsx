@@ -471,11 +471,27 @@ export default function Admin() {
           setUsers(usersData.data);
         } else {
           // Fallback refresh directly from profiles table
-          fetchAdminData();
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, email, full_name, role, plan, avatar_url, updated_at, institution_email, status');
+          if (profiles) {
+            setUsers(prev => prev.map(u => {
+              const match = profiles.find(p => p.id === u.id);
+              return match ? { ...u, ...match } : u;
+            }));
+          }
         }
       } catch (err) {
         // Fallback refresh directly from profiles table
-        fetchAdminData();
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, email, full_name, role, plan, avatar_url, updated_at, institution_email, status');
+        if (profiles) {
+          setUsers(prev => prev.map(u => {
+            const match = profiles.find(p => p.id === u.id);
+            return match ? { ...u, ...match } : u;
+          }));
+        }
       }
 
     } catch (err: any) {
