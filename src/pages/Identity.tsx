@@ -277,7 +277,7 @@ export default function Identity() {
 
             {kycStatus === 'verified' && (
               <div className="flex items-center gap-2">
-                <div className="bg-brutal-green px-4 py-2 border-2 border-black font-black uppercase text-xs">
+                <div className="bg-brutal-green text-black px-4 py-2 border-2 border-black font-black uppercase text-xs">
                   ✓ Passport Unlocked
                 </div>
                 <button

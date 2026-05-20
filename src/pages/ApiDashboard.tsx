@@ -384,7 +384,7 @@ export default function ApiDashboard() {
           </div>
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total API Transactions</h4>
-            <span className="text-2xl font-display uppercase tracking-wide text-black">{metrics?.totalCalls || 0}</span>
+            <span className="text-2xl font-display uppercase tracking-wide text-black dark:text-white">{metrics?.totalCalls || 0}</span>
           </div>
         </div>
 
@@ -395,7 +395,7 @@ export default function ApiDashboard() {
           </div>
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Average Gateway Latency</h4>
-            <span className="text-2xl font-display uppercase tracking-wide text-black">{metrics?.averageLatency || 0}ms</span>
+            <span className="text-2xl font-display uppercase tracking-wide text-black dark:text-white">{metrics?.averageLatency || 0}ms</span>
           </div>
         </div>
 
@@ -406,7 +406,7 @@ export default function ApiDashboard() {
           </div>
           <div>
             <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Registered B2B Apps</h4>
-            <span className="text-2xl font-display uppercase tracking-wide text-black">{apps.length} Active</span>
+            <span className="text-2xl font-display uppercase tracking-wide text-black dark:text-white">{apps.length} Active</span>
           </div>
         </div>
 
@@ -425,28 +425,28 @@ export default function ApiDashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {apps.map(app => (
-              <div key={app.id} className="border-3 border-black p-4 bg-zinc-50 flex flex-col justify-between gap-4 shadow-[4px_4px_0px_#000]">
+              <div key={app.id} className="border-3 border-black p-4 bg-zinc-50 dark:bg-zinc-900 flex flex-col justify-between gap-4 shadow-[4px_4px_0px_#000]">
                 <div className="space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-black text-sm uppercase text-black">{app.name}</h4>
-                      <p className="text-[10px] font-bold text-zinc-400 uppercase mt-0.5">{app.description || 'No description provided'}</p>
+                      <h4 className="font-black text-sm uppercase text-black dark:text-white">{app.name}</h4>
+                      <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase mt-0.5">{app.description || 'No description provided'}</p>
                     </div>
-                    <span className="bg-zinc-200 text-black text-[9px] font-mono px-2 py-0.5 border border-black uppercase font-bold">
+                    <span className="bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white text-[9px] font-mono px-2 py-0.5 border border-black dark:border-zinc-700 uppercase font-bold">
                       ID: {app.id}
                     </span>
                   </div>
 
                   <div className="space-y-1.5 pt-2">
                     {/* Sandbox hint */}
-                    <div className="flex justify-between items-center text-[10px] bg-white p-2 border border-black font-mono text-zinc-600">
+                    <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-black dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
                       <span>SANDBOX:</span>
-                      <span className="font-black text-black">{app.sandboxKeyHint}</span>
+                      <span className="font-black text-black dark:text-white">{app.sandboxKeyHint}</span>
                     </div>
                     {/* Prod hint */}
-                    <div className="flex justify-between items-center text-[10px] bg-white p-2 border border-black font-mono text-zinc-600">
+                    <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-black dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
                       <span>PRODUCTION:</span>
-                      <span className="font-black text-black">{app.productionKeyHint}</span>
+                      <span className="font-black text-black dark:text-white">{app.productionKeyHint}</span>
                     </div>
                   </div>
                 </div>
@@ -515,9 +515,9 @@ export default function ApiDashboard() {
             </div>
           </div>
 
-          <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400 tracking-wider mt-4 pt-2 border-t border-zinc-100">
+          <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mt-4 pt-2 border-t border-zinc-100 dark:border-zinc-800">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-              <span key={d} className={metrics?.dailyVolume?.[d] ? 'text-black font-black' : ''}>{d} ({metrics?.dailyVolume?.[d] || 0})</span>
+              <span key={d} className={metrics?.dailyVolume?.[d] ? 'text-black dark:text-white font-black' : ''}>{d} ({metrics?.dailyVolume?.[d] || 0})</span>
             ))}
           </div>
         </div>
@@ -560,7 +560,7 @@ export default function ApiDashboard() {
 
       {/* ─── ROW 4: RECENT API TRANSACTION LOGS ─── */}
       <div className="brutal-card p-0 overflow-hidden border-4 border-black shadow-[8px_8px_0px_#000] bg-white">
-        <h3 className="font-display text-lg uppercase p-4 border-b-4 border-black bg-zinc-50 flex items-center gap-2">
+        <h3 className="font-display text-lg uppercase p-4 border-b-4 border-black bg-zinc-50 dark:bg-zinc-900 text-black dark:text-white flex items-center gap-2">
           <Activity size={20} /> Real-Time B2B API Transaction Logs
         </h3>
         

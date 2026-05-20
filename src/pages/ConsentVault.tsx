@@ -107,8 +107,8 @@ export default function ConsentVault() {
               onClick={() => setSelectedPlatform(platform)}
               className={`w-full brutal-card flex items-center gap-4 transition-all text-left ${
                 selectedPlatform.id === platform.id 
-                  ? 'bg-black text-white translate-x-2' 
-                  : 'bg-white text-black hover:bg-gray-100'
+                  ? 'bg-black text-white dark:bg-brutal-yellow dark:text-black translate-x-2' 
+                  : 'bg-white text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
             >
               <span className="text-xl">{platform.icon}</span>
@@ -135,14 +135,14 @@ export default function ConsentVault() {
               {DATA_SOURCES.map(source => {
                 const isToggled = consents[`${selectedPlatform.id}_${source.id}`];
                 return (
-                  <div key={source.id} className="flex items-center justify-between p-4 border-2 border-black bg-gray-50 shadow-[4px_4px_0px_#000] hover:translate-y-[-2px] transition-transform">
+                  <div key={source.id} className="flex items-center justify-between p-4 border-2 border-black bg-gray-50 dark:bg-zinc-900 shadow-[4px_4px_0px_#000] hover:translate-y-[-2px] transition-transform">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 border-2 border-black bg-white flex items-center justify-center text-xl">
+                      <div className="w-10 h-10 border-2 border-black bg-white dark:bg-zinc-800 flex items-center justify-center text-xl">
                         {source.icon}
                       </div>
                       <div>
-                        <div className="font-black uppercase text-xs">{source.name}</div>
-                        <div className="text-[8px] font-bold text-gray-500 uppercase">Ephemeral Token Verification</div>
+                        <div className="font-black uppercase text-xs text-black dark:text-white">{source.name}</div>
+                        <div className="text-[8px] font-bold text-gray-500 dark:text-gray-400 uppercase">Ephemeral Token Verification</div>
                       </div>
                     </div>
                     <button 
@@ -168,32 +168,32 @@ export default function ConsentVault() {
 
         {/* 3. Privacy Compliance Info (Right) */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="brutal-card bg-brutal-pink">
+          <div className="brutal-card !bg-brutal-pink text-black">
              <div className="flex items-center gap-2 mb-4">
-               <ShieldCheck size={18} />
-               <h4 className="font-display text-xs uppercase">Compliance as a Moat</h4>
+               <ShieldCheck size={18} className="text-black" />
+               <h4 className="font-display text-xs uppercase !text-black">Compliance as a Moat</h4>
              </div>
-             <p className="text-[9px] font-bold uppercase leading-relaxed text-gray-800">
+             <p className="text-[9px] font-bold uppercase leading-relaxed text-black/80">
                Built natively for GDPR, CCPA, and India's DPDP 2023. Our architecture ensures that users, not platforms, own the data.
              </p>
           </div>
 
-          <div className="brutal-card bg-brutal-yellow">
+          <div className="brutal-card !bg-brutal-yellow text-black">
              <div className="flex items-center gap-2 mb-4">
-               <CheckCircle2 size={18} />
-               <h4 className="font-display text-xs uppercase">Data Minimization</h4>
+               <CheckCircle2 size={18} className="text-black" />
+               <h4 className="font-display text-xs uppercase !text-black">Data Minimization</h4>
              </div>
-             <p className="text-[9px] font-bold uppercase leading-relaxed text-gray-800">
+             <p className="text-[9px] font-bold uppercase leading-relaxed text-black/80">
                By default, everything is private. We only collect data strictly needed for trust evaluation.
              </p>
           </div>
 
-          <div className="brutal-card bg-white border-dashed">
+          <div className="brutal-card bg-white dark:bg-zinc-900 border-dashed">
              <div className="flex items-center gap-2 mb-4">
-               <History size={18} />
-               <h4 className="font-display text-xs uppercase text-gray-400">Zero-Knowledge Anchors</h4>
+               <History size={18} className="text-gray-500 dark:text-gray-400" />
+               <h4 className="font-display text-xs uppercase text-gray-500 dark:text-gray-400">Zero-Knowledge Anchors</h4>
              </div>
-             <p className="text-[9px] font-bold uppercase leading-relaxed text-gray-400">
+             <p className="text-[9px] font-bold uppercase leading-relaxed text-gray-500 dark:text-gray-400">
                Immutable consent logs ensure the user is the ultimate controller of their Trust Passport.
              </p>
           </div>

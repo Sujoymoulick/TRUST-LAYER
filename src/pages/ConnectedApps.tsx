@@ -93,7 +93,7 @@ export default function ConnectedApps() {
       <div className="flex items-center justify-between">
         <button 
           onClick={() => navigate('/passport')}
-          className="flex items-center gap-1.5 bg-white border-2 border-black px-4 py-2 font-display text-xs uppercase shadow-[3px_3px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+          className="flex items-center gap-1.5 bg-white text-black border-2 border-black px-4 py-2 font-display text-xs uppercase shadow-[3px_3px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
         >
           <ArrowLeft size={14} /> Back to Passport
         </button>

@@ -866,11 +866,13 @@ export default function Admin() {
                       <tbody>
                         {users.filter(u => u.role === 'admin').map((u) => (
                           <tr key={u.id} className="hover:bg-gray-50">
-                            <td className="flex items-center gap-2">
+                            <td>
+                              <div className="flex items-center gap-2">
                               <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden flex-shrink-0">
                                 <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" className="w-full h-full object-cover" />
                               </div>
                               <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
+                              </div>
                             </td>
                             <td className="text-[10px] font-bold text-gray-500">{u.email}</td>
                             <td>
@@ -900,7 +902,6 @@ export default function Admin() {
                             </td>
                             <td className="text-[10px] font-bold text-gray-400">{new Date(u.updated_at).toLocaleDateString()}</td>
                             <td>
-                              <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow mr-2" title="God Mode"><Shield size={12} /></button>
                               <button className="p-1 border-2 border-black hover:bg-black hover:text-white"><Eye size={12} /></button>
                             </td>
                           </tr>
@@ -930,11 +931,13 @@ export default function Admin() {
                       <tbody>
                         {users.filter(u => u.role === 'user').map((u) => (
                           <tr key={u.id} className="hover:bg-gray-50">
-                            <td className="flex items-center gap-2">
+                            <td>
+                              <div className="flex items-center gap-2">
                               <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden flex-shrink-0">
                                 <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" className="w-full h-full object-cover" />
                               </div>
                               <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
+                              </div>
                             </td>
                             <td>
                               <span className="font-mono text-sm font-bold text-[#39FF14] bg-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#000]">
