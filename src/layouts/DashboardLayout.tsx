@@ -47,7 +47,6 @@ export function DashboardLayout() {
   const [profileName, setProfileName] = useState<string | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('active');
-  const [menuOpen, setMenuOpen] = useState(false);
   const [devToolsOpen, setDevToolsOpen] = useState(pathname.startsWith('/developer'));
 
   useEffect(() => {
@@ -361,23 +360,12 @@ export function DashboardLayout() {
             </div>
             <div className="relative">
               <button 
-                onClick={() => setMenuOpen(!menuOpen)}
-                className={`p-1.5 border-2 border-[var(--border-color)] transition-colors ${menuOpen ? 'bg-brutal-yellow' : 'hover:bg-brutal-yellow'}`}
-                title="Account Menu"
+                onClick={() => navigate('/settings')}
+                className="p-1.5 border-2 border-[var(--border-color)] transition-colors hover:bg-brutal-yellow"
+                title="Settings"
               >
                 <Settings size={14} className="text-[var(--text-primary)]" />
               </button>
-              
-              {menuOpen && (
-                <div className="absolute bottom-full right-0 mb-2 w-32 bg-[var(--bg-primary)] border-2 border-black shadow-[4px_4px_0px_#000] z-50 overflow-hidden">
-                  <button 
-                    onClick={() => { navigate('/settings'); setMenuOpen(false); }}
-                    className="w-full px-3 py-2 text-left text-[10px] font-black uppercase hover:bg-brutal-yellow flex items-center gap-2"
-                  >
-                    <Settings size={12} /> Settings
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         )}
