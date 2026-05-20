@@ -3,7 +3,7 @@ import { useGuest } from '../context/GuestContext';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Loader2, Save, Trash2, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { Loader2, Save, Trash2, ShieldCheck, Sun, Moon, LogOut } from 'lucide-react';
 import { AvatarUploader } from '../components/AvatarUploader';
 import type { User } from '@supabase/supabase-js';
 
@@ -128,10 +128,17 @@ export default function Settings() {
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-12">
         <div className="space-y-4">
-          <button className="w-full text-left font-display text-base uppercase pb-2 border-b-4 border-[var(--border-color)] flex items-center gap-2">
+          <button className="w-full text-left font-display text-base uppercase pb-2 border-b-4 border-[var(--border-color)] flex items-center gap-2 text-[var(--text-primary)]">
             <ShieldCheck size={20} /> Profile
           </button>
-          <button className="w-full text-left font-display text-base uppercase pb-2 border-b-4 border-gray-200 text-gray-400">Privacy</button>
+          <button className="w-full text-left font-display text-base uppercase pb-2 border-b-4 border-gray-200 text-gray-400 cursor-not-allowed">Privacy</button>
+          <button 
+            type="button"
+            onClick={() => navigate('/logout')}
+            className="w-full text-left font-display text-base uppercase pb-2 border-b-4 border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-500 flex items-center gap-2 transition-colors"
+          >
+            <LogOut size={20} /> Logout
+          </button>
         </div>
 
         <div className="space-y-12">
@@ -231,9 +238,16 @@ export default function Settings() {
              </div>
           </section>
 
-          <div className="pt-4 border-t-4 border-[var(--border-color)] border-dashed">
-             <button type="button" className="brutal-btn bg-white text-red-600 border-red-600 w-full sm:w-auto px-8 py-3 flex items-center gap-2 hover:bg-red-50">
+          <div className="pt-4 border-t-4 border-[var(--border-color)] border-dashed flex flex-col sm:flex-row gap-4">
+             <button type="button" className="brutal-btn bg-white text-red-600 border-red-600 w-full sm:w-auto px-8 py-3 flex items-center justify-center gap-2 hover:bg-red-50">
                <Trash2 size={18} /> Delete Account Permanently
+             </button>
+             <button 
+               type="button" 
+               onClick={() => navigate('/logout')}
+               className="brutal-btn bg-brutal-pink text-white w-full sm:w-auto px-8 py-3 flex items-center justify-center gap-2 hover:bg-opacity-90"
+             >
+               <LogOut size={18} /> Logout
              </button>
           </div>
         </div>
