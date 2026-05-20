@@ -16,7 +16,15 @@ import {
   Clock,
   Globe,
   ArrowUpRight,
-  BarChart2
+  BarChart2,
+  BookOpen,
+  Play,
+  Webhook,
+  Box,
+  Terminal,
+  FileText,
+  Gauge,
+  Package
 } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { useNavigate } from 'react-router-dom';
@@ -374,6 +382,50 @@ export default function ApiDashboard() {
         </button>
       </div>
 
+      {/* ─── QUICK LINKS ─── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        {[
+          { label: 'API Docs', icon: BookOpen, path: '/developer/docs', color: 'bg-brutal-yellow' },
+          { label: 'Playground', icon: Terminal, path: '/developer/playground', color: 'bg-brutal-green' },
+          { label: 'Webhooks', icon: Webhook, path: '/developer/webhooks', color: 'bg-brutal-pink' },
+          { label: 'SDK & Libraries', icon: Package, path: '/developer/sdk', color: 'bg-brutal-blue' },
+          { label: 'API Logs', icon: FileText, path: '/developer/logs', color: 'bg-orange-300' },
+          { label: 'API Status', icon: Gauge, path: '/developer/status', color: 'bg-emerald-300' },
+        ].map((link) => {
+          const Icon = link.icon;
+          return (
+            <button
+              key={link.path}
+              onClick={() => navigate(link.path)}
+              className={`${link.color} border-[3px] border-black shadow-[4px_4px_0px_#000] p-4 flex flex-col items-center gap-2 text-center hover:translate-y-[-2px] hover:shadow-[4px_6px_0px_#000] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000] transition-all cursor-pointer`}
+            >
+              <Icon size={22} className="text-black" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-black leading-tight">{link.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ─── QUICK LINKS ─── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <button onClick={() => navigate('/developer/docs')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+          <BookOpen size={24} className="text-brutal-blue" />
+          <span className="text-[10px] font-black uppercase tracking-wider">API Docs</span>
+        </button>
+        <button onClick={() => navigate('/developer/playground')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+          <Play size={24} className="text-brutal-green" />
+          <span className="text-[10px] font-black uppercase tracking-wider">Playground</span>
+        </button>
+        <button onClick={() => navigate('/developer/webhooks')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+          <Webhook size={24} className="text-brutal-pink" />
+          <span className="text-[10px] font-black uppercase tracking-wider">Webhooks</span>
+        </button>
+        <button onClick={() => navigate('/developer/sdk')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+          <Box size={24} className="text-brutal-yellow" />
+          <span className="text-[10px] font-black uppercase tracking-wider">SDKs</span>
+        </button>
+      </div>
+
       {/* ─── ROW 1: METRICS HIGHLIGHT CARDS ─── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
@@ -440,12 +492,12 @@ export default function ApiDashboard() {
                   <div className="space-y-1.5 pt-2">
                     {/* Sandbox hint */}
                     <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-black dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
-                      <span>SANDBOX:</span>
+                      <span>SANDBOX <span className="text-zinc-400">(tl_sk_test_)</span>:</span>
                       <span className="font-black text-black dark:text-white">{app.sandboxKeyHint}</span>
                     </div>
                     {/* Prod hint */}
                     <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-black dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
-                      <span>PRODUCTION:</span>
+                      <span>PRODUCTION <span className="text-zinc-400">(tl_sk_live_)</span>:</span>
                       <span className="font-black text-black dark:text-white">{app.productionKeyHint}</span>
                     </div>
                   </div>

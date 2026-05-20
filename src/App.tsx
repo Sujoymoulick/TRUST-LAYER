@@ -23,6 +23,12 @@ import PublicProfile from './pages/PublicProfile';
 import Logout from './pages/Logout';
 import Feedback from './pages/Feedback';
 import OauthConsent from './pages/OauthConsent';
+import DeveloperDocs from './pages/developer/DeveloperDocs';
+import DeveloperWebhooks from './pages/developer/DeveloperWebhooks';
+import DeveloperLogs from './pages/developer/DeveloperLogs';
+import DeveloperPlayground from './pages/developer/DeveloperPlayground';
+import DeveloperSDK from './pages/developer/DeveloperSDK';
+import DeveloperStatus from './pages/developer/DeveloperStatus';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ConsentBanner } from './components/ConsentBanner';
@@ -50,8 +56,14 @@ function App() {
                 <Route path="/connected-apps" element={<ConnectedApps />} />
                 <Route path="/analytics" element={<RiskAnalysis />} />
                 <Route path="/api" element={<Navigate to="/developer/portal" replace />} />
-                <Route path="/developer/portal" element={<ApiDashboard />} />
-                <Route path="/developer/keys" element={<PersonalKeys />} />
+                <Route path="/developer/portal"     element={<ApiDashboard />} />
+                <Route path="/developer/keys"       element={<PersonalKeys />} />
+                <Route path="/developer/docs"       element={<DeveloperDocs />} />
+                <Route path="/developer/webhooks"   element={<DeveloperWebhooks />} />
+                <Route path="/developer/logs"       element={<DeveloperLogs />} />
+                <Route path="/developer/playground" element={<DeveloperPlayground />} />
+                <Route path="/developer/sdk"        element={<DeveloperSDK />} />
+                <Route path="/developer/status"     element={<DeveloperStatus />} />
                 <Route path="/vault" element={<ConsentVault />} />
                 <Route path="/admin" element={<AdminGuard><Admin /></AdminGuard>} />
                 <Route path="/settings" element={<Settings />} />

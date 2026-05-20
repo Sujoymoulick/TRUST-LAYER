@@ -24,8 +24,14 @@ const NAV_ITEMS = [
     icon: Code,
     guestAllowed: false,
     submenu: [
-      { to: '/developer/portal', label: 'Developer Portal' },
-      { to: '/developer/keys', label: 'Personal Keys' },
+      { to: '/developer/portal',     label: 'Developer Portal' },
+      { to: '/developer/keys',       label: 'Personal Keys' },
+      { to: '/developer/docs',       label: 'API Docs' },
+      { to: '/developer/playground', label: 'Playground' },
+      { to: '/developer/sdk',        label: 'SDK & Libraries' },
+      { to: '/developer/webhooks',   label: 'Webhooks' },
+      { to: '/developer/logs',       label: 'API Logs' },
+      { to: '/developer/status',     label: 'API Status' },
     ]
   },
   { to: '/pricing',   icon: DollarSign,       label: 'Pricing',   guestAllowed: true  },
