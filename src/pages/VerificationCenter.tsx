@@ -24,7 +24,7 @@ const PROVIDERS = [
 
 export default function VerificationCenter() {
   const { isGuest } = useGuest();
-  const [userId, setUserId] = useState<string>('demo-admin-uuid');
+  const [userId, setUserId] = useState<string>('');
   const [score, setScore] = useState<number>(300);
   const [category, setCategory] = useState<string>('LOW_TRUST');
   const [breakdown, setBreakdown] = useState<any>({
@@ -45,7 +45,7 @@ export default function VerificationCenter() {
   const backendBaseUrl = import.meta.env.VITE_BACKEND_DASHBOARD_URL || 'http://localhost:3001';
   const apiBase = `${backendBaseUrl}/api/v1/auth/oauth`;
 
-  // Fetch initial profile user
+  // Fetch initial profile user — never use a hardcoded fallback ID
   useEffect(() => {
     async function loadUser() {
       if (isGuest) {
@@ -55,11 +55,14 @@ export default function VerificationCenter() {
       }
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // Only set the real authenticated user's ID — never fall back to admin UUID
         setUserId(user.id);
         fetchSummary(user.id);
         fetchTimeline(user.id);
         connectWebSocket(user.id);
       } else {
+        // No authenticated session — load blank offline defaults, do NOT use admin UUID
+        setUserId('');
         loadOfflineDefault();
       }
     }

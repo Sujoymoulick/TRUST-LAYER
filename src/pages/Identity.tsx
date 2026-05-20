@@ -44,6 +44,7 @@ export default function Identity() {
   const [kycLoading, setKycLoading] = useState(false);
   const [kycRejectionReason, setKycRejectionReason] = useState<string | null>(null);
   const [statusRefreshing, setStatusRefreshing] = useState(false);
+  const [connectError, setConnectError] = useState<string | null>(null);
   const [kycError, setKycError] = useState<string | null>(null);
   // Ref so real-time subscription always has the current user ID (avoids stale closure bug)
   const userIdRef = useRef<string | null>(null);
@@ -163,6 +164,7 @@ export default function Identity() {
 
   const handleConnect = async (provider: string) => {
     if (isGuest) return;
+    setConnectError(null);
 
     if (provider === 'digilocker') {
       setShowDigiLocker(true);
@@ -170,7 +172,11 @@ export default function Identity() {
     }
 
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      // IMPORTANT: Use linkIdentity — NOT signInWithOAuth.
+      // signInWithOAuth starts a brand-new login session, which can switch the
+      // active Supabase session to whoever owns that provider account (e.g. the admin).
+      // linkIdentity attaches the provider to the CURRENT user's existing session.
+      const { error } = await supabase.auth.linkIdentity({
         provider: provider as any,
         options: {
           redirectTo: `${window.location.origin}/identity`,
@@ -178,7 +184,7 @@ export default function Identity() {
       });
       if (error) throw error;
     } catch (err: any) {
-      alert(err.message);
+      setConnectError(err.message || 'Failed to connect. Please try again.');
     }
   };
 
@@ -341,6 +347,17 @@ export default function Identity() {
       <p className="text-sm font-bold text-gray-500 uppercase mb-8 tracking-widest">
         The more accounts you link, the higher your Trust Score becomes.
       </p>
+
+      {/* Connect Error Banner */}
+      {connectError && (
+        <div className="mb-6 p-4 border-2 border-red-500 bg-red-50 dark:bg-red-950/20 flex items-start gap-3">
+          <span className="text-red-500 text-lg leading-none">⚠</span>
+          <div className="flex-1">
+            <p className="text-xs font-black uppercase text-red-600 dark:text-red-400">{connectError}</p>
+          </div>
+          <button onClick={() => setConnectError(null)} className="text-red-500 font-black text-lg leading-none hover:text-red-700">×</button>
+        </div>
+      )}
 
       {['Professional', 'Financial', 'Identity', 'Social'].map(category => (
         <div key={category} className="mb-12">
