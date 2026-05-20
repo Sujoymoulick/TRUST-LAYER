@@ -372,15 +372,9 @@ export function DashboardLayout() {
                 <div className="absolute bottom-full right-0 mb-2 w-32 bg-[var(--bg-primary)] border-2 border-black shadow-[4px_4px_0px_#000] z-50 overflow-hidden">
                   <button 
                     onClick={() => { navigate('/settings'); setMenuOpen(false); }}
-                    className="w-full px-3 py-2 text-left text-[10px] font-black uppercase hover:bg-brutal-yellow border-b-2 border-black flex items-center gap-2"
+                    className="w-full px-3 py-2 text-left text-[10px] font-black uppercase hover:bg-brutal-yellow flex items-center gap-2"
                   >
                     <Settings size={12} /> Settings
-                  </button>
-                  <button 
-                    onClick={() => { navigate('/logout'); setMenuOpen(false); }}
-                    className="w-full px-3 py-2 text-left text-[10px] font-black uppercase hover:bg-brutal-pink hover:text-white flex items-center gap-2"
-                  >
-                    <LogOut size={12} /> Logout
                   </button>
                 </div>
               )}
