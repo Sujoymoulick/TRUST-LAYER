@@ -123,7 +123,12 @@ export default function VerificationCenter() {
   // Fetch summary from backend
   const fetchSummary = async (uid: string) => {
     try {
-      const res = await fetch(`${apiBase}/summary/${uid}`);
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      const res = await fetch(`${apiBase}/summary/${uid}`, { headers });
       const data = await res.json();
       if (data.success) {
         setScore(data.score);
@@ -141,7 +146,12 @@ export default function VerificationCenter() {
   // Fetch timeline from backend
   const fetchTimeline = async (uid: string) => {
     try {
-      const res = await fetch(`${apiBase}/timeline/${uid}`);
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      const res = await fetch(`${apiBase}/timeline/${uid}`, { headers });
       const data = await res.json();
       if (data.success) {
         setTimeline(data.timeline);
@@ -159,8 +169,14 @@ export default function VerificationCenter() {
     setSyncLog([`Connecting secure Pramaaan validator to ${providerId}...`]);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
       // Attempt backend REST handshake
-      const res = await fetch(`${apiBase}/connect/${providerId}?userId=${userId}`);
+      const res = await fetch(`${apiBase}/connect/${providerId}`, { headers });
       const data = await res.json();
       if (data.success && data.redirectUrl) {
         // Redirect to oauth flow
@@ -178,9 +194,15 @@ export default function VerificationCenter() {
   // Safe manual Revocation trigger
   const handleRevoke = async (providerId: string) => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
       const res = await fetch(`${apiBase}/revoke/${providerId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ userId })
       });
       const data = await res.json();

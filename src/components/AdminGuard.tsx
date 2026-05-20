@@ -27,14 +27,17 @@ export const AdminGuard: React.FC<AdminGuardProps> = ({ children }) => {
           return;
         }
 
-        // Check if role is admin in profile
+        // Check if role or plan is admin in profile
         const { data: profile } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, plan')
           .eq('id', user.id)
           .single();
 
-        setIsAdmin(profile?.role === 'admin');
+        setIsAdmin(
+          profile?.role?.toLowerCase() === 'admin' || 
+          profile?.plan?.toLowerCase() === 'admin'
+        );
       } catch (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);

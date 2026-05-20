@@ -311,8 +311,8 @@ export function DashboardLayout() {
             );
           })}
           
-          {/* Admin Console - Only visible to the owner (never to guests) */}
-          {!isGuest && isAdminEmail(user?.email) && (
+          {/* Admin Console - Only visible to the owner or admin plan (never to guests) */}
+          {!isGuest && (isAdminEmail(user?.email) || plan === 'admin') && (
             <NavLink
               to="/admin"
               onClick={closeSidebar}
