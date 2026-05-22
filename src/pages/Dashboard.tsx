@@ -6,6 +6,7 @@ import { GraphVisualization } from '../components/GraphVisualization';
 import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
 import { apiFetch } from '../lib/api';
 import { useGuest } from '../context/GuestContext';
+import { PremiumOverlay } from '../components/PremiumOverlay';
 
 import linkedinLogo from '../assets/social/linkedin.png';
 import googleLogo from '../assets/social/google.png';
@@ -681,7 +682,23 @@ export default function Dashboard() {
           Identity Graph
         </h3>
         
-        <div className={`transition-all duration-500 ${(!isOwner && plan === 'free') ? 'filter blur-md opacity-40 pointer-events-none' : ''}`}>
+        {(!isOwner && plan === 'free') ? (
+          <PremiumOverlay requiredPlan="Pro" title="Network Intelligence Locked" description="Upgrade to Pro to unlock your identity graph and view real-time relationship data.">
+            <GraphVisualization 
+              nodes={[
+                { id: '1', label: 'You', color: '#3B82F6' },
+                { id: '2', label: 'Employer (Verified)', color: '#10B981' },
+                { id: '3', label: 'Payment Gateway', color: '#10B981' },
+                { id: '4', label: 'Unknown Device', color: '#EF4444' },
+              ]}
+              edges={[
+                { from: '1', to: '2', label: 'TRUSTS' },
+                { from: '2', to: '3', label: 'PAID' },
+                { from: '4', to: '1', label: 'LINKED' },
+              ]}
+            />
+          </PremiumOverlay>
+        ) : (
           <GraphVisualization 
             nodes={[
               { id: '1', label: 'You', color: '#3B82F6' },
@@ -695,27 +712,6 @@ export default function Dashboard() {
               { from: '4', to: '1', label: 'LINKED' },
             ]}
           />
-        </div>
-
-        {/* Lock Overlay for Free Users */}
-        {(!isOwner && plan === 'free') && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/5 backdrop-blur-[2px] z-10 p-4">
-            <div className="brutal-card bg-white border-4 border-black text-center max-w-md mx-auto shadow-[8px_8px_0px_#000]">
-              <div className="w-16 h-16 bg-brutal-yellow text-black flex items-center justify-center mx-auto mb-4 border-4 border-black shadow-[4px_4px_0px_#000]">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h4 className="font-display text-xl uppercase mb-2">Network Intelligence Locked</h4>
-              <p className="text-xs font-bold text-gray-600 mb-6 uppercase">Upgrade to Pro to unlock your identity graph and view real-time relationship data.</p>
-              <button 
-                onClick={() => navigate('/pricing')}
-                className="w-full brutal-btn bg-[#00E5FF] text-black font-black uppercase py-4 border-4 border-black hover:bg-black hover:text-[#00E5FF] transition-colors shadow-[4px_4px_0px_#000]"
-              >
-                Upgrade to Pro
-              </button>
-            </div>
-          </div>
         )}
       </div>
     </div>

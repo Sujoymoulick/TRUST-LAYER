@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useGuest } from '../context/GuestContext';
+import { useDashboardContext } from '../hooks/useDashboardContext';
+import { PremiumOverlay } from '../components/PremiumOverlay';
 
 // 11 Integrated Trust Providers Schema configuration
 const PROVIDERS = [
@@ -24,6 +26,10 @@ const PROVIDERS = [
 
 export default function VerificationCenter() {
   const { isGuest } = useGuest();
+  const dashboardContext = useDashboardContext();
+  const plan = dashboardContext?.plan || 'free';
+  const isOwner = dashboardContext?.isOwner || false;
+  const isBusinessOrAdmin = isOwner || plan === 'business' || plan === 'admin';
   const [userId, setUserId] = useState<string>('');
   const [score, setScore] = useState<number>(300);
   const [category, setCategory] = useState<string>('LOW_TRUST');
@@ -528,48 +534,69 @@ export default function VerificationCenter() {
 
       </div>
 
-      {/* ── RISK ANALYTICS AND FRAUD REPORT CARD ── */}
+      {/* ─── RISK ANALYTICS AND FRAUD REPORT CARD ─── */}
       <div className="p-6 sm:p-8 rounded-[4px] border-3 border-black bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_#000]">
         <h3 className="font-display font-black text-sm uppercase tracking-wide border-b-2 border-black pb-3 mb-6 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-rose-500" /> Behavioral Anomaly & Risk Ledger
         </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="border-2 border-black p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-[4px]">
-            <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">Aggregated Threat Rating</span>
-            <div className="flex items-center gap-2 mt-1">
-              <span className={`text-2xl font-black uppercase tracking-tight ${
-                riskLevel === 'CRITICAL' ? 'text-red-600' :
-                riskLevel === 'HIGH' ? 'text-rose-500' :
-                riskLevel === 'MEDIUM' ? 'text-amber-500' : 'text-emerald-500'
-              }`}>{riskLevel}</span>
-              <span className="text-[10px] font-extrabold uppercase bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5">Real-time signals</span>
+        
+        {isBusinessOrAdmin ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="border-2 border-black p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-[4px]">
+              <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">Aggregated Threat Rating</span>
+              <div className="flex items-center gap-2 mt-1">
+                <span className={`text-2xl font-black uppercase tracking-tight ${
+                  riskLevel === 'CRITICAL' ? 'text-red-600' :
+                  riskLevel === 'HIGH' ? 'text-rose-500' :
+                  riskLevel === 'MEDIUM' ? 'text-amber-500' : 'text-emerald-500'
+                }`}>{riskLevel}</span>
+                <span className="text-[10px] font-extrabold uppercase bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5">Real-time signals</span>
+              </div>
+              <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Derived via multi-platform activity frequency, legal name validation checks, and repository link consistency.</p>
             </div>
-            <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Derived via multi-platform activity frequency, legal name validation checks, and repository link consistency.</p>
-          </div>
-
-          <div className="md:col-span-2 border-2 border-black p-4 rounded-[4px] space-y-3">
-            <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase block">Active System Flags & Penalties</span>
-            {fraudPenalties.length === 0 ? (
-              <div className="flex items-center gap-2 text-emerald-500 py-2">
-                <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                <span className="text-xs font-black uppercase">Zero Anomalies Detected. Rep System Clear.</span>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {fraudPenalties.map((pen, i) => (
-                  <div key={i} className="flex items-start gap-2.5 p-2 bg-rose-500/10 border border-rose-500 rounded text-rose-600">
-                    <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs font-black uppercase tracking-wider">{pen.type.replace(/_/g, ' ')} (-{pen.points} Points)</div>
-                      <p className="text-[10px] font-medium text-rose-500 mt-0.5">{pen.description}</p>
+  
+            <div className="md:col-span-2 border-2 border-black p-4 rounded-[4px] space-y-3">
+              <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase block">Active System Flags & Penalties</span>
+              {fraudPenalties.length === 0 ? (
+                <div className="flex items-center gap-2 text-emerald-500 py-2">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-xs font-black uppercase">Zero Anomalies Detected. Rep System Clear.</span>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {fraudPenalties.map((pen, i) => (
+                    <div key={i} className="flex items-start gap-2.5 p-2 bg-rose-500/10 border border-rose-500 rounded text-rose-600">
+                      <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-black uppercase tracking-wider">{pen.type.replace(/_/g, ' ')} (-{pen.points} Points)</div>
+                        <p className="text-[10px] font-medium text-rose-500 mt-0.5">{pen.description}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <PremiumOverlay requiredPlan="Business" title="Risk Ledger Locked" description="Upgrade to Business to view detailed behavioral anomaly and fraud penalty reports.">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-50 pointer-events-none filter blur-[2px]">
+              <div className="border-2 border-black p-4 bg-zinc-50 rounded-[4px]">
+                <span className="text-[9px] font-bold text-zinc-500 uppercase">Aggregated Threat Rating</span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-2xl font-black uppercase tracking-tight text-emerald-500">LOW</span>
+                  <span className="text-[10px] font-extrabold uppercase bg-zinc-200 px-2 py-0.5">Real-time signals</span>
+                </div>
+              </div>
+              <div className="md:col-span-2 border-2 border-black p-4 rounded-[4px] space-y-3">
+                <span className="text-[9px] font-bold text-zinc-500 uppercase block">Active System Flags & Penalties</span>
+                <div className="flex items-center gap-2 text-emerald-500 py-2">
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-xs font-black uppercase">Zero Anomalies Detected. Rep System Clear.</span>
+                </div>
+              </div>
+            </div>
+          </PremiumOverlay>
+        )}
       </div>
 
       {/* ── MILESTONE VERIFICATION TIMELINE ── */}

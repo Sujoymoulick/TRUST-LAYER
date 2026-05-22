@@ -6,6 +6,8 @@ import { DigiLockerVerify } from '../components/DigiLockerVerify';
 import SumsubWebSdk from '@sumsub/websdk-react';
 import { apiFetch } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
+import { useDashboardContext } from '../hooks/useDashboardContext';
+import { PremiumOverlay } from '../components/PremiumOverlay';
 
 
 import linkedinLogo from '../assets/social/linkedin.png';
@@ -33,6 +35,8 @@ const PLATFORMS = [
 
 export default function Identity() {
   const { isGuest } = useGuest();
+  const dashboardContext = useDashboardContext();
+  const plan = dashboardContext?.plan || 'free';
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -359,12 +363,18 @@ export default function Identity() {
         </div>
       )}
 
-      {['Professional', 'Financial', 'Identity', 'Social'].map(category => (
-        <div key={category} className="mb-12">
-          <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">{category} Signals</h3>
+      {['Professional', 'Financial', 'Identity', 'Social'].map(category => {
+        const platformsInCategory = PLATFORMS.filter(p => p.category === category);
+        const hasConnectedInCategory = platformsInCategory.some(p => !isGuest && connectedProviders.includes(p.id));
+        const limitReached = plan === 'free' && connectedProviders.length >= 2;
+        const shouldBlurCategory = limitReached && !hasConnectedInCategory;
+
+        const CategoryContent = (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {PLATFORMS.filter(p => p.category === category).map(p => {
+            {platformsInCategory.map(p => {
               const isConnected = !isGuest && connectedProviders.includes(p.id);
+              const isDisabled = limitReached && !isConnected;
+
               return (
                 <div key={p.id} className={`brutal-card flex flex-col items-center gap-4 text-center ${isConnected ? 'bg-brutal-green' : 'bg-white'}`}>
                   <div className="w-16 h-16 border-4 border-black flex items-center justify-center text-3xl bg-white shadow-[4px_4px_0px_#000]">
@@ -377,8 +387,16 @@ export default function Identity() {
                     </p>
                   </div>
                   <button 
-                    className={`brutal-btn w-full py-2 text-xs font-black uppercase flex items-center justify-center gap-2 ${isConnected ? 'bg-black text-white' : 'bg-white text-black'} ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    onClick={() => !isConnected && handleConnect(p.id)}
+                    className={`brutal-btn w-full py-2 text-xs font-black uppercase flex items-center justify-center gap-2 ${isConnected ? 'bg-black text-white' : 'bg-white text-black'} ${(isGuest || isDisabled) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={() => {
+                      if (isDisabled) {
+                        setConnectError('Free plan limited to 2 identities. Upgrade to Pro.');
+                      } else if (!isConnected && !isGuest) {
+                        handleConnect(p.id);
+                      } else if (isGuest) {
+                        navigate('/login');
+                      }
+                    }}
                     disabled={isConnected || isGuest}
                   >
                     {isConnected ? <><Link2 size={14} /> LINKED</> : isGuest ? 'LOGIN' : 'CONNECT'}
@@ -387,8 +405,21 @@ export default function Identity() {
               );
             })}
           </div>
-        </div>
-      ))}
+        );
+
+        return (
+          <div key={category} className="mb-12">
+            <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">{category} Signals</h3>
+            {shouldBlurCategory ? (
+              <PremiumOverlay requiredPlan="Pro" title="Unlock More Signals" description="Free plan is limited to 2 identity links.">
+                {CategoryContent}
+              </PremiumOverlay>
+            ) : (
+              CategoryContent
+            )}
+          </div>
+        );
+      })}
       
       {/* Email / Demo Account */}
       <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">Primary Signals</h3>

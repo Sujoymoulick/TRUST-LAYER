@@ -27,7 +27,9 @@ import {
   Package
 } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
+import { useDashboardContext } from '../hooks/useDashboardContext';
 import { useNavigate } from 'react-router-dom';
+import { PremiumOverlay } from '../components/PremiumOverlay';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
 
@@ -43,6 +45,10 @@ interface B2bApp {
 export default function ApiDashboard() {
   const { isGuest } = useGuest();
   const navigate = useNavigate();
+  const dashboardContext = useDashboardContext();
+  const plan = dashboardContext?.plan || 'free';
+  const isOwner = dashboardContext?.isOwner || false;
+  const isBusinessOrProPlus = isOwner || plan === 'business' || plan === 'pro_plus' || plan === 'admin';
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
 
@@ -616,52 +622,97 @@ export default function ApiDashboard() {
           <Activity size={20} /> Real-Time B2B API Transaction Logs
         </h3>
         
-        <div className="overflow-x-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Method</th>
-                <th>App</th>
-                <th>Endpoint</th>
-                <th>Latency</th>
-                <th>Environment</th>
-                <th>Timestamp</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {metrics?.recentLogs && metrics.recentLogs.length > 0 ? (
-                metrics.recentLogs.map((log: any) => (
-                  <tr key={log.id}>
-                    <td className="uppercase font-mono text-xs font-black text-black">
-                      <span className={`px-2 py-0.5 border border-black ${log.method === 'POST' ? 'bg-brutal-blue/10 text-brutal-blue' : 'bg-zinc-100 text-black'}`}>
-                        {log.method}
-                      </span>
-                    </td>
-                    <td className="font-bold text-xs">{log.appName}</td>
-                    <td className="font-mono text-xs text-zinc-500">{log.endpoint}</td>
-                    <td className="font-bold text-xs">{log.duration}ms</td>
-                    <td>
-                      <span className={`text-[10px] font-black uppercase px-2 py-0.5 border ${log.environment === 'production' ? 'bg-brutal-yellow/20 text-yellow-700 border-yellow-700' : 'bg-zinc-200 border-zinc-400'}`}>
-                        {log.environment}
-                      </span>
-                    </td>
-                    <td className="font-bold text-xs">{new Date(log.createdAt).toLocaleTimeString()}</td>
-                    <td>
-                      <div className={`w-6 h-6 border-2 border-black flex items-center justify-center font-bold text-[10px] ${log.status >= 400 ? 'bg-brutal-pink text-black' : 'bg-brutal-green text-black'}`}>
-                        {log.status}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+        {isBusinessOrProPlus ? (
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={7} className="text-center py-10 text-zinc-400 font-bold uppercase">No gateway transactions recorded. Verify your API credentials.</td>
+                  <th>Method</th>
+                  <th>App</th>
+                  <th>Endpoint</th>
+                  <th>Latency</th>
+                  <th>Environment</th>
+                  <th>Timestamp</th>
+                  <th>Status</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {metrics?.recentLogs && metrics.recentLogs.length > 0 ? (
+                  metrics.recentLogs.map((log: any) => (
+                    <tr key={log.id}>
+                      <td className="uppercase font-mono text-xs font-black text-black">
+                        <span className={`px-2 py-0.5 border border-black ${log.method === 'POST' ? 'bg-brutal-blue/10 text-brutal-blue' : 'bg-zinc-100 text-black'}`}>
+                          {log.method}
+                        </span>
+                      </td>
+                      <td className="font-bold text-xs">{log.appName}</td>
+                      <td className="font-mono text-xs text-zinc-500">{log.endpoint}</td>
+                      <td className="font-bold text-xs">{log.duration}ms</td>
+                      <td>
+                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 border ${log.environment === 'production' ? 'bg-brutal-yellow/20 text-yellow-700 border-yellow-700' : 'bg-zinc-200 border-zinc-400'}`}>
+                          {log.environment}
+                        </span>
+                      </td>
+                      <td className="font-bold text-xs">{new Date(log.createdAt).toLocaleTimeString()}</td>
+                      <td>
+                        <div className={`w-6 h-6 border-2 border-black flex items-center justify-center font-bold text-[10px] ${log.status >= 400 ? 'bg-brutal-pink text-black' : 'bg-brutal-green text-black'}`}>
+                          {log.status}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="text-center py-10 text-zinc-400 font-bold uppercase">No gateway transactions recorded. Verify your API credentials.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <PremiumOverlay requiredPlan="Pro Plus" title="API Analytics Locked" description="Upgrade to Pro Plus or Business to view detailed API transaction logs.">
+            <div className="overflow-x-auto min-h-[300px]">
+              <table className="data-table opacity-50">
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>App</th>
+                    <th>Endpoint</th>
+                    <th>Latency</th>
+                    <th>Environment</th>
+                    <th>Timestamp</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <tr key={i}>
+                      <td className="uppercase font-mono text-xs font-black text-black">
+                        <span className="px-2 py-0.5 border border-black bg-zinc-100 text-black">
+                          GET
+                        </span>
+                      </td>
+                      <td className="font-bold text-xs">Acme Corp</td>
+                      <td className="font-mono text-xs text-zinc-500">/v1/verify</td>
+                      <td className="font-bold text-xs">12{i}ms</td>
+                      <td>
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 border bg-brutal-yellow/20 text-yellow-700 border-yellow-700">
+                          production
+                        </span>
+                      </td>
+                      <td className="font-bold text-xs">12:0{i}:00 PM</td>
+                      <td>
+                        <div className="w-6 h-6 border-2 border-black flex items-center justify-center font-bold text-[10px] bg-brutal-green text-black">
+                          200
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </PremiumOverlay>
+        )}
       </div>
 
     </div>

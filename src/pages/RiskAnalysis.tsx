@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Loader2, ShieldAlert } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
+import { useDashboardContext } from '../hooks/useDashboardContext';
+import { PremiumOverlay } from '../components/PremiumOverlay';
 
 interface TrustRecord {
   id: string;
@@ -31,6 +33,10 @@ const GUEST_DEMO_RECORDS: TrustRecord[] = [
 
 export default function RiskAnalysis() {
   const { isGuest } = useGuest();
+  const dashboardContext = useDashboardContext();
+  const plan = dashboardContext?.plan || 'free';
+  const isOwner = dashboardContext?.isOwner || false;
+  const isBusinessOrAdmin = isOwner || plan === 'business' || plan === 'admin';
   const [records, setRecords] = useState<TrustRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -107,38 +113,69 @@ export default function RiskAnalysis() {
       </div>
 
       <div className="brutal-card p-0 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Identity Hash</th>
-                <th>Status</th>
-                <th>Timestamp</th>
-                <th>Risk Level</th>
-              </tr>
-            </thead>
-            <tbody>
-              {records.length > 0 ? (
-                records.map((r) => (
-                  <tr key={r.id}>
-                    <td className="font-mono text-[10px] uppercase">{r.identity_hash.substring(0, 24)}...</td>
-                    <td className="uppercase font-bold">{r.verification_status}</td>
-                    <td className="font-bold text-xs">{new Date(r.created_at).toLocaleDateString()}</td>
-                    <td>
-                      <span className="brutal-badge !border-2 !px-2 !py-0.5" style={{ background: STATUS_COLOR[r.verification_status] }}>
-                        {RISK_LABEL[r.verification_status]}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+        {isBusinessOrAdmin ? (
+          <div className="overflow-x-auto">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={4} className="text-center py-12 text-gray-400 font-bold uppercase">No analysis data available</td>
+                  <th>Identity Hash</th>
+                  <th>Status</th>
+                  <th>Timestamp</th>
+                  <th>Risk Level</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {records.length > 0 ? (
+                  records.map((r) => (
+                    <tr key={r.id}>
+                      <td className="font-mono text-[10px] uppercase">{r.identity_hash.substring(0, 24)}...</td>
+                      <td className="uppercase font-bold">{r.verification_status}</td>
+                      <td className="font-bold text-xs">{new Date(r.created_at).toLocaleDateString()}</td>
+                      <td>
+                        <span className="brutal-badge !border-2 !px-2 !py-0.5" style={{ background: STATUS_COLOR[r.verification_status] }}>
+                          {RISK_LABEL[r.verification_status]}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="text-center py-12 text-gray-400 font-bold uppercase">No analysis data available</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <PremiumOverlay requiredPlan="Business" title="Risk Analytics Dashboard Locked" description="Upgrade to Business to view detailed transaction risk logs.">
+            <div className="overflow-x-auto min-h-[300px]">
+              <table className="data-table opacity-50">
+                <thead>
+                  <tr>
+                    <th>Identity Hash</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                    <th>Risk Level</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <tr key={i}>
+                      <td className="font-mono text-[10px] uppercase">DEMO_HASH_{i}XXXXX...</td>
+                      <td className="uppercase font-bold">VERIFIED</td>
+                      <td className="font-bold text-xs">01/01/2026</td>
+                      <td>
+                        <span className="brutal-badge !border-2 !px-2 !py-0.5" style={{ background: '#00FF00' }}>
+                          SAFE
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </PremiumOverlay>
+        )}
       </div>
     </div>
   );

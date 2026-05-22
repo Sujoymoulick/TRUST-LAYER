@@ -1,0 +1,15 @@
+# Ignore scanner skill's local dashboard assets and temp clones
+index.html
+styles.css
+assets/
+cloned-repos/
+
+# Node.js
+node_modules/
+
+# Local CLI files (keep the scanner itself for editing)
+scanner.js
+package.json
+package-lock.json
+LICENSE
+README.md
