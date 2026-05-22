@@ -4,7 +4,7 @@ import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, Dollar
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
-import mainLogo from '../assets/Pramaaan-logo.png';
+import mainLogo from '../assets/pramaaanlogo-removebg.png';
 import { SafetyMonitor } from '../components/SafetyMonitor';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSIWE } from '../hooks/useSIWE';

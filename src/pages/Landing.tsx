@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { Component as RocketLoader } from '../components/ui/rocket-loader';
 import { CircularTestimonialsDemo } from '../components/ui/demo';
-import mainLogo from '../assets/Pramaaan-logo.png';
+import mainLogo from '../assets/pramaaanlogo-removebg.png';
 
 const PLATFORMS = [
   { name: 'GitHub', icon: <Shield size={20} /> },
