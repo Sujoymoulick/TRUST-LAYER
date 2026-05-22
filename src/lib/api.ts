@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 
-export const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+export const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://trust-layers-backend.onrender.com/api/v1';
 
 /**
  * A global fetch wrapper configured to use the backend base URL.

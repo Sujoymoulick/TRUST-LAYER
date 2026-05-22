@@ -14,7 +14,7 @@ import { supabase } from '../../lib/supabase';
 import { useGuest } from '../../context/GuestContext';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://trust-layers-backend.onrender.com/api/v1';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

@@ -19,7 +19,7 @@ export default function LoginWithTrustLayerButton({
 }: ButtonProps) {
   
   const handleOAuthClick = () => {
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api/v1';
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://trust-layers-backend.onrender.com/api/v1';
     
     // Construct target authorize URL redirecting to OAuth serverless controller
     const authUrl = `${apiBaseUrl}/oauth/authorize?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&code_challenge=${encodeURIComponent(codeChallenge)}&code_challenge_method=S256&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(scope)}`;
