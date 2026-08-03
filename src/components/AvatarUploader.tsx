@@ -65,17 +65,17 @@ export function AvatarUploader({ userId, email = 'user', size = 'md' }: AvatarUp
           <img
             src={displayUrl}
             alt="Profile avatar"
-            className={`${sz.wrap} border-4 border-black object-cover shadow-[4px_4px_0_#000] ${busy ? 'opacity-50' : ''}`}
+            className={`${sz.wrap} border border-slate-200 dark:border-zinc-800 object-cover shadow-md ${busy ? 'opacity-50' : ''}`}
           />
 
           {/* Overlay */}
-          <div className={`absolute inset-0 border-4 border-black flex items-center justify-center transition-opacity ${busy ? 'opacity-100 bg-white/80' : 'opacity-0 group-hover:opacity-100 bg-black/60'}`}>
+          <div className={`absolute inset-0 border border-slate-200 dark:border-zinc-800 flex items-center justify-center transition-opacity ${busy ? 'opacity-100 bg-white/80' : 'opacity-0 group-hover:opacity-100 bg-black/60'}`}>
             {busy ? (
               <Loader2 className="animate-spin text-black" size={22} />
             ) : (
               <div className="flex flex-col items-center gap-1">
                 <Camera size={20} className="text-white" />
-                <span className={`${sz.text} font-black uppercase text-white`}>Change</span>
+                <span className={`${sz.text} font-bold uppercase text-white`}>Change</span>
               </div>
             )}
           </div>
@@ -94,7 +94,7 @@ export function AvatarUploader({ userId, email = 'user', size = 'md' }: AvatarUp
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={busy}
-            className="brutal-btn bg-brutal-yellow text-black px-4 py-2 text-[10px] font-black uppercase flex items-center gap-2 w-full min-h-0"
+            className="brutal-btn bg-brutal-yellow text-black px-4 py-2 text-[10px] font-bold uppercase flex items-center gap-2 w-full min-h-0"
           >
             {uploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />}
             {uploading ? 'Uploading…' : 'Upload Photo'}
@@ -105,7 +105,7 @@ export function AvatarUploader({ userId, email = 'user', size = 'md' }: AvatarUp
               type="button"
               onClick={remove}
               disabled={busy}
-              className="brutal-btn bg-white text-red-600 border-red-500 px-4 py-2 text-[10px] font-black uppercase flex items-center gap-2 w-full min-h-0 hover:bg-red-50"
+              className="brutal-btn bg-white text-red-600 border-red-500 px-4 py-2 text-[10px] font-bold uppercase flex items-center gap-2 w-full min-h-0 hover:bg-red-50"
             >
               {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
               {deleting ? 'Removing…' : 'Remove Photo'}
@@ -121,14 +121,14 @@ export function AvatarUploader({ userId, email = 'user', size = 'md' }: AvatarUp
 
       {/* Success toast */}
       {success && (
-        <div className="flex items-center gap-2 px-3 py-2 border-2 border-black bg-brutal-green text-black font-black text-[10px] uppercase">
+        <div className="flex items-center gap-2 px-3 py-2 border border-slate-200 dark:border-zinc-800 bg-brutal-green text-black font-bold text-[10px] uppercase">
           <CheckCircle size={13} /> Profile photo updated!
         </div>
       )}
 
       {/* Error banner */}
       {error && (
-        <div className="flex items-center justify-between gap-2 px-3 py-2 border-2 border-black bg-brutal-pink text-white font-black text-[10px] uppercase">
+        <div className="flex items-center justify-between gap-2 px-3 py-2 border border-slate-200 dark:border-zinc-800 bg-brutal-pink text-white font-bold text-[10px] uppercase">
           <span>⚠ {error}</span>
           <button onClick={clearError}><X size={13} /></button>
         </div>

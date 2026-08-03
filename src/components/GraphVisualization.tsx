@@ -84,21 +84,21 @@ export const GraphVisualization: React.FC<GraphVisualizationProps> = ({ nodes, e
 
       <div 
         ref={containerRef} 
-        className="w-full h-[400px] border-4 border-black bg-white shadow-[8px_8px_0px_#000] cursor-grab active:cursor-grabbing"
+        className="w-full h-[400px] border border-slate-200 dark:border-zinc-800 bg-white shadow-lg cursor-grab active:cursor-grabbing"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
          <div className="brutal-card bg-gray-50 flex items-start gap-3">
             <Info className="text-brutal-blue mt-1 shrink-0" size={16} />
             <div>
-               <p className="text-[10px] font-black uppercase mb-1 text-gray-500">Graph Insight</p>
+               <p className="text-[10px] font-bold uppercase mb-1 text-gray-500">Graph Insight</p>
                <p className="text-xs font-bold leading-relaxed"> Nodes represent identities and transactions. Thick connections indicate high trust propagation.</p>
             </div>
          </div>
          <div className="brutal-card bg-brutal-yellow/10 border-dashed flex items-start gap-3">
             <ShieldAlert className="text-brutal-pink mt-1 shrink-0" size={16} />
             <div>
-               <p className="text-[10px] font-black uppercase mb-1 text-brutal-pink">Risk Warning</p>
+               <p className="text-[10px] font-bold uppercase mb-1 text-brutal-pink">Risk Warning</p>
                <p className="text-xs font-bold leading-relaxed text-brutal-pink/80"> Circular paths or clusters of high-risk nodes are automatically flagged by our AI.</p>
             </div>
          </div>

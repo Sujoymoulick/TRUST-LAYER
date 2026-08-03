@@ -23,7 +23,7 @@ describe('Connected Apps Management Tests', () => {
     await prisma.user.upsert({
       where: { id: mockUserId },
       update: {},
-      create: { id: mockUserId, email: 'test@pramaaan.io', fullName: 'Test User' }
+      create: { id: mockUserId, email: 'test@crifolayer.io', fullName: 'Test User' }
     });
   });
 

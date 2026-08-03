@@ -48,7 +48,7 @@ export default function VerificationCenter() {
   const [syncLog, setSyncLog] = useState<string[]>([]);
   
   const socketRef = useRef<WebSocket | null>(null);
-  const backendBaseUrl = import.meta.env.VITE_BACKEND_DASHBOARD_URL || 'http://localhost:3001';
+  const backendBaseUrl = import.meta.env.VITE_BACKEND_DASHBOARD_URL || 'http://localhost:3000';
   const apiBase = `${backendBaseUrl}/api/v1/auth/oauth`;
 
   // Fetch initial profile user — never use a hardcoded fallback ID
@@ -87,7 +87,7 @@ export default function VerificationCenter() {
       const ws = new WebSocket(`${wsProto}://${wsUrl}`);
       
       ws.onopen = () => {
-        console.log('[WS] Handshake established with Pramaaan server.');
+        console.log('[WS] Handshake established with Crifolayer server.');
       };
 
       ws.onmessage = (event) => {
@@ -175,7 +175,7 @@ export default function VerificationCenter() {
     setSyncingProvider(providerId);
     setSyncProgress(10);
     setSyncStatus('HANDSHAKE_INITIATED');
-    setSyncLog([`Connecting secure Pramaaan validator to ${providerId}...`]);
+    setSyncLog([`Connecting secure Crifolayer validator to ${providerId}...`]);
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -326,7 +326,7 @@ export default function VerificationCenter() {
     setScore(300);
     setCategory('LOW_TRUST');
     setTimeline([
-      { id: '1', type: 'AUDIT', title: 'TRUST BASELINE INITIALIZED', description: 'Pramaaan multi-platform weighting rules initialized.', status: 'SUCCESS', timestamp: new Date().toISOString() }
+      { id: '1', type: 'AUDIT', title: 'TRUST BASELINE INITIALIZED', description: 'Crifolayer multi-platform weighting rules initialized.', status: 'SUCCESS', timestamp: new Date().toISOString() }
     ]);
   };
 
@@ -350,15 +350,15 @@ export default function VerificationCenter() {
     <div className="space-y-8 w-full max-w-7xl mx-auto p-1 sm:p-2">
       
       {/* ── HEADER BANNER ── */}
-      <div className="relative p-6 sm:p-8 rounded-[4px] border-3 border-black bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_#000] overflow-hidden">
+      <div className="relative p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md overflow-hidden">
         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full filter blur-xl" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="bg-brutal-yellow border-2 border-black text-black px-2 py-0.5 text-[10px] font-black uppercase tracking-wider">SECURE Rep SYSTEM</span>
-              {isGuest && <span className="bg-rose-500 text-white border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase">Offline Sandbox Mode</span>}
+              <span className="bg-brutal-yellow border border-slate-200 dark:border-zinc-800 text-black px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">SECURE Rep SYSTEM</span>
+              {isGuest && <span className="bg-rose-500 text-white border border-slate-200 dark:border-zinc-800 px-2 py-0.5 text-[10px] font-bold uppercase">Offline Sandbox Mode</span>}
             </div>
-            <h1 className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tight text-black dark:text-white">
+            <h1 className="font-display text-2xl sm:text-4xl font-bold uppercase tracking-tight text-black dark:text-white">
               Identity & Trust Verification
             </h1>
             <p className="mt-2 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 max-w-2xl font-medium">
@@ -369,7 +369,7 @@ export default function VerificationCenter() {
             <Shield className="w-5 h-5 text-indigo-500" />
             <div className="text-left">
               <div className="text-[10px] font-bold text-zinc-400 uppercase">System Status</div>
-              <div className="text-xs font-black text-emerald-500 flex items-center gap-1 uppercase">
+              <div className="text-xs font-bold text-emerald-500 flex items-center gap-1 uppercase">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" /> Active
               </div>
             </div>
@@ -381,9 +381,9 @@ export default function VerificationCenter() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Dynamic FICO Radial Chart (4 Cols) */}
-        <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-[4px] border-3 border-black bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_#000] relative">
-          <div className="absolute top-2 right-2 text-[8px] font-black font-mono text-zinc-300">ENG_V2</div>
-          <h3 className="font-display font-black text-sm uppercase tracking-wide border-b-2 border-black pb-3 mb-6 flex items-center gap-2">
+        <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md relative">
+          <div className="absolute top-2 right-2 text-[8px] font-bold font-mono text-zinc-300">ENG_V2</div>
+          <h3 className="font-display font-bold text-sm uppercase tracking-wide border-b border-slate-200 dark:border-zinc-800 pb-3 mb-6 flex items-center gap-2">
             <Activity className="w-4 h-4 text-indigo-500" /> Dynamic Reputation Index
           </h3>
 
@@ -413,12 +413,12 @@ export default function VerificationCenter() {
               {/* Score text absolute center */}
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                 <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Score Index</span>
-                <span className="text-4xl sm:text-5xl font-display font-black text-black dark:text-white tracking-tight">{score}</span>
+                <span className="text-4xl sm:text-5xl font-display font-bold text-black dark:text-white tracking-tight">{score}</span>
                 <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Range: 300 - 850</span>
               </div>
             </div>
             
-            <div className={`mt-6 inline-flex items-center gap-1.5 px-3 py-1 border-2 font-black uppercase text-xs rounded-full ${activeCat.color}`}>
+            <div className={`mt-6 inline-flex items-center gap-1.5 px-3 py-1 border-2 font-bold uppercase text-xs rounded-full ${activeCat.color}`}>
               <span className="w-1.5 h-1.5 rounded-full bg-current" />
               {activeCat.label}
             </div>
@@ -429,32 +429,32 @@ export default function VerificationCenter() {
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
               <div className="bg-zinc-50 dark:bg-zinc-800/40 p-1.5 border border-zinc-200 dark:border-zinc-700">
                 <div className="font-bold text-zinc-500 dark:text-zinc-400">ID</div>
-                <div className="font-black text-zinc-700 dark:text-zinc-300">{breakdown.identity}%</div>
+                <div className="font-bold text-zinc-700 dark:text-zinc-300">{breakdown.identity}%</div>
               </div>
               <div className="bg-zinc-50 dark:bg-zinc-800/40 p-1.5 border border-zinc-200 dark:border-zinc-700">
                 <div className="font-bold text-zinc-400">Dev</div>
-                <div className="font-black text-zinc-700 dark:text-zinc-300">{breakdown.developer}%</div>
+                <div className="font-bold text-zinc-700 dark:text-zinc-300">{breakdown.developer}%</div>
               </div>
               <div className="bg-zinc-50 dark:bg-zinc-800/40 p-1.5 border border-zinc-200 dark:border-zinc-700">
                 <div className="font-bold text-zinc-400">Fin</div>
-                <div className="font-black text-zinc-700 dark:text-zinc-300">{breakdown.financial}%</div>
+                <div className="font-bold text-zinc-700 dark:text-zinc-300">{breakdown.financial}%</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* 11 Integrated Cards Grid list (7 Cols) */}
-        <div className="lg:col-span-7 flex flex-col justify-between p-6 sm:p-8 rounded-[4px] border-3 border-black bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_#000] relative">
-          <h3 className="font-display font-black text-sm uppercase tracking-wide border-b-2 border-black pb-3 mb-6 flex items-center gap-2">
+        <div className="lg:col-span-7 flex flex-col justify-between p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md relative">
+          <h3 className="font-display font-bold text-sm uppercase tracking-wide border-b border-slate-200 dark:border-zinc-800 pb-3 mb-6 flex items-center gap-2">
             <Shield className="w-4 h-4 text-emerald-500" /> Identity verification anchors
           </h3>
 
           {/* Sync Progress Loading HUD Overlay */}
           {syncingProvider && (
-            <div className="mb-6 p-4 border-2 border-black bg-zinc-950 text-white rounded-[4px] space-y-3 relative overflow-hidden">
+            <div className="mb-6 p-4 border border-slate-200 dark:border-zinc-800 bg-zinc-950 text-white rounded-xl space-y-3 relative overflow-hidden">
               <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-300" style={{ width: `${syncProgress}%` }} />
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider flex items-center gap-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-400" />
                   Syncing {syncingProvider.toUpperCase()}
                 </span>
@@ -480,19 +480,19 @@ export default function VerificationCenter() {
               return (
                 <div 
                   key={prov.id}
-                  className={`p-4 border-2 rounded-[4px] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative group ${
+                  className={`p-4 border-2 rounded-xl transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative group ${
                     isConnected 
                       ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-950/10' 
                       : 'border-zinc-300 hover:border-black dark:border-zinc-700 dark:hover:border-zinc-500 bg-zinc-50/50 dark:bg-zinc-800/30'
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-[4px] border-2 border-black bg-gradient-to-br ${prov.color} flex items-center justify-center text-white shadow-[2px_2px_0px_#000]`}>
+                    <div className={`w-10 h-10 rounded-xl border border-slate-200 dark:border-zinc-800 bg-gradient-to-br ${prov.color} flex items-center justify-center text-white shadow-sm`}>
                       <prov.icon className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-display font-black text-sm text-black dark:text-white uppercase">{prov.name}</span>
+                        <span className="font-display font-bold text-sm text-black dark:text-white uppercase">{prov.name}</span>
                         <span className="text-[8px] font-extrabold uppercase px-1.5 py-0.25 bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">{prov.category}</span>
                       </div>
                       <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 max-w-md font-medium leading-relaxed">{prov.desc}</p>
@@ -503,7 +503,7 @@ export default function VerificationCenter() {
                     {isConnected ? (
                       <>
                         <div className="text-right hidden sm:block">
-                          <span className="text-[9px] font-black text-emerald-500 uppercase block">Verified Connected</span>
+                          <span className="text-[9px] font-bold text-emerald-500 uppercase block">Verified Connected</span>
                           <span className="text-[8px] font-mono text-zinc-400">
                             Synced {new Date(connectedInfo.lastSyncedAt).toLocaleDateString()}
                           </span>
@@ -519,7 +519,7 @@ export default function VerificationCenter() {
                       <button 
                         onClick={() => handleConnect(prov.id)}
                         disabled={!!syncingProvider}
-                        className="px-4 py-2 border-2 border-black bg-black text-white hover:bg-brutal-yellow hover:text-black font-black uppercase text-[10px] shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all disabled:opacity-50"
+                        className="px-4 py-2 border border-slate-200 dark:border-zinc-800 bg-black text-white hover:bg-brutal-yellow hover:text-black font-bold uppercase text-[10px] shadow-sm active:scale-[0.98] active:shadow-none transition-all disabled:opacity-50"
                       >
                         Connect
                       </button>
@@ -535,17 +535,17 @@ export default function VerificationCenter() {
       </div>
 
       {/* ─── RISK ANALYTICS AND FRAUD REPORT CARD ─── */}
-      <div className="p-6 sm:p-8 rounded-[4px] border-3 border-black bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_#000]">
-        <h3 className="font-display font-black text-sm uppercase tracking-wide border-b-2 border-black pb-3 mb-6 flex items-center gap-2">
+      <div className="p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md">
+        <h3 className="font-display font-bold text-sm uppercase tracking-wide border-b border-slate-200 dark:border-zinc-800 pb-3 mb-6 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-rose-500" /> Behavioral Anomaly & Risk Ledger
         </h3>
         
         {isBusinessOrAdmin ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="border-2 border-black p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-[4px]">
+            <div className="border border-slate-200 dark:border-zinc-800 p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl">
               <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase">Aggregated Threat Rating</span>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-2xl font-black uppercase tracking-tight ${
+                <span className={`text-2xl font-bold uppercase tracking-tight ${
                   riskLevel === 'CRITICAL' ? 'text-red-600' :
                   riskLevel === 'HIGH' ? 'text-rose-500' :
                   riskLevel === 'MEDIUM' ? 'text-amber-500' : 'text-emerald-500'
@@ -555,12 +555,12 @@ export default function VerificationCenter() {
               <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-2 font-medium">Derived via multi-platform activity frequency, legal name validation checks, and repository link consistency.</p>
             </div>
   
-            <div className="md:col-span-2 border-2 border-black p-4 rounded-[4px] space-y-3">
+            <div className="md:col-span-2 border border-slate-200 dark:border-zinc-800 p-4 rounded-xl space-y-3">
               <span className="text-[9px] font-bold text-zinc-500 dark:text-zinc-400 uppercase block">Active System Flags & Penalties</span>
               {fraudPenalties.length === 0 ? (
                 <div className="flex items-center gap-2 text-emerald-500 py-2">
                   <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-xs font-black uppercase">Zero Anomalies Detected. Rep System Clear.</span>
+                  <span className="text-xs font-bold uppercase">Zero Anomalies Detected. Rep System Clear.</span>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -568,7 +568,7 @@ export default function VerificationCenter() {
                     <div key={i} className="flex items-start gap-2.5 p-2 bg-rose-500/10 border border-rose-500 rounded text-rose-600">
                       <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-xs font-black uppercase tracking-wider">{pen.type.replace(/_/g, ' ')} (-{pen.points} Points)</div>
+                        <div className="text-xs font-bold uppercase tracking-wider">{pen.type.replace(/_/g, ' ')} (-{pen.points} Points)</div>
                         <p className="text-[10px] font-medium text-rose-500 mt-0.5">{pen.description}</p>
                       </div>
                     </div>
@@ -580,18 +580,18 @@ export default function VerificationCenter() {
         ) : (
           <PremiumOverlay requiredPlan="Business" title="Risk Ledger Locked" description="Upgrade to Business to view detailed behavioral anomaly and fraud penalty reports.">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-50 pointer-events-none filter blur-[2px]">
-              <div className="border-2 border-black p-4 bg-zinc-50 rounded-[4px]">
+              <div className="border border-slate-200 dark:border-zinc-800 p-4 bg-zinc-50 rounded-xl">
                 <span className="text-[9px] font-bold text-zinc-500 uppercase">Aggregated Threat Rating</span>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-2xl font-black uppercase tracking-tight text-emerald-500">LOW</span>
+                  <span className="text-2xl font-bold uppercase tracking-tight text-emerald-500">LOW</span>
                   <span className="text-[10px] font-extrabold uppercase bg-zinc-200 px-2 py-0.5">Real-time signals</span>
                 </div>
               </div>
-              <div className="md:col-span-2 border-2 border-black p-4 rounded-[4px] space-y-3">
+              <div className="md:col-span-2 border border-slate-200 dark:border-zinc-800 p-4 rounded-xl space-y-3">
                 <span className="text-[9px] font-bold text-zinc-500 uppercase block">Active System Flags & Penalties</span>
                 <div className="flex items-center gap-2 text-emerald-500 py-2">
                   <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-xs font-black uppercase">Zero Anomalies Detected. Rep System Clear.</span>
+                  <span className="text-xs font-bold uppercase">Zero Anomalies Detected. Rep System Clear.</span>
                 </div>
               </div>
             </div>
@@ -600,25 +600,25 @@ export default function VerificationCenter() {
       </div>
 
       {/* ── MILESTONE VERIFICATION TIMELINE ── */}
-      <div className="p-6 sm:p-8 rounded-[4px] border-3 border-black bg-white dark:bg-zinc-900 shadow-[6px_6px_0px_#000]">
-        <h3 className="font-display font-black text-sm uppercase tracking-wide border-b-2 border-black pb-3 mb-6 flex items-center gap-2">
+      <div className="p-6 sm:p-8 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md">
+        <h3 className="font-display font-bold text-sm uppercase tracking-wide border-b border-slate-200 dark:border-zinc-800 pb-3 mb-6 flex items-center gap-2">
           <Clock className="w-4 h-4 text-indigo-500" /> Verification Audit Chronology
         </h3>
 
         {timeline.length === 0 ? (
           <p className="text-xs text-zinc-400 font-mono py-4 text-center">No synchronization logs available yet. Connect a trust source above to seed data.</p>
         ) : (
-          <div className="relative border-l-2 border-black pl-6 ml-2 space-y-6 py-2">
+          <div className="relative border-l border-slate-200 dark:border-zinc-800 pl-6 ml-2 space-y-6 py-2">
             {timeline.slice(0, 5).map((timeItem, index) => (
               <div key={timeItem.id || index} className="relative group">
                 {/* Timeline node */}
-                <div className={`absolute -left-[31px] top-0 w-4 h-4 rounded-full border-2 border-black bg-white flex items-center justify-center transition-all ${
+                <div className={`absolute -left-[31px] top-0 w-4 h-4 rounded-full border border-slate-200 dark:border-zinc-800 bg-white flex items-center justify-center transition-all ${
                   timeItem.status === 'SUCCESS' ? 'bg-emerald-500' : 'bg-amber-400'
                 }`}>
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                 </div>
                 <div className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 font-mono">{new Date(timeItem.timestamp).toLocaleString()}</div>
-                <h4 className="text-xs font-black uppercase tracking-wider text-black dark:text-white mt-1">{timeItem.title}</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-black dark:text-white mt-1">{timeItem.title}</h4>
                 <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 max-w-2xl font-medium">{timeItem.description}</p>
               </div>
             ))}

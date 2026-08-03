@@ -59,7 +59,7 @@ export default function WalletDashboard() {
   if (!isConnected) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center">
-        <div className="w-24 h-24 border-4 border-black bg-brutal-yellow flex items-center justify-center text-5xl shadow-[8px_8px_0px_#000]">
+        <div className="w-24 h-24 border border-slate-200 dark:border-zinc-800 bg-brutal-yellow flex items-center justify-center text-5xl shadow-lg">
           <WalletIcon size={48} />
         </div>
         <h2 className="font-display text-3xl uppercase">Wallet Not Connected</h2>
@@ -78,7 +78,7 @@ export default function WalletDashboard() {
         <div className="flex gap-2">
            <button 
             onClick={() => disconnect()}
-            className="brutal-btn bg-brutal-pink text-white px-4 py-2 text-[10px] font-black uppercase"
+            className="brutal-btn bg-brutal-pink text-white px-4 py-2 text-[10px] font-bold uppercase"
            >
              Disconnect
            </button>
@@ -89,20 +89,20 @@ export default function WalletDashboard() {
         {/* Left: Account & Balance */}
         <div className="lg:col-span-4 space-y-8">
           <div className="brutal-card flex flex-col items-center text-center gap-6 py-10 bg-white">
-            <div className="w-20 h-20 border-4 border-black bg-gray-100 flex items-center justify-center shadow-[4px_4px_0px_#000] overflow-hidden">
+            <div className="w-20 h-20 border border-slate-200 dark:border-zinc-800 bg-gray-100 flex items-center justify-center shadow-md overflow-hidden">
               <img src={`https://api.dicebear.com/7.x/identicon/svg?seed=${address}`} alt="wallet avatar" />
             </div>
             
             <div className="space-y-2">
               <div className="flex items-center gap-2 justify-center">
-                <span className="font-mono text-sm font-black tracking-tighter">
+                <span className="font-mono text-sm font-bold tracking-tighter">
                   {address?.substring(0, 6)}...{address?.substring(address.length - 4)}
                 </span>
-                <button onClick={copyAddress} className="p-1 hover:bg-gray-100 border-2 border-black">
+                <button onClick={copyAddress} className="p-1 hover:bg-gray-100 border border-slate-200 dark:border-zinc-800">
                   {copied ? <CheckCircle2 size={12} className="text-brutal-green" /> : <Copy size={12} />}
                 </button>
               </div>
-              <div className="inline-block px-3 py-1 bg-brutal-green border-2 border-black text-[10px] font-black uppercase shadow-[2px_2px_0px_#000]">
+              <div className="inline-block px-3 py-1 bg-brutal-green border border-slate-200 dark:border-zinc-800 text-[10px] font-bold uppercase shadow-sm">
                 {balance?.symbol} Network Active
               </div>
             </div>
@@ -110,11 +110,11 @@ export default function WalletDashboard() {
             <div className="w-full h-px bg-black opacity-10 my-2" />
 
             <div className="space-y-1">
-              <p className="text-[10px] font-black uppercase text-gray-500 tracking-widest">Available Balance</p>
+              <p className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">Available Balance</p>
               <div className="font-display text-4xl leading-none">
                 {balanceLoading ? <Loader2 className="animate-spin" /> : balance ? Number(formatUnits(balance.value, balance.decimals)).toFixed(4) : '0.0000'}
               </div>
-              <p className="font-black uppercase text-xs text-brutal-blue">{balance?.symbol}</p>
+              <p className="font-bold uppercase text-xs text-brutal-blue">{balance?.symbol}</p>
             </div>
           </div>
 
@@ -122,11 +122,11 @@ export default function WalletDashboard() {
             <h3 className="font-display text-xs uppercase tracking-widest text-brutal-yellow">Security Status</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 border-2 border-white/20 bg-white/5">
-                <span className="text-[10px] font-black uppercase">SIWE Verified</span>
+                <span className="text-[10px] font-bold uppercase">SIWE Verified</span>
                 <CheckCircle2 size={16} className="text-brutal-green" />
               </div>
               <div className="flex items-center justify-between p-3 border-2 border-white/20 bg-white/5">
-                <span className="text-[10px] font-black uppercase">Chain ID</span>
+                <span className="text-[10px] font-bold uppercase">Chain ID</span>
                 <span className="font-mono text-xs">{chainId}</span>
               </div>
             </div>
@@ -168,9 +168,9 @@ export default function WalletDashboard() {
                   ) : transactions.length > 0 ? (
                     transactions.map((tx) => (
                       <tr key={tx.id}>
-                        <td className="font-black uppercase text-[10px]">{tx.type}</td>
+                        <td className="font-bold uppercase text-[10px]">{tx.type}</td>
                         <td className="font-mono text-[10px] opacity-60">{tx.tx_hash.substring(0, 14)}...</td>
-                        <td className="font-black text-[10px]">{tx.amount}</td>
+                        <td className="font-bold text-[10px]">{tx.amount}</td>
                         <td>
                           <span className={`brutal-badge !border-2 !px-2 !py-0.5 uppercase text-[8px] ${
                             tx.status === 'success' ? 'bg-brutal-green' : tx.status === 'failed' ? 'bg-brutal-pink' : 'bg-brutal-yellow'
@@ -179,7 +179,7 @@ export default function WalletDashboard() {
                           </span>
                         </td>
                         <td>
-                          <a href={`https://etherscan.io/tx/${tx.tx_hash}`} target="_blank" rel="noreferrer" className="p-1 inline-block border-2 border-black hover:bg-brutal-yellow">
+                          <a href={`https://etherscan.io/tx/${tx.tx_hash}`} target="_blank" rel="noreferrer" className="p-1 inline-block border border-slate-200 dark:border-zinc-800 hover:bg-brutal-yellow">
                             <ExternalLink size={12} />
                           </a>
                         </td>
@@ -206,12 +206,12 @@ export default function WalletDashboard() {
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-square border-2 border-black bg-white flex flex-col shadow-[4px_4px_0px_#000]">
+                <div key={i} className="aspect-square border border-slate-200 dark:border-zinc-800 bg-white flex flex-col shadow-md">
                   <div className="flex-1 bg-gray-100 flex items-center justify-center opacity-40">
                     <AlertCircle size={24} />
                   </div>
-                  <div className="p-2 border-t-2 border-black bg-white">
-                    <p className="text-[8px] font-black uppercase">Hidden Asset #{i}</p>
+                  <div className="p-2 border-t border-slate-200 dark:border-zinc-800 bg-white">
+                    <p className="text-[8px] font-bold uppercase">Hidden Asset #{i}</p>
                   </div>
                 </div>
               ))}

@@ -1,6 +1,6 @@
-# Pramaaan B2B Developer Node.js SDK
+# Crifolayer B2B Developer Node.js SDK
 
-Official high-performance Node.js client library wrapper for the **Pramaaan Trustlayer B2B Integration Suite**. 
+Official high-performance Node.js client library wrapper for the **Crifolayer Trustlayer B2B Integration Suite**. 
 
 This SDK simplifies authenticating requests, signs JSON payloads cryptographically using HMAC-SHA256, and incorporates automatic exponential backoff retries with randomized jitter to handle rate limits (`HTTP 429`) and gateway network glitches smoothly.
 
@@ -11,7 +11,7 @@ This SDK simplifies authenticating requests, signs JSON payloads cryptographical
 Install the package via npm:
 
 ```bash
-npm install @pramaaan/sdk
+npm install @crifolayer/sdk
 ```
 
 ---
@@ -20,14 +20,14 @@ npm install @pramaaan/sdk
 
 ### 1. Initialization
 
-Generate your Sandbox (`tl_sb_...`) or Production (`tl_prod_...`) keys inside the Pramaaan **Developer Portal Dashboard** (`/api`), and instantiate the client:
+Generate your Sandbox (`tl_sb_...`) or Production (`tl_prod_...`) keys inside the Crifolayer **Developer Portal Dashboard** (`/api`), and instantiate the client:
 
 ```javascript
-const PramaaanSDK = require('@pramaaan/sdk');
+const CrifolayerSDK = require('@crifolayer/sdk');
 
-const client = new PramaaanSDK({
+const client = new CrifolayerSDK({
   apiKey: 'tl_sb_acmeapp_8d7f6e52c803ab971e44f32e987c...',
-  baseUrl: 'https://api.pramaaan.com/api/v1', // Defaults to local sandbox http://localhost:5000/api/v1
+  baseUrl: 'https://api.crifolayer.com/api/v1', // Defaults to local sandbox http://localhost:5000/api/v1
   timeout: 8000,                            // Request timeout limit (defaults to 10000ms)
   maxRetries: 4                             // Automatic exponential retries (defaults to 3)
 });
@@ -130,4 +130,4 @@ The API Gateway enforces a strict **5-minute sliding window** to reject replay a
 ---
 
 ## 📄 License
-MIT License. Copyright (c) 2026 Pramaaan Team.
+MIT License. Copyright (c) 2026 Crifolayer Team.

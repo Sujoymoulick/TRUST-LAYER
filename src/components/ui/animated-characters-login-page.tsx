@@ -332,7 +332,7 @@ function LoginPage() {
             <div className="size-8 rounded-lg bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center">
               <Sparkles className="size-4" />
             </div>
-            <span>Pramaaan</span>
+            <span>Crifolayer</span>
           </div>
         </div>
 
@@ -533,7 +533,7 @@ function LoginPage() {
             <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
               <Sparkles className="size-4 text-primary" />
             </div>
-            <span>Pramaaan</span>
+            <span>Crifolayer</span>
           </div>
 
           {/* Header */}

@@ -292,7 +292,7 @@ export default function DeveloperWebhooks() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black shadow-[3px_3px_0px_#000] flex items-center justify-center">
+            <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black shadow-sm flex items-center justify-center">
               <Webhook className="w-5 h-5 text-black" />
             </div>
             <h1 className="font-display text-3xl uppercase tracking-tight">Webhooks</h1>
@@ -358,7 +358,7 @@ export default function DeveloperWebhooks() {
       {/* ── No Apps State ── */}
       {!loading && noApps && (
         <div className="brutal-card text-center py-16">
-          <div className="w-16 h-16 bg-brutal-yellow border-[3px] border-black shadow-[4px_4px_0px_#000] flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-brutal-yellow border-[3px] border-black shadow-md flex items-center justify-center mx-auto mb-4">
             <Webhook className="w-8 h-8 text-black" />
           </div>
           <h2 className="font-display text-xl uppercase mb-2">No Apps Found</h2>
@@ -380,7 +380,7 @@ export default function DeveloperWebhooks() {
         <>
           {webhooks.length === 0 ? (
             <div className="brutal-card text-center py-16">
-              <div className="w-16 h-16 bg-brutal-yellow border-[3px] border-black shadow-[4px_4px_0px_#000] flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-brutal-yellow border-[3px] border-black shadow-md flex items-center justify-center mx-auto mb-4">
                 <Webhook className="w-8 h-8 text-black" />
               </div>
               <h2 className="font-display text-xl uppercase mb-2">No Webhooks Yet</h2>
@@ -450,7 +450,7 @@ export default function DeveloperWebhooks() {
                       {/* Status */}
                       <td className="px-4 py-3">
                         {wh.status === 'active' ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-brutal-green text-black text-xs font-bold border border-black rounded-sm">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-brutal-green text-black text-xs font-bold border border-slate-200 dark:border-zinc-800 rounded-sm">
                             <span className="w-1.5 h-1.5 rounded-full bg-black inline-block" />
                             Active
                           </span>
@@ -514,7 +514,7 @@ export default function DeveloperWebhooks() {
             if (e.target === e.currentTarget) setShowAddModal(false);
           }}
         >
-          <div className="bg-[var(--bg-primary)] border-[3px] border-black shadow-[8px_8px_0px_#000] p-6 max-w-lg w-full relative">
+          <div className="bg-[var(--bg-primary)] border-[3px] border-black shadow-lg p-6 max-w-lg w-full relative">
             {/* Close */}
             <button
               onClick={() => setShowAddModal(false)}
@@ -525,7 +525,7 @@ export default function DeveloperWebhooks() {
 
             {/* Title */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-9 h-9 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-[3px_3px_0px_#000]">
+              <div className="w-9 h-9 bg-brutal-yellow border-[3px] border-black flex items-center justify-center shadow-sm">
                 <Webhook className="w-4 h-4 text-black" />
               </div>
               <h2 className="font-display text-xl uppercase tracking-tight">Register Endpoint</h2>
@@ -625,10 +625,10 @@ export default function DeveloperWebhooks() {
       ════════════════════════════════════════════════════════════════════ */}
       {revealSecret && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-[var(--bg-primary)] border-[3px] border-black shadow-[8px_8px_0px_#000] p-6 max-w-lg w-full">
+          <div className="bg-[var(--bg-primary)] border-[3px] border-black shadow-lg p-6 max-w-lg w-full">
             {/* Icon + title */}
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black shadow-[3px_3px_0px_#000] flex items-center justify-center">
+              <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black shadow-sm flex items-center justify-center">
                 <Shield className="w-5 h-5 text-black" />
               </div>
               <h2 className="font-display text-xl uppercase tracking-tight">Webhook Secret</h2>
@@ -696,9 +696,9 @@ export default function DeveloperWebhooks() {
             if (e.target === e.currentTarget && !deleting) setDeleteTarget(null);
           }}
         >
-          <div className="bg-[var(--bg-primary)] border-[3px] border-black shadow-[8px_8px_0px_#000] p-6 max-w-md w-full">
+          <div className="bg-[var(--bg-primary)] border-[3px] border-black shadow-lg p-6 max-w-md w-full">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-red-500 border-[3px] border-black shadow-[3px_3px_0px_#000] flex items-center justify-center">
+              <div className="w-10 h-10 bg-red-500 border-[3px] border-black shadow-sm flex items-center justify-center">
                 <Trash2 className="w-5 h-5 text-white" />
               </div>
               <h2 className="font-display text-xl uppercase tracking-tight">Delete Webhook</h2>

@@ -51,7 +51,7 @@ function scoreLabel(n: number) {
 function Cell({ label, value, mono }: { label: string; value?: string | null; mono?: boolean }) {
   return (
     <div className="space-y-0.5">
-      <div className="text-[9px] font-black uppercase tracking-widest text-gray-500">{label}</div>
+      <div className="text-[9px] font-bold uppercase tracking-widest text-gray-500">{label}</div>
       <div className={`text-sm font-bold break-words leading-tight text-gray-900 ${mono ? 'font-mono text-xs' : ''}`}>
         {value || '—'}
       </div>
@@ -61,8 +61,8 @@ function Cell({ label, value, mono }: { label: string; value?: string | null; mo
 
 function Section({ title, icon: Icon, children }: { title: string; icon?: any; children: React.ReactNode }) {
   return (
-    <div className="border-b-4 border-black last:border-b-0">
-      <div className="flex items-center gap-2 px-6 py-2 bg-gray-100 border-b-2 border-black">
+    <div className="border-b border-slate-200 dark:border-zinc-800 last:border-b-0">
+      <div className="flex items-center gap-2 px-6 py-2 bg-gray-100 border-b border-slate-200 dark:border-zinc-800">
         {Icon && <Icon size={13} className="text-gray-600" />}
         <span className="font-display text-[10px] uppercase tracking-widest text-gray-700">{title}</span>
       </div>
@@ -112,7 +112,7 @@ export default function Passport() {
   /* ── edge states ── */
   if (isGuest) return (
     <div className="max-w-md mx-auto pt-20 text-center space-y-6">
-      <div className="w-24 h-24 border-4 border-black bg-white mx-auto flex items-center justify-center p-4 shadow-[8px_8px_0_#000]">
+      <div className="w-24 h-24 border border-slate-200 dark:border-zinc-800 bg-white mx-auto flex items-center justify-center p-4 shadow-lg">
         <img src={passportLogo} alt="Passport" className="w-full h-full object-contain" />
       </div>
       <h2 className="font-display text-4xl uppercase">Trust Passport</h2>
@@ -120,7 +120,7 @@ export default function Passport() {
         Sign in to access your verified identity passport.
       </p>
       <button onClick={() => navigate('/login')}
-        className="brutal-btn bg-brutal-yellow px-10 py-4 text-base font-black uppercase">
+        className="brutal-btn bg-brutal-yellow px-10 py-4 text-base font-bold uppercase">
         Sign In →
       </button>
     </div>
@@ -129,7 +129,7 @@ export default function Passport() {
   if (loading) return (
     <div className="flex flex-col items-center justify-center min-h-[500px] gap-5">
       <div className="relative">
-        <div className="w-20 h-20 border-4 border-black bg-white flex items-center justify-center p-4">
+        <div className="w-20 h-20 border border-slate-200 dark:border-zinc-800 bg-white flex items-center justify-center p-4">
           <img src={passportLogo} alt="Passport" className="w-full h-full object-contain" />
         </div>
         <Loader2 className="absolute -top-2 -right-2 animate-spin size-6 text-black" />
@@ -140,10 +140,10 @@ export default function Passport() {
 
   if (error) return (
     <div className="max-w-lg mx-auto pt-16 space-y-4 text-center">
-      <div className="brutal-card border-4 border-black bg-brutal-pink p-10 shadow-[8px_8px_0_#000]">
+      <div className="brutal-card border border-slate-200 dark:border-zinc-800 bg-brutal-pink p-10 shadow-lg">
         <div className="text-4xl mb-4">⚠️</div>
-        <p className="font-black uppercase text-sm mb-6">{error}</p>
-        <button onClick={() => load()} className="brutal-btn bg-white px-8 py-3 font-black uppercase text-sm">Retry</button>
+        <p className="font-bold uppercase text-sm mb-6">{error}</p>
+        <button onClick={() => load()} className="brutal-btn bg-white px-8 py-3 font-bold uppercase text-sm">Retry</button>
       </div>
     </div>
   );
@@ -174,17 +174,17 @@ export default function Passport() {
       </div>
 
       {/* ── PASSPORT DOCUMENT ───────────────────────────────────── */}
-      <div className="border-[5px] border-black shadow-[16px_16px_0_#000] overflow-hidden bg-white">
+      <div className="border-[5px] border-black shadow-md overflow-hidden bg-white">
 
         {/* ── 1 · HEADER STRIPE ── */}
         <div className="bg-black text-brutal-yellow px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <img src={passportLogo} className="w-8 h-8 object-contain" alt="Pramaaan" />
-            <span className="font-display text-base uppercase tracking-[0.2em]">Pramaaan Trust Passport</span>
+            <img src={passportLogo} className="w-8 h-8 object-contain" alt="Crifolayer" />
+            <span className="font-display text-base uppercase tracking-[0.2em]">Crifolayer Trust Passport</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs text-white/40">{passport?.passportId}</span>
-            <span className={`px-3 py-1.5 border-2 font-black text-[10px] uppercase tracking-wider ${
+            <span className={`px-3 py-1.5 border-2 font-bold text-[10px] uppercase tracking-wider ${
               isVerified ? 'bg-brutal-green border-brutal-green text-black' : 'bg-brutal-pink border-brutal-pink text-white'
             }`}>
               {isVerified ? '✅ VERIFIED' : '⚠ UNVERIFIED'}
@@ -193,17 +193,17 @@ export default function Passport() {
         </div>
 
         {/* ── 2 · IDENTITY HEADER ROW ── */}
-        <div className="flex border-b-4 border-black">
+        <div className="flex border-b border-slate-200 dark:border-zinc-800">
           {/* Avatar */}
-          <div className="w-40 flex-shrink-0 border-r-4 border-black bg-gray-50 flex items-center justify-center p-5">
+          <div className="w-40 flex-shrink-0 border-r border-slate-200 dark:border-zinc-800 bg-gray-50 flex items-center justify-center p-5">
             <div className="relative">
               <img
                 src={liveAvatarUrl || passport?.profile?.avatar || `https://api.dicebear.com/9.x/personas/svg?seed=${passport?.profile?.email}`}
                 alt="Passport Photo"
-                className="w-28 h-28 border-4 border-black object-cover"
+                className="w-28 h-28 border border-slate-200 dark:border-zinc-800 object-cover"
               />
               {isVerified && (
-                <div className="absolute -bottom-2 -right-2 bg-brutal-green border-2 border-black w-8 h-8 flex items-center justify-center text-base">✓</div>
+                <div className="absolute -bottom-2 -right-2 bg-brutal-green border border-slate-200 dark:border-zinc-800 w-8 h-8 flex items-center justify-center text-base">✓</div>
               )}
             </div>
           </div>
@@ -212,7 +212,7 @@ export default function Passport() {
           <div className="flex-1 p-6 space-y-5">
               <>
                 <div>
-                  <div className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Full Name</div>
+                  <div className="text-[10px] font-bold uppercase text-gray-400 tracking-widest">Full Name</div>
                   <div className="font-display text-3xl uppercase leading-tight mt-0.5">
                     {passport?.profile?.name || passport?.identity?.firstName
                       ? `${passport?.identity?.firstName || ''} ${passport?.identity?.lastName || ''}`.trim() || passport?.profile?.name
@@ -228,19 +228,19 @@ export default function Passport() {
           </div>
 
           {/* Trust score */}
-          <div className={`w-32 flex-shrink-0 border-l-4 border-black flex flex-col items-center justify-center p-4 text-center gap-2 ${sl.bg}`}>
-            <div className={`text-[9px] font-black uppercase tracking-widest ${sl.txt} opacity-60`}>Trust Score</div>
-            <div className={`font-display text-5xl leading-none font-black ${sl.txt}`}>{score}</div>
-            <div className={`text-[8px] font-black uppercase ${sl.txt} opacity-50`}>/ 1000</div>
-            <div className={`border-2 border-black px-2 py-0.5 font-black text-[9px] uppercase ${sl.txt}`}>{sl.text}</div>
+          <div className={`w-32 flex-shrink-0 border-l border-slate-200 dark:border-zinc-800 flex flex-col items-center justify-center p-4 text-center gap-2 ${sl.bg}`}>
+            <div className={`text-[9px] font-bold uppercase tracking-widest ${sl.txt} opacity-60`}>Trust Score</div>
+            <div className={`font-display text-5xl leading-none font-bold ${sl.txt}`}>{score}</div>
+            <div className={`text-[8px] font-bold uppercase ${sl.txt} opacity-50`}>/ 1000</div>
+            <div className={`border border-slate-200 dark:border-zinc-800 px-2 py-0.5 font-bold text-[9px] uppercase ${sl.txt}`}>{sl.text}</div>
           </div>
         </div>
 
         {/* ── 3 · PERSONAL + ADDRESS + DOCUMENT ── */}
-        <div className="grid grid-cols-3 border-b-4 border-black divide-x-4 divide-black">
+        <div className="grid grid-cols-3 border-b border-slate-200 dark:border-zinc-800 divide-x-4 divide-black">
           {/* Personal Details */}
           <div className="p-5 space-y-4 bg-white">
-            <div className="text-[10px] font-black uppercase tracking-widest text-gray-600 border-b-2 border-black pb-2">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-600 border-b border-slate-200 dark:border-zinc-800 pb-2">
               Personal Details
             </div>
             <Cell label="Date of Birth"  value={passport?.identity?.dob ? fmt(passport.identity.dob) : null} />
@@ -253,7 +253,7 @@ export default function Passport() {
 
           {/* Address */}
           <div className="p-5 space-y-4 bg-white">
-            <div className="text-[10px] font-black uppercase tracking-widest text-gray-600 border-b-2 border-black pb-2 flex items-center gap-2">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-600 border-b border-slate-200 dark:border-zinc-800 pb-2 flex items-center gap-2">
               <MapPin size={11} /> Address
             </div>
             {passport?.address?.formattedAddress ? (
@@ -267,7 +267,7 @@ export default function Passport() {
             ) : (
               <div className="flex flex-col items-center justify-center py-8 gap-3 text-center">
                 <Globe size={32} className="text-gray-300" />
-                <p className="text-[10px] font-black uppercase text-gray-500">
+                <p className="text-[10px] font-bold uppercase text-gray-500">
                   Address available after<br />full document verification
                 </p>
               </div>
@@ -276,7 +276,7 @@ export default function Passport() {
 
           {/* Document */}
           <div className="p-5 space-y-4 bg-white">
-            <div className="text-[10px] font-black uppercase tracking-widest text-gray-600 border-b-2 border-black pb-2 flex items-center gap-2">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-gray-600 border-b border-slate-200 dark:border-zinc-800 pb-2 flex items-center gap-2">
               <Fingerprint size={11} /> KYC Document
             </div>
             <Cell label="Doc Type"   value={passport?.document?.type} />
@@ -292,11 +292,11 @@ export default function Passport() {
 
         {/* ── 4 · CONNECTED APPS ── */}
         <Section title={`Connected Apps & Identities — ${apps.length} linked`} icon={Database}>
-          <div className="flex justify-between items-center mb-5 pb-3 border-b-2 border-black border-dashed">
-            <span className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Reputation Integrations</span>
+          <div className="flex justify-between items-center mb-5 pb-3 border-b border-slate-200 dark:border-zinc-800 border-dashed">
+            <span className="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Reputation Integrations</span>
             <button 
               onClick={() => navigate('/connected-apps')}
-              className="flex items-center gap-1.5 bg-brutal-yellow text-black border-2 border-black px-3.5 py-1.5 font-display text-[9px] uppercase tracking-wider font-black shadow-[3px_3px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all active:translate-y-[2px]"
+              className="flex items-center gap-1.5 bg-brutal-yellow text-black border border-slate-200 dark:border-zinc-800 px-3.5 py-1.5 font-display text-[9px] uppercase tracking-wider font-bold shadow-sm hover:translate-x-[1px] hover:translate-y-[1px]  transition-all active:translate-y-[2px]"
             >
               <Database size={11} className="shrink-0" /> Check Authentication →
             </button>
@@ -307,18 +307,18 @@ export default function Passport() {
                 const m = PROVIDER_META[app.provider] ?? { emoji: '🔒', label: app.provider };
                 return (
                   <div key={i}
-                    className="border-2 border-black p-3 bg-white shadow-[4px_4px_0_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all cursor-default">
+                    className="border border-slate-200 dark:border-zinc-800 p-3 bg-white shadow-md  hover:translate-x-1 hover:translate-y-1 transition-all cursor-default">
                     <div className="flex items-start justify-between mb-2">
                       <img src={m.logo} className="w-8 h-8 object-contain" alt={m.label} />
-                      <span className="bg-brutal-green border border-black text-[8px] font-black uppercase px-1.5 py-0.5">✓ Linked</span>
+                      <span className="bg-brutal-green border border-slate-200 dark:border-zinc-800 text-[8px] font-bold uppercase px-1.5 py-0.5">✓ Linked</span>
                     </div>
-                    <div className="font-black text-xs uppercase mb-0.5">{m.label}</div>
+                    <div className="font-bold text-xs uppercase mb-0.5">{m.label}</div>
                     {app.accountId && (
                       <div className="font-mono text-[9px] text-gray-400 truncate">{app.accountId}</div>
                     )}
                     <div className="text-[8px] text-gray-400 mt-1">{fmt(app.linkedAt)}</div>
                     <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
-                      <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 border ${
+                      <span className={`text-[8px] font-bold uppercase px-1.5 py-0.5 border ${
                         app.source === 'supabase'
                           ? 'border-blue-200 text-blue-600 bg-blue-50'
                           : 'border-purple-200 text-purple-600 bg-purple-50'
@@ -332,9 +332,9 @@ export default function Passport() {
             </div>
           ) : (
             <div className="text-center py-8 text-gray-300">
-              <p className="font-black uppercase text-sm mb-3">No apps linked</p>
+              <p className="font-bold uppercase text-sm mb-3">No apps linked</p>
               <button onClick={() => navigate('/identity')}
-                className="brutal-btn bg-brutal-yellow text-black px-6 py-2 text-xs font-black uppercase">
+                className="brutal-btn bg-brutal-yellow text-black px-6 py-2 text-xs font-bold uppercase">
                 Go to Identity →
               </button>
             </div>
@@ -349,21 +349,21 @@ export default function Passport() {
               <div className="space-y-2 flex-1">
                 <div className="flex items-baseline justify-between">
                   <span className="font-display text-5xl">{score}</span>
-                  <span className="text-[10px] font-black uppercase text-gray-400">/ 1000</span>
+                  <span className="text-[10px] font-bold uppercase text-gray-400">/ 1000</span>
                 </div>
-                <div className="h-5 border-2 border-black bg-gray-100 shadow-[4px_4px_0_#000] overflow-hidden">
+                <div className="h-5 border border-slate-200 dark:border-zinc-800 bg-gray-100 shadow-md overflow-hidden">
                   <div
-                    className={`h-full border-r-2 border-black transition-all duration-1000 ${sl.bg}`}
+                    className={`h-full border-r border-slate-200 dark:border-zinc-800 transition-all duration-1000 ${sl.bg}`}
                     style={{ width: `${Math.min((score / 1000) * 100, 100)}%` }}
                   />
                 </div>
-                <div className="flex justify-between text-[9px] font-black uppercase text-gray-400">
+                <div className="flex justify-between text-[9px] font-bold uppercase text-gray-400">
                   <span>0</span><span>250</span><span>500</span><span>750</span><span>1000</span>
                 </div>
               </div>
-              <div className={`px-5 py-3 border-4 border-black shadow-[4px_4px_0_#000] ${sl.bg}`}>
+              <div className={`px-5 py-3 border border-slate-200 dark:border-zinc-800 shadow-md ${sl.bg}`}>
                 <div className={`font-display text-xl uppercase ${sl.txt}`}>{sl.text}</div>
-                <div className={`text-[9px] font-black uppercase ${sl.txt} opacity-60`}>Trust Tier</div>
+                <div className={`text-[9px] font-bold uppercase ${sl.txt} opacity-60`}>Trust Tier</div>
               </div>
             </div>
 
@@ -374,9 +374,9 @@ export default function Passport() {
                 { label: 'Trusting', val: passport?.trustNetwork?.trusting?.filter((t: any) => t?.id).length ?? 0 },
                 { label: 'Trusted By', val: passport?.trustNetwork?.trustedBy?.filter((t: any) => t?.id).length ?? 0 },
               ].map(({ label, val }) => (
-                <div key={label} className="border-2 border-black p-4 text-center shadow-[4px_4px_0_#000]">
+                <div key={label} className="border border-slate-200 dark:border-zinc-800 p-4 text-center shadow-md">
                   <div className="font-display text-3xl">{val}</div>
-                  <div className="font-black text-[9px] uppercase text-gray-500 mt-1">{label}</div>
+                  <div className="font-bold text-[9px] uppercase text-gray-500 mt-1">{label}</div>
                 </div>
               ))}
             </div>
@@ -385,7 +385,7 @@ export default function Passport() {
 
         {/* ── 6 · DATA ANCHORS ── */}
         <div className="bg-black text-white px-6 py-5">
-          <div className="text-[9px] font-black uppercase tracking-widest text-white/30 mb-4">
+          <div className="text-[9px] font-bold uppercase tracking-widest text-white/30 mb-4">
             Data Anchors — Verified Sources
           </div>
           <div className="flex flex-wrap gap-3">
@@ -410,7 +410,7 @@ export default function Passport() {
               },
             ].map(({ label, sub, color, txt }) => (
               <div key={label} className={`${color} border-2 border-white/10 px-5 py-3 min-w-[180px]`}>
-                <div className={`font-black text-[10px] uppercase tracking-wider ${txt}`}>{label}</div>
+                <div className={`font-bold text-[10px] uppercase tracking-wider ${txt}`}>{label}</div>
                 <div className={`font-mono text-[8px] mt-0.5 max-w-[200px] truncate ${txt} opacity-60`}>{sub}</div>
               </div>
             ))}

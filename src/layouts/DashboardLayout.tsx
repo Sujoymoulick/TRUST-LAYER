@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen, MessageSquare, Database } from 'lucide-react';
+import { LayoutDashboard, User, BarChart2, Code, Settings, Bell, Menu, X, DollarSign, LogOut, ShieldCheck, Lock, Wallet, BookOpen, MessageSquare, Database, ChevronRight } from 'lucide-react';
 import { useGuest } from '../context/GuestContext';
 import { supabase } from '../lib/supabase';
 import { isAdminEmail, getAdminRoleTitle } from '../lib/utils';
-import mainLogo from '../assets/pramaaanlogo-removebg.png';
+import mainLogo from '../assets/crifolayerlogo-removebg.png';
 import { SafetyMonitor } from '../components/SafetyMonitor';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSIWE } from '../hooks/useSIWE';
@@ -152,77 +152,74 @@ export function DashboardLayout() {
   const handleSignIn = () => { exitGuest(); navigate('/login'); };
   const closeSidebar = () => setSidebarOpen(false);
 
-  // If user is administrative block or suspended, render full screen Neo-Brutalist overlay
+  // If user is suspended or paused, render full-screen sleek overlay
   if (!isGuest && (status === 'suspended' || status === 'paused')) {
     const isSuspended = status === 'suspended';
     return (
-      <div 
-        className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center p-4 md:p-8 min-h-screen w-full transition-all duration-300 ${
-          isSuspended ? 'bg-[#FF60B5]' : 'bg-[#FFE600]'
-        }`}
-        style={{ fontFamily: "'Public Sans', sans-serif" }}
+      <div
+        className="fixed inset-0 z-[99999] flex flex-col items-center justify-center p-4 md:p-8 min-h-screen w-full"
+        style={{
+          background: isSuspended
+            ? 'linear-gradient(135deg, #0f0f11 0%, #1e0a1e 100%)'
+            : 'linear-gradient(135deg, #0f0f11 0%, #0a1a0f 100%)',
+          fontFamily: "'Inter', sans-serif"
+        }}
       >
-        <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#000_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }} />
 
-        <div className="relative w-full max-w-2xl bg-white border-[4px] border-black p-6 md:p-10 shadow-[8px_8px_0px_#000] text-black text-center z-10 animate-in fade-in zoom-in-95 duration-200">
-          
-          <div className="inline-flex items-center gap-2 px-4 py-2 border-3 border-black bg-black text-white font-display text-xs md:text-sm uppercase tracking-wider mb-6 shadow-[2px_2px_0px_rgba(255,255,255,0.2)]">
-            <Lock size={16} className={isSuspended ? 'text-[#FF60B5]' : 'text-[#FFE600]'} />
+        <div className="relative w-full max-w-lg rounded-2xl border border-white/10 p-8 md:p-12 text-center z-10 shadow-2xl" style={{ background: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(24px)' }}>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-white/60 text-xs font-medium mb-8">
+            <Lock size={12} className={isSuspended ? 'text-red-400' : 'text-amber-400'} />
             <span>Administrative Action Enforced</span>
           </div>
 
-          <h1 className="font-display text-3xl md:text-5xl uppercase tracking-tighter leading-none mb-4 break-words">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
             {isSuspended ? 'Account Suspended' : 'Account Paused'}
           </h1>
 
-          <div className="border-3 border-black bg-zinc-100 p-4 md:p-6 mb-8 text-left shadow-[4px_4px_0px_#000]">
-            <p className="font-bold text-sm md:text-base leading-relaxed mb-4 text-black">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-8 text-left">
+            <p className="text-sm text-white/70 leading-relaxed mb-4">
               {isSuspended ? (
-                <>
-                  Your account has been <span className="underline decoration-[#FF60B5] decoration-4 font-black">permanently suspended</span> by the network administration for protocol violations, suspicious activities, or score irregularities.
-                </>
+                <>Your account has been <span className="text-red-400 font-semibold">permanently suspended</span> by the network administration for protocol violations, suspicious activities, or score irregularities.</>
               ) : (
-                <>
-                  Your account has been <span className="underline decoration-[#FFE600] decoration-4 font-black">temporarily paused</span> by the network administration. Standard capabilities are disabled until review completion.
-                </>
+                <>Your account has been <span className="text-amber-400 font-semibold">temporarily paused</span> by the network administration. Standard capabilities are disabled until review completion.</>
               )}
             </p>
-            <div className="text-xs text-zinc-600 font-bold border-t-2 border-black/10 pt-4 flex flex-col gap-1">
-              <div><strong>USER IDENTIFIER:</strong> {user?.email}</div>
-              <div><strong>ENFORCEMENT SYSTEM:</strong> God Mode Terminal</div>
-              <div><strong>REAL-TIME STATUS:</strong> <span className="uppercase text-black font-black">{status}</span></div>
+            <div className="text-xs text-white/40 border-t border-white/10 pt-4 flex flex-col gap-1 font-mono">
+              <div><strong className="text-white/60">USER:</strong> {user?.email}</div>
+              <div><strong className="text-white/60">SYSTEM:</strong> God Mode Terminal</div>
+              <div><strong className="text-white/60">STATUS:</strong> <span className="text-white/80">{status}</span></div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => navigate('/logout')}
-              className="brutal-btn w-full sm:w-auto bg-black text-white hover:bg-zinc-800 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-white/15 text-white/70 text-sm font-medium hover:bg-white/5 transition-all"
             >
-              <LogOut size={16} />
-              <span>Log Out & Exit</span>
+              <LogOut size={15} />
+              Log Out & Exit
             </button>
             <a
               href="/"
-              className="brutal-btn w-full sm:w-auto bg-white text-black hover:bg-zinc-100 transition-colors"
-              style={{ boxShadow: '4px 4px 0px #000' }}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
             >
-              <BookOpen size={16} />
-              <span>Public Website</span>
+              <BookOpen size={15} />
+              Public Website
             </a>
           </div>
-
         </div>
 
-        <div className="mt-8 text-center font-display text-xs uppercase tracking-widest text-black/60 select-none z-10">
-          Pramaaan Trust Layer • Security Protocol v2.4
+        <div className="mt-8 text-center text-xs text-white/25 select-none">
+          Crifolayer Trust Layer · Security Protocol v2.4
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden" style={{ fontFamily: "'Public Sans', sans-serif" }}>
+    <div className="flex h-screen w-full overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── Mobile backdrop ── */}
       <div
@@ -230,65 +227,65 @@ export function DashboardLayout() {
         onClick={closeSidebar}
       />
 
+      {/* ── Sidebar ── */}
       <aside
         className={[
           'fixed lg:static inset-y-0 left-0',
           'w-60 flex-shrink-0',
-          'flex flex-col bg-[var(--bg-primary)] border-r-[3px] border-[var(--border-color)]',
+          'flex flex-col border-r border-[var(--border-color)]',
           'z-50 transition-transform duration-200',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         ].join(' ')}
+        style={{ background: 'var(--bg-primary)' }}
       >
         {/* Logo */}
-        <div className="p-4 sm:p-5 border-b-[3px] border-[var(--border-color)] flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="flex items-center gap-1.5 sm:gap-2">
-              <img src={mainLogo} alt="Pramaaan Logo" className="h-6 sm:h-8 w-auto object-contain" />
-              <span className="font-display text-base sm:text-lg uppercase italic font-black text-[var(--text-primary)] tracking-tight">Pramaaan</span>
+        <div className="px-5 py-4 border-b border-[var(--border-color)] flex items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <span className="flex items-center gap-2">
+              <img src={mainLogo} alt="Crifolayer Logo" className="h-10 w-auto object-contain" />
+              <span className="font-display text-base font-bold text-[var(--text-primary)] tracking-tight">Crifolayer</span>
             </span>
             {isGuest && (
-              <div className="mt-1 inline-block text-center" style={{ background: '#FFE600', border: '2px solid #000', padding: '2px 10px', fontFamily: "'Archivo Black', sans-serif", fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#000' }}>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: 'rgba(var(--accent-rgb), 0.1)', color: 'var(--accent)', border: '1px solid rgba(var(--accent-rgb), 0.2)' }}>
                 Guest Mode
               </div>
             )}
           </div>
-          <button onClick={closeSidebar} className="lg:hidden p-1 border-2 border-[var(--border-color)] bg-[var(--bg-primary)]">
-            <X size={18} />
+          <button onClick={closeSidebar} className="lg:hidden p-1.5 rounded-lg hover:bg-[var(--border-color)] transition-colors">
+            <X size={16} className="text-[var(--text-secondary)]" />
           </button>
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 overflow-y-auto">
+        <nav className="flex-1 overflow-y-auto py-3">
           {visibleNavItems.map((item) => {
             if (item.submenu) {
               const isSubmenuActive = pathname.startsWith('/developer');
               const Icon = item.icon;
               return (
                 <div key={item.label} className="flex flex-col">
-                  <div 
+                  <div
                     onClick={() => setDevToolsOpen(!devToolsOpen)}
-                    className={`nav-link cursor-pointer hover:bg-brutal-yellow/10 flex items-center justify-between select-none ${isSubmenuActive ? 'text-black font-black bg-zinc-100 border-l-[6px] border-black' : ''}`}
+                    className={`nav-link cursor-pointer flex items-center justify-between select-none ${isSubmenuActive ? 'active' : ''}`}
                   >
-                    <div className="flex items-center gap-2">
-                      <Icon size={17} />
+                    <div className="flex items-center gap-2.5">
+                      <Icon size={16} />
                       <span>{item.label}</span>
                     </div>
-                    <span className={`text-[9px] font-black text-black/50 transition-transform duration-200 mr-2 ${devToolsOpen ? 'rotate-90' : ''}`}>
-                      ▶
-                    </span>
+                    <ChevronRight size={13} className={`text-[var(--text-secondary)] transition-transform duration-200 mr-1 ${devToolsOpen ? 'rotate-90' : ''}`} />
                   </div>
                   {devToolsOpen && (
-                    <div className="flex flex-col border-l-[3px] border-black/20 ml-[23px] my-1 gap-1">
+                    <div className="flex flex-col ml-9 my-1 pl-3 border-l border-[var(--border-color)] gap-0.5">
                       {item.submenu.map((sub: any) => (
                         <NavLink
                           key={sub.to}
                           to={sub.to}
                           onClick={closeSidebar}
-                          className={({ isActive }) => 
-                            `pl-4 py-2 text-xs font-black uppercase tracking-wider block transition-all border-b border-black/5 last:border-b-0 ${
-                              isActive 
-                                ? 'text-black bg-brutal-yellow border-r-2 border-black font-black shadow-[2px_2px_0px_#000] translate-x-1' 
-                                : 'text-zinc-600 hover:text-black hover:bg-brutal-yellow/20'
+                          className={({ isActive }) =>
+                            `px-3 py-1.5 text-xs font-medium rounded-lg block transition-all ${
+                              isActive
+                                ? 'text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] font-semibold'
+                                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--accent-rgb),0.05)]'
                             }`
                           }
                         >
@@ -300,7 +297,7 @@ export function DashboardLayout() {
                 </div>
               );
             }
-            
+
             const Icon = item.icon;
             const to = item.to || '';
             return (
@@ -310,12 +307,12 @@ export function DashboardLayout() {
                 onClick={closeSidebar}
                 className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
               >
-                <Icon size={17} />
+                <Icon size={16} />
                 <span>{item.label}</span>
               </NavLink>
             );
           })}
-          
+
           {/* Admin Console - Only visible to the owner or admin plan (never to guests) */}
           {!isGuest && (isAdminEmail(user?.email) || plan === 'admin') && (
             <NavLink
@@ -323,50 +320,52 @@ export function DashboardLayout() {
               onClick={closeSidebar}
               className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
             >
-              <ShieldCheck size={17} className="text-brutal-blue" />
-              <span className="font-black text-brutal-blue">Admin Console</span>
+              <ShieldCheck size={16} style={{ color: 'var(--accent)' }} />
+              <span className="font-semibold" style={{ color: 'var(--accent)' }}>Admin Console</span>
             </NavLink>
           )}
         </nav>
 
-        {/* Footer */}
+        {/* Sidebar Footer */}
         {isGuest ? (
-          <div className="p-4 border-t-[3px] border-[var(--border-color)]" style={{ background: 'rgba(255, 230, 0, 0.1)' }}>
+          <div className="p-4 border-t border-[var(--border-color)]" style={{ background: 'rgba(var(--accent-rgb), 0.04)' }}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 flex-shrink-0 border-2 border-[var(--border-color)] rounded-full overflow-hidden bg-[var(--bg-primary)] flex items-center justify-center">
+              <div className="w-8 h-8 flex-shrink-0 rounded-full overflow-hidden border border-[var(--border-color)] bg-[var(--bg-primary)] flex items-center justify-center text-sm">
                 👤
               </div>
               <div className="min-w-0 flex-1">
-                <div style={{ fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-primary)' }}>Anonymous</div>
-                <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Guest Access</div>
+                <div className="text-sm font-semibold text-[var(--text-primary)]">Anonymous</div>
+                <div className="text-xs text-[var(--text-secondary)]">Guest Access</div>
               </div>
             </div>
-            <button onClick={handleSignIn} className="brutal-btn w-full bg-[var(--text-primary)] text-[var(--bg-primary)] py-2 text-xs uppercase font-black">
+            <button
+              onClick={handleSignIn}
+              className="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: 'var(--accent)' }}
+            >
               Sign In to Unlock
             </button>
           </div>
         ) : (
-          <div className="p-4 border-t-[3px] border-[var(--border-color)] flex items-center gap-3 bg-[var(--bg-primary)]">
-            <div className="w-9 h-9 flex-shrink-0 border-2 border-[var(--border-color)] rounded-full overflow-hidden bg-gray-100 shadow-[2px_2px_0px_var(--border-color)]">
+          <div className="p-4 border-t border-[var(--border-color)] flex items-center gap-3">
+            <div className="w-8 h-8 flex-shrink-0 rounded-full overflow-hidden border border-[var(--border-color)] shadow-sm">
               <img src={avatar.url || user?.user_metadata?.avatar_url || `https://api.dicebear.com/9.x/personas/svg?seed=${user?.email || 'user'}`} alt="avatar" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0 flex-1">
-              <div style={{ fontWeight: 900, fontSize: '0.8rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
+              <div className="text-sm font-semibold text-[var(--text-primary)] truncate">
                 {profileName || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'}
               </div>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                {isAdminEmail(user?.email) ? `${getAdminRoleTitle(user?.email) || 'ADMINISTRATOR'} (Admin Elite)` : `${plan === 'admin' ? 'Admin Elite' : (plan || 'Free')} Plan`}
+              <div className="text-xs text-[var(--text-secondary)] capitalize">
+                {isAdminEmail(user?.email) ? `${getAdminRoleTitle(user?.email) || 'Administrator'}` : `${plan === 'admin' ? 'Admin Elite' : (plan || 'Free')} Plan`}
               </div>
             </div>
-            <div className="relative">
-              <button 
-                onClick={() => navigate('/settings')}
-                className="p-1.5 border-2 border-[var(--border-color)] transition-colors hover:bg-brutal-yellow"
-                title="Settings"
-              >
-                <Settings size={14} className="text-[var(--text-primary)]" />
-              </button>
-            </div>
+            <button
+              onClick={() => navigate('/settings')}
+              className="p-1.5 rounded-lg border border-[var(--border-color)] hover:bg-[var(--border-color)] transition-colors"
+              title="Settings"
+            >
+              <Settings size={14} className="text-[var(--text-secondary)]" />
+            </button>
           </div>
         )}
       </aside>
@@ -374,31 +373,35 @@ export function DashboardLayout() {
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {/* Guest banner */}
         {isGuest && (
-          <div className="flex items-center justify-between flex-shrink-0 px-4 md:px-8 py-2.5 border-b-[3px] border-[var(--border-color)]" style={{ background: '#FFE600' }}>
-            <span style={{ fontWeight: 900, fontSize: '0.8rem', textTransform: 'uppercase', color: '#000' }}>
+          <div className="flex items-center justify-between flex-shrink-0 px-4 md:px-8 py-2.5 border-b border-[var(--border-color)]" style={{ background: 'rgba(var(--accent-rgb), 0.08)' }}>
+            <span className="text-sm font-medium text-[var(--text-primary)]">
               👁 Guest Mode — demo data only
             </span>
-            <button onClick={handleSignIn} className="brutal-btn bg-black text-brutal-yellow px-4 py-1.5 text-[10px] min-h-0 uppercase font-black">
+            <button
+              onClick={handleSignIn}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: 'var(--accent)' }}
+            >
               Create Account →
             </button>
           </div>
         )}
 
         {/* Header */}
-        <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 border-b-[3px] border-[var(--border-color)] bg-[var(--bg-primary)]" style={{ height: 64 }}>
+        <header className="flex-shrink-0 flex items-center justify-between px-4 md:px-8 border-b border-[var(--border-color)]" style={{ height: 64, background: 'var(--bg-primary)' }}>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden flex items-center justify-center w-10 h-10 border-[3px] border-[var(--border-color)] bg-brutal-yellow shadow-[3px_3px_0px_#000]"
+              className="lg:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-[var(--border-color)] hover:bg-[var(--border-color)] transition-colors"
             >
-              <Menu size={20} className="text-black" />
+              <Menu size={18} className="text-[var(--text-primary)]" />
             </button>
-            <h2 className="hidden sm:block font-display text-lg uppercase tracking-tight text-[var(--text-primary)]">
+            <h2 className="hidden sm:block font-display text-base font-semibold text-[var(--text-primary)]">
               Network Console
             </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <ConnectButton.Custom>
               {({
                 account,
@@ -433,7 +436,7 @@ export function DashboardLayout() {
                         return (
                           <button
                             onClick={openConnectModal}
-                            className="bg-brutal-yellow text-black border-2 border-black font-black uppercase text-[10px] px-2.5 sm:px-4 py-1.5 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+                            className="rounded-xl border border-[var(--border-color)] px-3 py-1.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--border-color)] transition-all whitespace-nowrap"
                             type="button"
                           >
                             <span className="hidden sm:inline">Connect Wallet</span>
@@ -446,7 +449,7 @@ export function DashboardLayout() {
                         return (
                           <button
                             onClick={openChainModal}
-                            className="bg-brutal-pink text-white border-2 border-black font-black uppercase text-[10px] px-2.5 sm:px-4 py-1.5 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+                            className="rounded-xl border border-red-400/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-500/15 transition-all whitespace-nowrap"
                             type="button"
                           >
                             Wrong Network
@@ -458,25 +461,13 @@ export function DashboardLayout() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={openChainModal}
-                            className="bg-white hover:bg-gray-50 text-black border-2 border-black font-black uppercase text-[10px] px-2 py-1 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1 whitespace-nowrap"
+                            className="rounded-xl border border-[var(--border-color)] px-2 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--border-color)] transition-all flex items-center gap-1.5 whitespace-nowrap"
                             type="button"
                           >
                             {chain.hasIcon && (
-                              <div
-                                style={{
-                                  background: chain.iconBackground,
-                                  width: 12,
-                                  height: 12,
-                                  borderRadius: 999,
-                                  overflow: 'hidden',
-                                }}
-                              >
+                              <div style={{ background: chain.iconBackground, width: 12, height: 12, borderRadius: 999, overflow: 'hidden' }}>
                                 {chain.iconUrl && (
-                                  <img
-                                    alt={chain.name ?? 'Chain icon'}
-                                    src={chain.iconUrl}
-                                    style={{ width: 12, height: 12 }}
-                                  />
+                                  <img alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} style={{ width: 12, height: 12 }} />
                                 )}
                               </div>
                             )}
@@ -485,7 +476,8 @@ export function DashboardLayout() {
 
                           <button
                             onClick={openAccountModal}
-                            className="bg-brutal-blue text-white border-2 border-black font-black uppercase text-[10px] px-2.5 sm:px-4 py-1.5 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all whitespace-nowrap"
+                            className="rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:opacity-90 whitespace-nowrap"
+                            style={{ background: 'var(--accent)' }}
                             type="button"
                           >
                             {account.displayName}
@@ -497,15 +489,25 @@ export function DashboardLayout() {
                 );
               }}
             </ConnectButton.Custom>
-            <button className="p-2 hover:bg-[var(--text-primary)]/10 rounded-full transition-colors">
-              <Bell size={20} className="text-[var(--text-primary)]" />
+
+            <button className="p-2 rounded-xl hover:bg-[var(--border-color)] transition-colors">
+              <Bell size={18} className="text-[var(--text-secondary)]" />
             </button>
+
             {isGuest ? (
-              <button onClick={handleSignIn} className="brutal-btn bg-brutal-pink text-white text-[10px] px-4 py-1.5 min-h-0 uppercase font-black">
+              <button
+                onClick={handleSignIn}
+                className="rounded-xl px-4 py-1.5 text-xs font-semibold text-white transition-all hover:opacity-90"
+                style={{ background: 'var(--accent)' }}
+              >
                 Sign In
               </button>
             ) : (
-              <div onClick={() => navigate('/settings')} className="w-9 h-9 border-2 border-[var(--border-color)] rounded-full overflow-hidden bg-gray-100 cursor-pointer shadow-[2px_2px_0px_var(--border-color)]">
+              <div
+                onClick={() => navigate('/settings')}
+                className="w-8 h-8 rounded-full overflow-hidden border border-[var(--border-color)] cursor-pointer hover:ring-2 transition-all"
+                style={{ '--tw-ring-color': 'rgba(var(--accent-rgb),0.4)' } as any}
+              >
                 <img src={avatar.url || user?.user_metadata?.avatar_url || `https://api.dicebear.com/9.x/personas/svg?seed=${user?.email}`} alt="avatar" className="w-full h-full object-cover" />
               </div>
             )}
@@ -518,7 +520,7 @@ export function DashboardLayout() {
         </main>
 
         {/* Mobile bottom nav */}
-        <nav className="lg:hidden flex-shrink-0 flex border-t-[3px] border-[var(--border-color)] bg-[var(--bg-primary)]" style={{ minHeight: 60 }}>
+        <nav className="lg:hidden flex-shrink-0 flex border-t border-[var(--border-color)]" style={{ minHeight: 60, background: 'var(--bg-primary)' }}>
           {visibleNavItems.slice(0, 5).map((item) => {
             const to = item.to || item.submenu?.[0]?.to || '';
             const Icon = item.icon;
@@ -528,7 +530,11 @@ export function DashboardLayout() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `flex-1 flex flex-col items-center justify-center gap-1 py-2 border-r-[2px] border-[var(--border-color)] last:border-r-0 text-[0.55rem] font-black uppercase tracking-wide no-underline transition-colors ${isActive ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`
+                  `flex-1 flex flex-col items-center justify-center gap-1 py-2 text-[0.55rem] font-medium uppercase tracking-wide no-underline transition-colors ${
+                    isActive
+                      ? 'text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.08)]'
+                      : 'text-[var(--text-secondary)]'
+                  }`
                 }
               >
                 <Icon size={18} />

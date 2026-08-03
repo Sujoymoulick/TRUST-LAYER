@@ -35,7 +35,7 @@ export const SafetyMonitor: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="brutal-card bg-brutal-pink max-w-md w-full animate-in zoom-in duration-200">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center">
+              <div className="w-16 h-16 border border-slate-200 dark:border-zinc-800 bg-white flex items-center justify-center">
                 <ShieldAlert className="size-10 text-brutal-pink" />
               </div>
               <h2 className="font-display text-2xl uppercase leading-none">Security Threat Detected</h2>
@@ -47,7 +47,7 @@ export const SafetyMonitor: React.FC = () => {
             <div className="flex gap-4">
               <button 
                 onClick={() => setActiveAlert(null)}
-                className="brutal-btn bg-black text-white w-full py-4 text-xs font-black uppercase"
+                className="brutal-btn bg-black text-white w-full py-4 text-xs font-bold uppercase"
               >
                 Dismiss Safely
               </button>
@@ -59,10 +59,10 @@ export const SafetyMonitor: React.FC = () => {
       {/* Yellow Alert: Warning Banner */}
       {!isRed && (
         <div className="fixed top-0 left-0 right-0 z-[90] p-4 animate-in slide-in-from-top duration-300">
-          <div className="brutal-card bg-brutal-yellow flex items-center justify-between gap-4 py-3 shadow-[6px_6px_0px_#000]">
+          <div className="brutal-card bg-brutal-yellow flex items-center justify-between gap-4 py-3 shadow-md">
             <div className="flex items-center gap-3">
               <AlertTriangle className="size-5" />
-              <span className="text-[10px] font-black uppercase tracking-widest">
+              <span className="text-[10px] font-bold uppercase tracking-widest">
                 Warning: Suspicious message pattern detected ({activeAlert.category})
               </span>
             </div>

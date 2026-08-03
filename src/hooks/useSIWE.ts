@@ -34,7 +34,7 @@ export function useSIWE() {
         const message = new SiweMessage({
           domain: window.location.host,
           address,
-          statement: 'Sign in with Ethereum to Pramaaan.',
+          statement: 'Sign in with Ethereum to Crifolayer.',
           uri: window.location.origin,
           version: '1',
           chainId: chainId,

@@ -46,7 +46,7 @@ export default function OauthConsent() {
         // To do this beautifully, let's set flowInfo from mock/live endpoints dynamically:
         setFlowInfo({
           appName: 'B2B Client Platform',
-          appDescription: 'wants to verify your digital identity and Pramaaan Trust Score securely.',
+          appDescription: 'wants to verify your digital identity and Crifolayer Trust Score securely.',
           scopes: [
             { id: 'score', label: 'View aggregate trust score (300 - 850)', desc: 'Required to assess stability' },
             { id: 'breakdown', label: 'View connected verification components breakdown', desc: 'Read-only access to provider summaries' },
@@ -105,8 +105,8 @@ export default function OauthConsent() {
   if (error) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-        <div className="bg-white border-4 border-black p-8 shadow-[8px_8px_0px_#000] max-w-md w-full text-center flex flex-col gap-6">
-          <div className="w-16 h-16 border-4 border-black bg-brutal-pink text-black flex items-center justify-center mx-auto shadow-[4px_4px_0px_#000]">
+        <div className="bg-white border border-slate-200 dark:border-zinc-800 p-8 shadow-lg max-w-md w-full text-center flex flex-col gap-6">
+          <div className="w-16 h-16 border border-slate-200 dark:border-zinc-800 bg-brutal-pink text-black flex items-center justify-center mx-auto shadow-md">
             <ShieldAlert size={36} />
           </div>
           <h2 className="font-display text-2xl uppercase text-black leading-none">Authorization Failed</h2>
@@ -115,7 +115,7 @@ export default function OauthConsent() {
           </p>
           <button
             onClick={() => navigate('/dashboard')}
-            className="brutal-btn bg-brutal-yellow text-black py-3 font-black uppercase text-xs"
+            className="brutal-btn bg-brutal-yellow text-black py-3 font-bold uppercase text-xs"
           >
             Back to Safety →
           </button>
@@ -126,17 +126,17 @@ export default function OauthConsent() {
 
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6 text-black">
-      <div className="bg-white border-[6px] border-black rounded-none shadow-[12px_12px_0px_#000] max-w-lg w-full overflow-hidden flex flex-col relative">
+      <div className="bg-white border-[6px] border-black rounded-none shadow-xl max-w-lg w-full overflow-hidden flex flex-col relative">
         
         {/* Brutalist Top Bar */}
         <div className="bg-black text-white p-4 flex justify-between items-center border-b-[6px] border-black">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brutal-yellow border-2 border-white flex items-center justify-center text-black font-black text-sm">
+            <div className="w-8 h-8 bg-brutal-yellow border-2 border-white flex items-center justify-center text-black font-bold text-sm">
               P
             </div>
-            <span className="font-display text-sm uppercase tracking-widest font-black">Pramaaan Protocol</span>
+            <span className="font-display text-sm uppercase tracking-widest font-bold">Crifolayer Protocol</span>
           </div>
-          <span className="bg-brutal-green text-black text-[10px] uppercase font-black px-2 py-0.5 border-2 border-white">
+          <span className="bg-brutal-green text-black text-[10px] uppercase font-bold px-2 py-0.5 border-2 border-white">
             SSL Secure
           </span>
         </div>
@@ -144,7 +144,7 @@ export default function OauthConsent() {
         {/* Consent Details */}
         <div className="p-8 space-y-6">
           <div className="text-center flex flex-col items-center gap-4 border-b-4 border-dashed border-black pb-6">
-            <div className="w-20 h-20 bg-brutal-yellow border-4 border-black flex items-center justify-center shadow-[6px_6px_0px_#000]">
+            <div className="w-20 h-20 bg-brutal-yellow border border-slate-200 dark:border-zinc-800 flex items-center justify-center shadow-md">
               <Shield size={44} className="text-black" />
             </div>
             <div>
@@ -159,16 +159,16 @@ export default function OauthConsent() {
 
           {/* Requested Scopes */}
           <div className="space-y-4">
-            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-400">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-400">
               Requested Permissions:
             </h3>
 
             <div className="space-y-3">
               {flowInfo?.scopes.map((scope: any) => (
-                <div key={scope.id} className="border-2 border-black p-3 bg-zinc-50 flex gap-3 items-start shadow-[3px_3px_0px_#000]">
+                <div key={scope.id} className="border border-slate-200 dark:border-zinc-800 p-3 bg-zinc-50 flex gap-3 items-start shadow-sm">
                   <CheckCircle2 size={18} className="text-brutal-green shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-black text-xs uppercase leading-tight text-black">{scope.label}</h4>
+                    <h4 className="font-bold text-xs uppercase leading-tight text-black">{scope.label}</h4>
                     <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mt-0.5">{scope.desc}</p>
                   </div>
                 </div>
@@ -177,10 +177,10 @@ export default function OauthConsent() {
           </div>
 
           {/* Security Alert Note */}
-          <div className="bg-brutal-yellow/10 border-2 border-black p-4 flex gap-3 text-black">
+          <div className="bg-brutal-yellow/10 border border-slate-200 dark:border-zinc-800 p-4 flex gap-3 text-black">
             <ShieldCheck className="shrink-0 text-black size-6" />
             <p className="text-[10px] font-bold uppercase leading-relaxed tracking-wider">
-              By authorizing, you permit this client to run score verification pings. You maintain full control and can revoke access anytime in your Pramaaan Settings.
+              By authorizing, you permit this client to run score verification pings. You maintain full control and can revoke access anytime in your Crifolayer Settings.
             </p>
           </div>
 
@@ -189,14 +189,14 @@ export default function OauthConsent() {
             <button
               onClick={() => handleAction(false)}
               disabled={submitting}
-              className="brutal-btn flex-1 bg-zinc-100 text-black px-6 py-4 border-3 border-black font-black uppercase text-xs tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all disabled:opacity-50"
+              className="brutal-btn flex-1 bg-zinc-100 text-black px-6 py-4 border border-slate-200 dark:border-zinc-800 font-bold uppercase text-xs tracking-widest shadow-md hover:shadow-md hover:translate-x-[4px] hover:translate-y-[4px] transition-all disabled:opacity-50"
             >
               Deny Access
             </button>
             <button
               onClick={() => handleAction(true)}
               disabled={submitting}
-              className="brutal-btn flex-1 bg-brutal-green text-black px-6 py-4 border-3 border-black font-black uppercase text-xs tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-emerald-400"
+              className="brutal-btn flex-1 bg-brutal-green text-black px-6 py-4 border border-slate-200 dark:border-zinc-800 font-bold uppercase text-xs tracking-widest shadow-md hover:shadow-md hover:translate-x-[4px] hover:translate-y-[4px] transition-all flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-emerald-400"
             >
               {submitting ? (
                 <>

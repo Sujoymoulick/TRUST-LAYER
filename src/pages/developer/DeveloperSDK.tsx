@@ -221,7 +221,7 @@ export default function DeveloperSDK() {
     <div className="max-w-5xl mx-auto">
       {/* Header */}
       <div className="mb-10">
-        <div className="inline-flex items-center gap-2 bg-brutal-yellow border-2 border-black px-3 py-1 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[2px_2px_0px_#000]">
+        <div className="inline-flex items-center gap-2 bg-brutal-yellow border border-slate-200 dark:border-zinc-800 px-3 py-1 font-bold text-[10px] uppercase tracking-widest mb-4 shadow-sm">
           <Package size={12} /> SDK &amp; Libraries
         </div>
         <h1 className="font-display text-4xl uppercase tracking-tight text-[var(--text-primary)] mb-2">
@@ -233,12 +233,12 @@ export default function DeveloperSDK() {
       </div>
 
       {/* Language tabs */}
-      <div className="flex gap-0 border-[3px] border-black mb-8 w-fit shadow-[4px_4px_0px_#000]">
+      <div className="flex gap-0 border-[3px] border-black mb-8 w-fit shadow-md">
         {LANGS.map(l => (
           <button
             key={l}
             onClick={() => setLang(l)}
-            className={`px-5 py-2.5 font-black text-xs uppercase tracking-wider border-r-[3px] border-black last:border-r-0 transition-colors ${
+            className={`px-5 py-2.5 font-bold text-xs uppercase tracking-wider border-r-[3px] border-black last:border-r-0 transition-colors ${
               lang === l ? 'bg-brutal-yellow text-black' : 'bg-[var(--bg-primary)] text-[var(--text-primary)] hover:bg-brutal-yellow/20'
             }`}
           >
@@ -252,11 +252,11 @@ export default function DeveloperSDK() {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Terminal size={16} className="text-[var(--text-primary)]" />
-            <span className="font-black text-sm uppercase text-[var(--text-primary)]">Installation</span>
+            <span className="font-bold text-sm uppercase text-[var(--text-primary)]">Installation</span>
           </div>
           <button
             onClick={() => copy(INSTALL[lang], 'install')}
-            className="flex items-center gap-1.5 border-2 border-black px-2.5 py-1 text-[10px] font-black uppercase hover:bg-brutal-yellow transition-colors bg-[var(--bg-primary)] text-[var(--text-primary)]"
+            className="flex items-center gap-1.5 border border-slate-200 dark:border-zinc-800 px-2.5 py-1 text-[10px] font-bold uppercase hover:bg-brutal-yellow transition-colors bg-[var(--bg-primary)] text-[var(--text-primary)]"
           >
             {copied === 'install' ? <><Check size={11} className="text-green-600" /> Copied</> : <><Copy size={11} /> Copy</>}
           </button>
@@ -270,11 +270,11 @@ export default function DeveloperSDK() {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
         {FEATURES.map(f => (
           <div key={f.label} className="brutal-card flex items-start gap-3 p-4">
-            <div className="w-8 h-8 bg-brutal-yellow border-2 border-black flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000]">
+            <div className="w-8 h-8 bg-brutal-yellow border border-slate-200 dark:border-zinc-800 flex items-center justify-center flex-shrink-0 shadow-sm">
               <f.icon size={14} className="text-black" />
             </div>
             <div>
-              <div className="font-black text-xs uppercase text-[var(--text-primary)]">{f.label}</div>
+              <div className="font-bold text-xs uppercase text-[var(--text-primary)]">{f.label}</div>
               <div className="text-[10px] text-[var(--text-secondary)] font-bold mt-0.5">{f.desc}</div>
             </div>
           </div>
@@ -292,11 +292,11 @@ export default function DeveloperSDK() {
               <div className="flex items-center justify-between px-4 py-3 bg-[var(--bg-primary)] border-b-[3px] border-[var(--border-color)]">
                 <div className="flex items-center gap-2">
                   <Code2 size={14} className="text-[var(--text-primary)]" />
-                  <span className="font-black text-sm text-[var(--text-primary)]">{ex.title}</span>
+                  <span className="font-bold text-sm text-[var(--text-primary)]">{ex.title}</span>
                 </div>
                 <button
                   onClick={() => copy(ex.code, `ex-${idx}`)}
-                  className="flex items-center gap-1.5 border-2 border-[var(--border-color)] px-2.5 py-1 text-[10px] font-black uppercase hover:bg-brutal-yellow transition-colors bg-[var(--bg-primary)] text-[var(--text-primary)]"
+                  className="flex items-center gap-1.5 border-2 border-[var(--border-color)] px-2.5 py-1 text-[10px] font-bold uppercase hover:bg-brutal-yellow transition-colors bg-[var(--bg-primary)] text-[var(--text-primary)]"
                 >
                   {copied === `ex-${idx}` ? <><Check size={11} className="text-green-600" /> Copied</> : <><Copy size={11} /> Copy</>}
                 </button>
@@ -310,7 +310,7 @@ export default function DeveloperSDK() {
       </div>
 
       {/* Quickstart CTA */}
-      <div className="mt-10 border-[3px] border-black bg-brutal-yellow p-6 shadow-[6px_6px_0px_#000]">
+      <div className="mt-10 border-[3px] border-black bg-brutal-yellow p-6 shadow-md">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h3 className="font-display text-xl uppercase text-black mb-1">Ready to integrate?</h3>

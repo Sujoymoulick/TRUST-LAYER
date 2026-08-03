@@ -1027,7 +1027,7 @@ function generateSingleReadme(targetPath, repoName, repoUrl, tree, manifests, ro
   md += `*   **Philosophy**: *"Bridging the gap between complex software engineering and intuitive user experiences; viewing coding as an interactive art form."*\n`;
   md += `*   **Portfolio & Projects**: [sujoymoulick.online](https://www.sujoymoulick.online/) (Adhyayan, Meghdoot, Textora)\n`;
   md += `*   **Contact**: [sujoymoulick05@gmail.com](mailto:sujoymoulick05@gmail.com)\n\n`;
-  md += `\n---\n*Generated with ❤️ by Sujoy Moulick & Pramaaan Unified Codebase Blueprint Engine.*`;
+  md += `\n---\n*Generated with ❤️ by Sujoy Moulick & Crifolayer Unified Codebase Blueprint Engine.*`;
   return md;
 }
 
@@ -1279,7 +1279,7 @@ function generateReadmeMarkdown(repoName, repoUrl, stats, tree, manifests) {
   md += `*   **Philosophy**: *"Bridging the gap between complex software engineering and intuitive user experiences; viewing coding as an interactive art form."*\n`;
   md += `*   **Portfolio & Projects**: [sujoymoulick.online](https://www.sujoymoulick.online/) (Adhyayan, Meghdoot, Textora)\n`;
   md += `*   **Contact**: [sujoymoulick05@gmail.com](mailto:sujoymoulick05@gmail.com)\n\n`;
-  md += `\n---\n*Generated with ❤️ by Sujoy Moulick & Pramaaan Unified Codebase Blueprint Engine.*`;
+  md += `\n---\n*Generated with ❤️ by Sujoy Moulick & Crifolayer Unified Codebase Blueprint Engine.*`;
   return md;
 }
 

@@ -281,25 +281,25 @@ export default function Feedback() {
       case 'thought':
         return {
           bg: 'bg-brutal-yellow text-black',
-          badge: 'bg-brutal-yellow text-black border-2 border-black',
+          badge: 'bg-brutal-yellow text-black border border-slate-200 dark:border-zinc-800',
           label: 'Thought'
         };
       case 'issue':
         return {
           bg: 'bg-brutal-pink text-white',
-          badge: 'bg-brutal-pink text-white border-2 border-black',
+          badge: 'bg-brutal-pink text-white border border-slate-200 dark:border-zinc-800',
           label: 'Bug / Issue'
         };
       case 'lag':
         return {
           bg: 'bg-[#FF5F00] text-white',
-          badge: 'bg-[#FF5F00] text-white border-2 border-black',
+          badge: 'bg-[#FF5F00] text-white border border-slate-200 dark:border-zinc-800',
           label: 'Lag / Stutter'
         };
       case 'delay':
         return {
           bg: 'bg-[#00E5FF] text-black',
-          badge: 'bg-[#00E5FF] text-black border-2 border-black',
+          badge: 'bg-[#00E5FF] text-black border border-slate-200 dark:border-zinc-800',
           label: 'Response Delay'
         };
     }
@@ -317,7 +317,7 @@ export default function Feedback() {
             Report lags, network delays, website issues, or share your thoughts with the developers.
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-brutal-yellow text-black border-2 border-black px-4 py-2 shadow-[2px_2px_0px_#000] font-display text-xs uppercase font-black">
+        <div className="flex items-center gap-2 bg-brutal-yellow text-black border border-slate-200 dark:border-zinc-800 px-4 py-2 shadow-sm font-display text-xs uppercase font-bold">
           <Activity className="animate-pulse size-4 shrink-0" />
           Live Community Support
         </div>
@@ -326,7 +326,7 @@ export default function Feedback() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Post Form (Left 1 col or Top on small screens) */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="brutal-card bg-white shadow-[6px_6px_0px_#000]">
+          <div className="brutal-card bg-white shadow-md">
             <h3 className="font-display text-base uppercase mb-4 flex items-center gap-2">
               <Plus className="size-5" /> Share Thoughts
             </h3>
@@ -334,7 +334,7 @@ export default function Feedback() {
             <form onSubmit={handleSubmitPost} className="space-y-4">
               {/* Category picker */}
               <div>
-                <label className="text-[10px] font-black uppercase text-gray-500 block mb-2">Category</label>
+                <label className="text-[10px] font-bold uppercase text-gray-500 block mb-2">Category</label>
                 <div className="grid grid-cols-2 gap-2">
                   {(['thought', 'issue', 'lag', 'delay'] as const).map(cat => {
                     const styles = getCategoryStyles(cat);
@@ -344,10 +344,10 @@ export default function Feedback() {
                         key={cat}
                         type="button"
                         onClick={() => setCategory(cat)}
-                        className={`py-2 px-1 text-[10px] font-black uppercase tracking-wider text-center border-2 border-black transition-all ${
+                        className={`py-2 px-1 text-[10px] font-bold uppercase tracking-wider text-center border border-slate-200 dark:border-zinc-800 transition-all ${
                           isActive 
-                            ? `${styles.bg} shadow-[2px_2px_0px_#000] translate-y-0` 
-                            : 'bg-white text-black hover:bg-gray-50 hover:shadow-[1px_1px_0px_#000]'
+                            ? `${styles.bg} shadow-sm translate-y-0` 
+                            : 'bg-white text-black hover:bg-gray-50 hover:shadow-sm'
                         }`}
                       >
                         {styles.label}
@@ -359,7 +359,7 @@ export default function Feedback() {
 
               {/* Content textarea */}
               <div>
-                <label className="text-[10px] font-black uppercase text-gray-500 block mb-2">Details</label>
+                <label className="text-[10px] font-bold uppercase text-gray-500 block mb-2">Details</label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
@@ -372,18 +372,18 @@ export default function Feedback() {
 
               {/* Image upload */}
               <div>
-                <label className="text-[10px] font-black uppercase text-gray-500 block mb-2">Upload Screenshot</label>
+                <label className="text-[10px] font-bold uppercase text-gray-500 block mb-2">Upload Screenshot</label>
                 
                 {!screenshotPreview ? (
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-black border-dashed p-4 text-center cursor-pointer bg-gray-50 hover:bg-gray-100/50 transition-colors flex flex-col items-center justify-center gap-2"
+                    className="border border-slate-200 dark:border-zinc-800 border-dashed p-4 text-center cursor-pointer bg-gray-50 hover:bg-gray-100/50 transition-colors flex flex-col items-center justify-center gap-2"
                   >
                     <ImageIcon className="text-gray-400 size-6" />
-                    <span className="text-[9px] font-black uppercase text-gray-600">Select Image (PNG, JPG)</span>
+                    <span className="text-[9px] font-bold uppercase text-gray-600">Select Image (PNG, JPG)</span>
                   </div>
                 ) : (
-                  <div className="relative border-2 border-black rounded-none overflow-hidden bg-black/5 aspect-video">
+                  <div className="relative border border-slate-200 dark:border-zinc-800 rounded-none overflow-hidden bg-black/5 aspect-video">
                     <img src={screenshotPreview} alt="Preview" className="w-full h-full object-contain" />
                     <button 
                       type="button"
@@ -408,7 +408,7 @@ export default function Feedback() {
               <button 
                 type="submit" 
                 disabled={submitLoading || isGuest}
-                className="w-full brutal-btn bg-brutal-yellow font-display text-xs uppercase py-3.5 flex items-center justify-center gap-2 active:translate-y-1 active:shadow-none transition-all shadow-[4px_4px_0px_#000]"
+                className="w-full brutal-btn bg-brutal-yellow font-display text-xs uppercase py-3.5 flex items-center justify-center gap-2 active:translate-y-1 active:shadow-none transition-all shadow-md"
               >
                 {submitLoading ? (
                   <>
@@ -433,7 +433,7 @@ export default function Feedback() {
         {/* Posts List (Right 2 cols) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Feed Filter Panel */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b-4 border-black pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-4">
             <h3 className="font-display text-lg uppercase tracking-tight">Recent Activity</h3>
             
             <div className="flex flex-wrap gap-2">
@@ -441,7 +441,7 @@ export default function Feedback() {
                 <button
                   key={f}
                   onClick={() => setActiveFilter(f)}
-                  className={`px-3 py-1.5 font-display text-[9px] uppercase tracking-widest border-2 border-black transition-all ${
+                  className={`px-3 py-1.5 font-display text-[9px] uppercase tracking-widest border border-slate-200 dark:border-zinc-800 transition-all ${
                     activeFilter === f 
                       ? 'bg-black text-white' 
                       : 'bg-white text-black hover:bg-gray-100'
@@ -460,7 +460,7 @@ export default function Feedback() {
               <p className="font-display text-xs uppercase tracking-widest animate-pulse">Retrieving Feed...</p>
             </div>
           ) : filteredPosts.length === 0 ? (
-            <div className="text-center py-20 border-4 border-black border-dashed text-gray-400 font-display uppercase">
+            <div className="text-center py-20 border border-slate-200 dark:border-zinc-800 border-dashed text-gray-400 font-display uppercase">
               No feedback posts found in this category.
             </div>
           ) : (
@@ -477,12 +477,12 @@ export default function Feedback() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      className="brutal-card bg-white shadow-[6px_6px_0px_#000] space-y-4"
+                      className="brutal-card bg-white shadow-md space-y-4"
                     >
                       {/* Post Header */}
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden shrink-0 shadow-[2px_2px_0px_#000]">
+                          <div className="w-10 h-10 border border-slate-200 dark:border-zinc-800 rounded-full overflow-hidden shrink-0 shadow-sm">
                             <img 
                               src={post.userAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.userId}`} 
                               alt="avatar" 
@@ -490,7 +490,7 @@ export default function Feedback() {
                             />
                           </div>
                           <div>
-                            <h4 className="font-black text-xs uppercase text-black leading-tight">{post.userName}</h4>
+                            <h4 className="font-bold text-xs uppercase text-black leading-tight">{post.userName}</h4>
                             <p className="text-[8px] font-bold text-gray-400 uppercase mt-0.5 flex items-center gap-1">
                               <Clock size={8} /> {new Date(post.createdAt).toLocaleString()}
                             </p>
@@ -502,7 +502,7 @@ export default function Feedback() {
                           {isAdmin && (
                             <button
                               onClick={() => handleResolvePost(post._id)}
-                              className={`border-2 border-black px-2 py-0.5 text-[8px] font-black uppercase transition-all shadow-[1.5px_1.5px_0px_#000] active:translate-y-[1px] active:shadow-none flex items-center gap-1 ${
+                              className={`border border-slate-200 dark:border-zinc-800 px-2 py-0.5 text-[8px] font-bold uppercase transition-all shadow-[1.5px_1.5px_0px_#000] active:scale-[0.98] active:shadow-none flex items-center gap-1 ${
                                 post.status === 'resolved'
                                   ? 'bg-brutal-green text-black'
                                   : 'bg-white hover:bg-gray-100 text-black'
@@ -516,7 +516,7 @@ export default function Feedback() {
 
                           {/* Standard User Resolved Badge */}
                           {!isAdmin && post.status === 'resolved' && (
-                            <span className="bg-brutal-green text-black border-2 border-black text-[8px] font-black uppercase px-2 py-0.5 shadow-[1.5px_1.5px_0px_#000] flex items-center gap-1">
+                            <span className="bg-brutal-green text-black border border-slate-200 dark:border-zinc-800 text-[8px] font-bold uppercase px-2 py-0.5 shadow-[1.5px_1.5px_0px_#000] flex items-center gap-1">
                               ✓ Resolved
                             </span>
                           )}
@@ -525,14 +525,14 @@ export default function Feedback() {
                           {(post.userId === currentUserId || isAdmin) && (
                             <button
                               onClick={() => handleDeletePost(post._id)}
-                              className="bg-white hover:bg-brutal-pink border-2 border-black text-black hover:text-white p-1 shadow-[1.5px_1.5px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all flex items-center justify-center"
+                              className="bg-white hover:bg-brutal-pink border border-slate-200 dark:border-zinc-800 text-black hover:text-white p-1 shadow-[1.5px_1.5px_0px_#000] active:scale-[0.98] active:shadow-none transition-all flex items-center justify-center"
                               title="Delete Feedback Post"
                             >
                               <Trash2 size={10} />
                             </button>
                           )}
 
-                          <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-black ${styles.badge}`}>
+                          <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-bold ${styles.badge}`}>
                             {styles.label}
                           </span>
                         </div>
@@ -545,7 +545,7 @@ export default function Feedback() {
 
                       {/* Optional Screenshot */}
                       {post.screenshotUrl && (
-                        <div className="border-2 border-black overflow-hidden bg-black/5 aspect-video w-full max-w-lg shadow-[2px_2px_0px_#000]">
+                        <div className="border border-slate-200 dark:border-zinc-800 overflow-hidden bg-black/5 aspect-video w-full max-w-lg shadow-sm">
                           <a href={post.screenshotUrl} target="_blank" rel="noopener noreferrer" title="View full screenshot">
                             <img src={post.screenshotUrl} alt="Reported problem screenshot" className="w-full h-full object-contain cursor-zoom-in hover:opacity-90 transition-opacity" />
                           </a>
@@ -554,15 +554,15 @@ export default function Feedback() {
 
                       {/* Replies List */}
                       {post.replies && post.replies.length > 0 && (
-                        <div className="border-t-2 border-black border-dashed pt-4 space-y-3">
-                          <p className="text-[9px] font-black uppercase text-gray-400 tracking-wider flex items-center gap-1">
+                        <div className="border-t border-slate-200 dark:border-zinc-800 border-dashed pt-4 space-y-3">
+                          <p className="text-[9px] font-bold uppercase text-gray-400 tracking-wider flex items-center gap-1">
                             <CornerDownRight size={10} /> Official Responses
                           </p>
                           
                           <div className="space-y-3 pl-4">
                             {post.replies.map((reply) => (
-                              <div key={reply._id} className="p-3 border-2 border-black bg-gray-50 shadow-[2px_2px_0px_#000] flex gap-3">
-                                <div className="w-7 h-7 border-2 border-black rounded-full overflow-hidden shrink-0 shadow-[1px_1px_0px_#000]">
+                              <div key={reply._id} className="p-3 border border-slate-200 dark:border-zinc-800 bg-gray-50 shadow-sm flex gap-3">
+                                <div className="w-7 h-7 border border-slate-200 dark:border-zinc-800 rounded-full overflow-hidden shrink-0 shadow-sm">
                                   <img 
                                     src={reply.userAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.userId}`} 
                                     alt="Admin avatar" 
@@ -571,10 +571,10 @@ export default function Feedback() {
                                 </div>
                                 <div className="flex-1">
                                   <div className="flex items-center justify-between">
-                                    <h5 className="font-black text-[10px] uppercase text-brutal-blue flex items-center gap-1">
+                                    <h5 className="font-bold text-[10px] uppercase text-brutal-blue flex items-center gap-1">
                                       {reply.userName} <ShieldAlert size={10} className="text-brutal-blue shrink-0" />
                                     </h5>
-                                    <span className="text-[7px] font-black uppercase text-gray-400">{new Date(reply.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-[7px] font-bold uppercase text-gray-400">{new Date(reply.createdAt).toLocaleDateString()}</span>
                                   </div>
                                   <p className="text-[10px] font-bold text-gray-700 uppercase mt-1 leading-relaxed">{reply.replyText}</p>
                                 </div>
@@ -586,7 +586,7 @@ export default function Feedback() {
 
                       {/* Reply Input Box (Only for Admins) */}
                       {isPostReplyOpen ? (
-                        <div className="border-t-2 border-black border-dashed pt-4 flex gap-2 items-end">
+                        <div className="border-t border-slate-200 dark:border-zinc-800 border-dashed pt-4 flex gap-2 items-end">
                           <div className="flex-1">
                             <textarea
                               value={replyTextMap[post._id] || ''}
@@ -599,7 +599,7 @@ export default function Feedback() {
                           <button
                             onClick={() => handlePostReply(post._id)}
                             disabled={replyLoadingMap[post._id]}
-                            className="p-2 border-2 border-black bg-brutal-blue hover:bg-black text-white hover:text-brutal-blue transition-colors flex items-center justify-center shrink-0 shadow-[2px_2px_0px_#000] active:translate-y-[2px] active:shadow-none"
+                            className="p-2 border border-slate-200 dark:border-zinc-800 bg-brutal-blue hover:bg-black text-white hover:text-brutal-blue transition-colors flex items-center justify-center shrink-0 shadow-sm active:translate-y-[2px] active:shadow-none"
                             title="Post Reply"
                           >
                             {replyLoadingMap[post._id] ? (
@@ -611,7 +611,7 @@ export default function Feedback() {
                         </div>
                       ) : (
                         // Standard User footer view
-                        <div className="border-t border-gray-100 pt-3 flex justify-between items-center text-[8px] font-black uppercase tracking-wider text-gray-400">
+                        <div className="border-t border-gray-100 pt-3 flex justify-between items-center text-[8px] font-bold uppercase tracking-wider text-gray-400">
                           <span className="flex items-center gap-1">
                             <Lock size={9} /> Official Reply Only
                           </span>
@@ -630,7 +630,7 @@ export default function Feedback() {
       {/* Brutalist Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-sm w-full p-6 flex flex-col gap-6">
+          <div className="bg-white border-[4px] border-black shadow-lg max-w-sm w-full p-6 flex flex-col gap-6">
             <div className="flex items-center gap-3 text-brutal-pink">
               <AlertTriangle size={32} />
               <h3 className="font-display text-2xl uppercase leading-none">Delete Post?</h3>
@@ -643,13 +643,13 @@ export default function Feedback() {
             <div className="flex flex-col sm:flex-row gap-4 mt-2">
               <button 
                 onClick={() => setDeleteConfirmId(null)}
-                className="brutal-btn flex-1 bg-gray-100 text-black px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+                className="brutal-btn flex-1 bg-gray-100 text-black px-4 py-3 border border-slate-200 dark:border-zinc-800 font-bold uppercase text-[10px] tracking-widest shadow-md hover:shadow-md hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
               >
                 Cancel
               </button>
               <button 
                 onClick={confirmDeletePost}
-                className="brutal-btn flex-1 bg-brutal-pink text-white px-4 py-3 border-2 border-black font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000] hover:shadow-[0px_0px_0px_#000] hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
+                className="brutal-btn flex-1 bg-brutal-pink text-white px-4 py-3 border border-slate-200 dark:border-zinc-800 font-bold uppercase text-[10px] tracking-widest shadow-md hover:shadow-md hover:translate-x-[4px] hover:translate-y-[4px] transition-all"
               >
                 Yes, Delete
               </button>

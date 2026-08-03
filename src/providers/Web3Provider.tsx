@@ -20,7 +20,7 @@ import {
 import type { ReactNode } from 'react';
 
 const config = getDefaultConfig({
-  appName: 'Pramaaan',
+  appName: 'Crifolayer',
   projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID_PLACEHOLDER', 
   chains: [mainnet, polygon, optimism, arbitrum, base, bsc],
   transports: {

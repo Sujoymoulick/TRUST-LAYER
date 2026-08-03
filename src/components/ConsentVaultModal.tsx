@@ -62,21 +62,21 @@ export const ConsentVaultModal: React.FC<ConsentVaultModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
-      <div className="bg-white border-4 border-black p-6 w-full max-w-md shadow-[8px_8px_0px_#000] relative animate-in fade-in zoom-in duration-200">
+      <div className="bg-white border border-slate-200 dark:border-zinc-800 p-6 w-full max-w-md shadow-lg relative animate-in fade-in zoom-in duration-200">
         
         {/* Close Button */}
         <button 
           onClick={onClose} 
           disabled={loading}
-          className="absolute top-4 right-4 p-1 border-2 border-black bg-white hover:bg-gray-100 font-black text-xs uppercase"
+          className="absolute top-4 right-4 p-1 border border-slate-200 dark:border-zinc-800 bg-white hover:bg-gray-100 font-bold text-xs uppercase"
         >
           ✕
         </button>
 
         {!success ? (
           <div className="space-y-5">
-            <div className="flex items-center gap-3 border-b-4 border-black pb-3">
-              <div className="p-1.5 border-2 border-black bg-brutal-blue text-white shadow-[2px_2px_0px_#000]">
+            <div className="flex items-center gap-3 border-b border-slate-200 dark:border-zinc-800 pb-3">
+              <div className="p-1.5 border border-slate-200 dark:border-zinc-800 bg-brutal-blue text-white shadow-sm">
                 <ShieldCheck size={20} />
               </div>
               <h3 className="font-display text-lg uppercase tracking-wider text-black">
@@ -84,9 +84,9 @@ export const ConsentVaultModal: React.FC<ConsentVaultModalProps> = ({
               </h3>
             </div>
 
-            <div className="p-3 bg-gray-50 border-2 border-black space-y-2 text-xs font-semibold text-gray-700 leading-relaxed">
+            <div className="p-3 bg-gray-50 border border-slate-200 dark:border-zinc-800 space-y-2 text-xs font-semibold text-gray-700 leading-relaxed">
               <p>
-                <span className="font-black text-black">Pramaaan</span> is requesting a user-as-agent secure proxy delegation to your <span className="font-black text-black text-brutal-blue uppercase">{providerName}</span> account.
+                <span className="font-bold text-black">Crifolayer</span> is requesting a user-as-agent secure proxy delegation to your <span className="font-bold text-black text-brutal-blue uppercase">{providerName}</span> account.
               </p>
               <div className="border-t-2 border-dashed border-gray-300 my-2" />
               <div className="space-y-1 text-[11px]">
@@ -113,14 +113,14 @@ export const ConsentVaultModal: React.FC<ConsentVaultModalProps> = ({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="px-4 py-2 border-2 border-black bg-white text-xs font-black uppercase text-black hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 border border-slate-200 dark:border-zinc-800 bg-white text-xs font-bold uppercase text-black hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAuthorize}
                 disabled={loading}
-                className="px-5 py-2 border-2 border-black bg-brutal-green text-xs font-black uppercase text-black shadow-[3px_3px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000] active:bg-green-300 transition-all flex items-center gap-2"
+                className="px-5 py-2 border border-slate-200 dark:border-zinc-800 bg-brutal-green text-xs font-bold uppercase text-black shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm active:bg-green-300 transition-all flex items-center gap-2"
               >
                 {loading ? (
                   <>
@@ -135,7 +135,7 @@ export const ConsentVaultModal: React.FC<ConsentVaultModalProps> = ({
           </div>
         ) : (
           <div className="py-8 flex flex-col items-center justify-center gap-4 text-center">
-            <div className="p-3 border-4 border-black bg-brutal-green text-black rounded-full shadow-[4px_4px_0px_#000] animate-bounce">
+            <div className="p-3 border border-slate-200 dark:border-zinc-800 bg-brutal-green text-black rounded-full shadow-md animate-bounce">
               <Sparkles size={32} />
             </div>
             <h3 className="font-display text-xl uppercase tracking-wider text-black">

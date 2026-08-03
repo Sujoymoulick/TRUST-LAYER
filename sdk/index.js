@@ -1,9 +1,9 @@
 const axios = require('axios');
 const crypto = require('crypto');
 
-class PramaaanSDK {
+class CrifolayerSDK {
   /**
-   * PramaaanSDK Constructor
+   * CrifolayerSDK Constructor
    * @param {Object} config
    * @param {string} config.apiKey - B2B Developer API Key (e.g. tl_sb_... or tl_prod_...)
    * @param {string} [config.baseUrl] - Custom base gateway endpoint URL
@@ -12,7 +12,7 @@ class PramaaanSDK {
    */
   constructor({ apiKey, baseUrl, timeout = 10000, maxRetries = 3 }) {
     if (!apiKey) {
-      throw new Error('Pramaaan SDK Initialization Error: apiKey parameter is required.');
+      throw new Error('Crifolayer SDK Initialization Error: apiKey parameter is required.');
     }
 
     this.apiKey = apiKey;
@@ -70,7 +70,7 @@ class PramaaanSDK {
         const jitter = Math.random() * 1000;
         const delay = baseDelay + jitter;
 
-        console.warn(`[Pramaaan SDK Warning]: Request failed (status: ${status || 'network_error'}). Retrying attempt ${attempt + 1}/${this.maxRetries} after ${Math.round(delay)}ms...`);
+        console.warn(`[Crifolayer SDK Warning]: Request failed (status: ${status || 'network_error'}). Retrying attempt ${attempt + 1}/${this.maxRetries} after ${Math.round(delay)}ms...`);
         
         await new Promise(resolve => setTimeout(resolve, delay));
         return this._executeWithRetry(requestFn, attempt + 1);
@@ -80,7 +80,7 @@ class PramaaanSDK {
       const errorMsg = err.response && err.response.data && err.response.data.error
         ? err.response.data.error
         : err.message;
-      throw new Error(`Pramaaan SDK request failed: ${errorMsg}`);
+      throw new Error(`Crifolayer SDK request failed: ${errorMsg}`);
     }
   }
 
@@ -161,5 +161,5 @@ class PramaaanSDK {
   }
 }
 
-module.exports = PramaaanSDK;
-export default PramaaanSDK;
+module.exports = CrifolayerSDK;
+export default CrifolayerSDK;

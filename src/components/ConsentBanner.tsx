@@ -17,7 +17,7 @@ export const ConsentBanner: React.FC = () => {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem('pramaaan_consent_choices');
+    const saved = localStorage.getItem('crifolayer_consent_choices');
     if (!saved) {
       // Delay display slightly for gorgeous entry animation
       const timer = setTimeout(() => setVisible(true), 1500);
@@ -27,27 +27,27 @@ export const ConsentBanner: React.FC = () => {
 
   const handleAcceptAll = () => {
     const all = { essential: true, fingerprint: true, thirdPartySharing: true };
-    localStorage.setItem('pramaaan_consent_choices', JSON.stringify(all));
+    localStorage.setItem('crifolayer_consent_choices', JSON.stringify(all));
     setVisible(false);
   };
 
   const handleRejectNonEssential = () => {
     const minimal = { essential: true, fingerprint: true, thirdPartySharing: false };
-    localStorage.setItem('pramaaan_consent_choices', JSON.stringify(minimal));
+    localStorage.setItem('crifolayer_consent_choices', JSON.stringify(minimal));
     setVisible(false);
   };
 
   const handleSavePreferences = () => {
-    localStorage.setItem('pramaaan_consent_choices', JSON.stringify(preferences));
+    localStorage.setItem('crifolayer_consent_choices', JSON.stringify(preferences));
     setVisible(false);
   };
 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-6 left-6 right-6 md:right-auto md:max-w-md bg-white border-4 border-black p-6 shadow-[8px_8px_0px_#000] z-[9999] transition-all duration-300 transform translate-y-0">
+    <div className="fixed bottom-6 left-6 right-6 md:right-auto md:max-w-md bg-white border border-slate-200 dark:border-zinc-800 p-6 shadow-lg z-[9999] transition-all duration-300 transform translate-y-0">
       <div className="flex items-start gap-4">
-        <div className="p-2 border-2 border-black bg-brutal-yellow text-black flex-shrink-0 shadow-[2px_2px_0px_#000]">
+        <div className="p-2 border border-slate-200 dark:border-zinc-800 bg-brutal-yellow text-black flex-shrink-0 shadow-sm">
           <ShieldAlert size={20} />
         </div>
         <div className="space-y-3 min-w-0 flex-1">
@@ -55,26 +55,26 @@ export const ConsentBanner: React.FC = () => {
             Privacy & Trust Framework
           </h3>
           <p className="text-[11px] leading-relaxed font-semibold text-gray-700">
-            Pramaaan minimizes traditional cookies, but utilizes advanced digital device fingerprinting strictly for platform security, bot protection, and preserving the integrity of the Trust Score ecosystem.
+            Crifolayer minimizes traditional cookies, but utilizes advanced digital device fingerprinting strictly for platform security, bot protection, and preserving the integrity of the Trust Score ecosystem.
           </p>
 
           {!showManage ? (
             <div className="flex flex-wrap gap-2 pt-2">
               <button
                 onClick={handleAcceptAll}
-                className="px-3 py-1.5 border-2 border-black bg-brutal-green text-black text-[10px] font-black uppercase shadow-[2px_2px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000] transition-all"
+                className="px-3 py-1.5 border border-slate-200 dark:border-zinc-800 bg-brutal-green text-black text-[10px] font-bold uppercase shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm transition-all"
               >
                 Accept All
               </button>
               <button
                 onClick={handleRejectNonEssential}
-                className="px-3 py-1.5 border-2 border-black bg-gray-100 text-black text-[10px] font-black uppercase shadow-[2px_2px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000] transition-all"
+                className="px-3 py-1.5 border border-slate-200 dark:border-zinc-800 bg-gray-100 text-black text-[10px] font-bold uppercase shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm transition-all"
               >
                 Reject Non-Essential
               </button>
               <button
                 onClick={() => setShowManage(true)}
-                className="px-2 py-1.5 border-2 border-black bg-white text-black text-[10px] font-black uppercase flex items-center gap-1 hover:bg-gray-50 transition-colors"
+                className="px-2 py-1.5 border border-slate-200 dark:border-zinc-800 bg-white text-black text-[10px] font-bold uppercase flex items-center gap-1 hover:bg-gray-50 transition-colors"
                 title="Manage Granular Preferences"
               >
                 <Settings2 size={12} />
@@ -85,34 +85,34 @@ export const ConsentBanner: React.FC = () => {
             <div className="border-t-2 border-dashed border-gray-300 pt-3 space-y-3">
               <div className="space-y-2">
                 {/* Preference 1 */}
-                <div className="flex items-center justify-between gap-3 p-2 bg-gray-50 border-2 border-black shadow-[2px_2px_0px_#000]">
+                <div className="flex items-center justify-between gap-3 p-2 bg-gray-50 border border-slate-200 dark:border-zinc-800 shadow-sm">
                   <div>
-                    <p className="text-[9px] font-black uppercase text-black">Essential Cookies</p>
+                    <p className="text-[9px] font-bold uppercase text-black">Essential Cookies</p>
                     <p className="text-[8px] font-bold text-gray-500">Required for session state</p>
                   </div>
                   <Check size={14} className="text-brutal-green" />
                 </div>
 
                 {/* Preference 2 */}
-                <div className="flex items-center justify-between gap-3 p-2 bg-gray-50 border-2 border-black shadow-[2px_2px_0px_#000]">
+                <div className="flex items-center justify-between gap-3 p-2 bg-gray-50 border border-slate-200 dark:border-zinc-800 shadow-sm">
                   <div>
-                    <p className="text-[9px] font-black uppercase text-black">Device Fingerprinting</p>
+                    <p className="text-[9px] font-bold uppercase text-black">Device Fingerprinting</p>
                     <p className="text-[8px] font-bold text-gray-500">Security & anti-gaming verification</p>
                   </div>
                   <Check size={14} className="text-brutal-green" />
                 </div>
 
                 {/* Preference 3 */}
-                <div className="flex items-center justify-between gap-3 p-2 bg-white border-2 border-black shadow-[2px_2px_0px_#000]">
+                <div className="flex items-center justify-between gap-3 p-2 bg-white border border-slate-200 dark:border-zinc-800 shadow-sm">
                   <div>
-                    <p className="text-[9px] font-black uppercase text-black">B2B Partner Trust Sharing</p>
+                    <p className="text-[9px] font-bold uppercase text-black">B2B Partner Trust Sharing</p>
                     <p className="text-[8px] font-bold text-gray-500">Allows third-party query verification</p>
                   </div>
                   <input
                     type="checkbox"
                     checked={preferences.thirdPartySharing}
                     onChange={(e) => setPreferences({ ...preferences, thirdPartySharing: e.target.checked })}
-                    className="w-4 h-4 border-2 border-black text-black focus:ring-0 cursor-pointer"
+                    className="w-4 h-4 border border-slate-200 dark:border-zinc-800 text-black focus:ring-0 cursor-pointer"
                   />
                 </div>
               </div>
@@ -120,13 +120,13 @@ export const ConsentBanner: React.FC = () => {
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={() => setShowManage(false)}
-                  className="px-2.5 py-1 border-2 border-black bg-white text-[9px] font-black uppercase text-black hover:bg-gray-50 transition-colors"
+                  className="px-2.5 py-1 border border-slate-200 dark:border-zinc-800 bg-white text-[9px] font-bold uppercase text-black hover:bg-gray-50 transition-colors"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleSavePreferences}
-                  className="px-3 py-1 border-2 border-black bg-brutal-green text-[9px] font-black uppercase text-black shadow-[2px_2px_0px_#000] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000] transition-all"
+                  className="px-3 py-1 border border-slate-200 dark:border-zinc-800 bg-brutal-green text-[9px] font-bold uppercase text-black shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm transition-all"
                 >
                   Save Choices
                 </button>

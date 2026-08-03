@@ -196,8 +196,8 @@ export default function Identity() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin size-12 text-brutal-blue" />
-          <p className="font-display text-xs uppercase tracking-widest animate-pulse">Synchronizing Identities...</p>
+          <Loader2 className="animate-spin size-12 text-blue-500" />
+          <p className="font-semibold text-sm text-[var(--text-secondary)] animate-pulse">Synchronizing Identities...</p>
         </div>
       </div>
     );
@@ -224,22 +224,22 @@ export default function Identity() {
           }}
         />
       )}
-      <h2 className="font-display text-3xl uppercase mb-8">Link Your Identities</h2>
+      <h2 className="font-bold text-3xl tracking-tight mb-8 text-[var(--text-primary)]">Link Your Identities</h2>
       
       {/* Sumsub KYC Section */}
-      <div className="mb-12 brutal-card bg-white p-6 shadow-[8px_8px_0px_#000]">
+      <div className="mb-12 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6">
-            <div className={`w-16 h-16 border-4 border-black flex items-center justify-center p-3 ${
-              kycStatus === 'verified' ? 'bg-brutal-green' : 
-              kycStatus === 'pending' ? 'bg-brutal-yellow' : 
-              kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-gray-100'
+            <div className={`w-16 h-16 rounded-xl border border-[var(--border-color)] flex items-center justify-center p-3 ${
+              kycStatus === 'verified' ? 'bg-emerald-500/10' : 
+              kycStatus === 'pending' ? 'bg-amber-400/10' : 
+              kycStatus === 'rejected' ? 'bg-red-400/10' : 'bg-[var(--bg-primary)]'
             }`}>
               {kycStatus === 'verified' ? '✅' : <img src={passportLogo} className="w-full h-full object-contain" alt="KYC" />}
             </div>
             <div>
-              <h3 className="font-display text-xl uppercase">Identity Verification (KYC)</h3>
-              <p className="text-xs font-bold uppercase mt-1 text-gray-500">
+              <h3 className="font-bold text-xl tracking-tight text-[var(--text-primary)]">Identity Verification (KYC)</h3>
+              <p className="text-xs font-medium mt-1 text-[var(--text-secondary)]">
                 {kycStatus === 'not_started' && 'Verification Required'}
                 {kycStatus === 'pending' && 'Verification Pending'}
                 {kycStatus === 'verified' && 'Verification Successful'}
@@ -248,14 +248,14 @@ export default function Identity() {
               {kycStatus === 'pending' && (
                 <div className="flex items-center gap-2 mt-2">
                   <Loader2 className="animate-spin size-3" />
-                  <span className="text-[10px] font-black uppercase">Auto-refreshing... Est. 5-10 mins</span>
+                  <span className="text-xs font-medium text-[var(--text-secondary)]">Auto-refreshing... Est. 5-10 mins</span>
                 </div>
               )}
               {kycStatus === 'rejected' && kycRejectionReason && (
-                <p className="text-[10px] font-black uppercase text-red-500 mt-2">Reason: {kycRejectionReason}</p>
+                <p className="text-xs font-medium text-red-500 mt-2">Reason: {kycRejectionReason}</p>
               )}
               {kycError && (
-                <p className="text-[10px] font-black uppercase text-red-500 mt-2 max-w-xs">⚠ {kycError}</p>
+                <p className="text-xs font-medium text-red-500 mt-2 max-w-xs">⚠ {kycError}</p>
               )}
             </div>
           </div>
@@ -267,7 +267,7 @@ export default function Identity() {
                 onClick={() => refreshKycStatus(true)}
                 disabled={statusRefreshing}
                 title="Refresh verification status"
-                className="brutal-btn bg-white border-2 border-black size-10 flex items-center justify-center p-0 min-h-0"
+                className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] size-10 flex items-center justify-center p-0 min-h-0 hover:bg-[var(--bg-primary)] transition-colors"
               >
                 <RefreshCw className={`size-4 ${statusRefreshing ? 'animate-spin' : ''}`} />
               </button>
@@ -277,9 +277,9 @@ export default function Identity() {
               <button 
                 onClick={handleStartKYC}
                 disabled={kycLoading || isGuest}
-                className={`brutal-btn px-8 py-3 text-sm font-black uppercase ${
-                  kycStatus === 'rejected' ? 'bg-brutal-pink' : 'bg-brutal-yellow'
-                } ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`rounded-xl px-6 py-2.5 text-sm font-semibold text-white ${
+                  kycStatus === 'rejected' ? 'bg-red-500 hover:bg-red-600' : 'hover:opacity-90'
+                } ${isGuest ? 'opacity-50 cursor-not-allowed' : ''}`} style={kycStatus !== 'rejected' ? { background: 'var(--accent)' } : {}}
               >
                 {kycLoading ? <Loader2 className="animate-spin" /> : kycStatus === 'rejected' ? 'Retry Verification' : 'Start Verification'}
               </button>
@@ -287,12 +287,12 @@ export default function Identity() {
 
             {kycStatus === 'verified' && (
               <div className="flex items-center gap-2">
-                <div className="bg-brutal-green text-black px-4 py-2 border-2 border-black font-black uppercase text-xs">
+                <div className="bg-emerald-500/10 text-emerald-600 border border-emerald-500 rounded-xl px-4 py-2 font-semibold text-xs">
                   ✓ Passport Unlocked
                 </div>
                 <button
                   onClick={() => navigate('/passport')}
-                  className="brutal-btn bg-black text-white px-4 py-2 text-xs font-black uppercase flex items-center gap-2 min-h-0"
+                  className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] text-[var(--text-primary)] px-4 py-2 text-xs font-semibold flex items-center gap-2 min-h-0 hover:bg-[var(--bg-primary)] transition-colors"
                 >
                   <BookOpen size={12} /> View Passport
                 </button>
@@ -304,12 +304,12 @@ export default function Identity() {
 
       {showSumsub && kycToken && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-2xl h-[85vh] border-4 border-black shadow-[16px_16px_0px_#000] relative overflow-hidden flex flex-col">
-            <div className="p-4 border-b-4 border-black flex items-center justify-between bg-brutal-yellow">
-               <h3 className="font-display text-sm uppercase tracking-widest">Secure Identity Verification</h3>
+          <div className="bg-[var(--card-bg)] w-full max-w-2xl h-[85vh] border border-[var(--border-color)] rounded-2xl shadow-2xl relative overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-[var(--border-color)] flex items-center justify-between bg-[var(--bg-primary)] rounded-t-2xl">
+               <h3 className="font-semibold text-sm text-[var(--text-primary)]">Secure Identity Verification</h3>
                <button 
                 onClick={handleKycComplete}
-                className="brutal-btn bg-white size-8 flex items-center justify-center font-black p-0 min-h-0"
+                className="rounded-xl border border-[var(--border-color)] bg-[var(--card-bg)] size-8 flex items-center justify-center font-bold text-[var(--text-secondary)] p-0 min-h-0 hover:bg-[var(--bg-primary)] transition-colors"
               >
                 ×
               </button>
@@ -348,7 +348,7 @@ export default function Identity() {
         </div>
       )}
 
-      <p className="text-sm font-bold text-gray-500 uppercase mb-8 tracking-widest">
+      <p className="text-sm font-medium text-[var(--text-secondary)] mb-8">
         The more accounts you link, the higher your Trust Score becomes.
       </p>
 
@@ -357,9 +357,9 @@ export default function Identity() {
         <div className="mb-6 p-4 border-2 border-red-500 bg-red-50 dark:bg-red-950/20 flex items-start gap-3">
           <span className="text-red-500 text-lg leading-none">⚠</span>
           <div className="flex-1">
-            <p className="text-xs font-black uppercase text-red-600 dark:text-red-400">{connectError}</p>
+            <p className="text-xs font-bold uppercase text-red-600 dark:text-red-400">{connectError}</p>
           </div>
-          <button onClick={() => setConnectError(null)} className="text-red-500 font-black text-lg leading-none hover:text-red-700">×</button>
+          <button onClick={() => setConnectError(null)} className="text-red-500 font-bold text-lg leading-none hover:text-red-700">×</button>
         </div>
       )}
 
@@ -376,18 +376,19 @@ export default function Identity() {
               const isDisabled = limitReached && !isConnected;
 
               return (
-                <div key={p.id} className={`brutal-card flex flex-col items-center gap-4 text-center ${isConnected ? 'bg-brutal-green' : 'bg-white'}`}>
-                  <div className="w-16 h-16 border-4 border-black flex items-center justify-center text-3xl bg-white shadow-[4px_4px_0px_#000]">
+                <div key={p.id} className={`bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 flex flex-col items-center gap-4 text-center ${isConnected ? 'bg-emerald-500/10 border-emerald-300' : ''}`}>
+                  <div className="w-16 h-16 border border-[var(--border-color)] rounded-xl flex items-center justify-center text-3xl bg-[var(--bg-primary)] shadow-sm">
                     {p.icon}
                   </div>
                   <div>
-                    <h3 className="font-display text-lg uppercase">{p.name}</h3>
-                    <p className="text-[10px] font-black uppercase tracking-tighter">
+                    <h3 className="font-semibold text-lg text-[var(--text-primary)]">{p.name}</h3>
+                    <p className="text-xs font-medium text-[var(--text-secondary)] mt-0.5">
                       {isConnected ? '✓ Verified Link' : 'Not Connected'}
                     </p>
                   </div>
                   <button 
-                    className={`brutal-btn w-full py-2 text-xs font-black uppercase flex items-center justify-center gap-2 ${isConnected ? 'bg-black text-white' : 'bg-white text-black'} ${(isGuest || isDisabled) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`rounded-xl w-full py-2 text-xs font-semibold flex items-center justify-center gap-2 transition-colors ${isConnected ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-400' : 'text-white border-0'} ${(isGuest || isDisabled) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    style={!isConnected ? { background: 'var(--accent)' } : {}}
                     onClick={() => {
                       if (isDisabled) {
                         setConnectError('Free plan limited to 2 identities. Upgrade to Pro.');
@@ -399,7 +400,7 @@ export default function Identity() {
                     }}
                     disabled={isConnected || isGuest}
                   >
-                    {isConnected ? <><Link2 size={14} /> LINKED</> : isGuest ? 'LOGIN' : 'CONNECT'}
+                    {isConnected ? <><Link2 size={14} /> Linked</> : isGuest ? 'Login' : 'Connect'}
                   </button>
                 </div>
               );
@@ -409,7 +410,7 @@ export default function Identity() {
 
         return (
           <div key={category} className="mb-12">
-            <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">{category} Signals</h3>
+            <h3 className="font-bold text-xl tracking-tight mb-6 text-[var(--text-primary)] border-b border-[var(--border-color)] inline-block pb-1">{category} Signals</h3>
             {shouldBlurCategory ? (
               <PremiumOverlay requiredPlan="Pro" title="Unlock More Signals" description="Free plan is limited to 2 identity links.">
                 {CategoryContent}
@@ -422,37 +423,37 @@ export default function Identity() {
       })}
       
       {/* Email / Demo Account */}
-      <h3 className="font-display text-xl uppercase mb-6 border-b-2 border-black inline-block">Primary Signals</h3>
+      <h3 className="font-bold text-xl tracking-tight mb-6 text-[var(--text-primary)] border-b border-[var(--border-color)] inline-block pb-1">Primary Signals</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <div className={`brutal-card flex flex-col items-center gap-4 text-center ${isGuest ? 'bg-brutal-yellow' : 'bg-brutal-green'}`}>
-          <div className="w-16 h-16 border-4 border-black flex items-center justify-center bg-white shadow-[4px_4px_0px_#000]">
+        <div className={`bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 flex flex-col items-center gap-4 text-center ${isGuest ? 'border-amber-300 bg-amber-500/5' : 'border-emerald-300 bg-emerald-500/5'}`}>
+          <div className="w-16 h-16 border border-[var(--border-color)] rounded-xl flex items-center justify-center bg-[var(--bg-primary)] shadow-sm">
             <img src={gmailLogo} className="w-10 h-10 object-contain" alt="Email" />
           </div>
           <div>
-            <h3 className="font-display text-lg uppercase">Email</h3>
-            <p className="text-[10px] font-black uppercase tracking-tighter">
+            <h3 className="font-semibold text-lg text-[var(--text-primary)]">Email</h3>
+            <p className="text-xs font-medium text-[var(--text-secondary)] mt-0.5">
               {isGuest ? '⚠️ Demo Identity' : '✓ Primary Identity'}
             </p>
           </div>
-          <div className="w-full py-2 text-xs font-black uppercase bg-black text-white text-center border-2 border-black">
+          <div className="w-full py-2 text-xs font-semibold rounded-lg bg-[var(--bg-primary)] border border-[var(--border-color)] text-[var(--text-primary)] text-center">
             {isGuest ? 'GUEST_USER' : (user?.email?.split('@')[0] || 'USER')}
           </div>
         </div>
       </div>
 
       {/* Trust Insight */}
-      <div className="mt-12 brutal-card bg-brutal-pink flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
+      <div className="mt-12 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-6">
-          <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center">
-            <ShieldCheck className="size-10 text-black" />
+          <div className="w-16 h-16 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] flex items-center justify-center">
+            <ShieldCheck className="size-10 text-[var(--accent)]" />
           </div>
           <div>
-            <h4 className="font-display text-xl uppercase leading-none">Identity Proof</h4>
-            <p className="text-xs font-bold uppercase mt-2">Your identities are hashed and stored on the trust layer network.</p>
+            <h4 className="font-bold text-xl tracking-tight text-[var(--text-primary)] leading-snug">Identity Proof</h4>
+            <p className="text-sm font-medium mt-1 text-[var(--text-secondary)]">Your identities are hashed and stored on the trust layer network.</p>
           </div>
         </div>
         <div className="flex gap-2">
-           <button className="brutal-btn bg-white px-6 py-2 text-xs font-black uppercase">View on Explorer</button>
+           <button className="rounded-xl border border-[var(--border-color)] px-6 py-2 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-primary)] transition-colors">View on Explorer</button>
         </div>
       </div>
     </div>

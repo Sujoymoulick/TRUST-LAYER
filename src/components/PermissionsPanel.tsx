@@ -121,7 +121,7 @@ export const PermissionsPanel: React.FC = () => {
   const generateSimpleDeviceFingerprint = () => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const txt = 'Pramaaan,ai - Compliance Engine 2026';
+    const txt = 'Crifolayer,ai - Compliance Engine 2026';
     if (ctx) {
       ctx.textBaseline = "top";
       ctx.font = "14px 'Arial'";
@@ -185,10 +185,10 @@ export const PermissionsPanel: React.FC = () => {
   };
 
   return (
-    <div className="border-4 border-black bg-white shadow-[6px_6px_0px_#000] p-6 space-y-6">
+    <div className="border border-slate-200 dark:border-zinc-800 bg-white shadow-md p-6 space-y-6">
       
       {/* Header */}
-      <div className="flex items-center justify-between border-b-4 border-black pb-4 flex-wrap gap-3">
+      <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-4 flex-wrap gap-3">
         <div className="flex items-center gap-2">
           <ShieldCheck size={20} className="text-brutal-green" />
           <h3 className="font-display text-base uppercase tracking-wider text-black">Consent Vault & Privacy Audit</h3>
@@ -196,7 +196,7 @@ export const PermissionsPanel: React.FC = () => {
         <button 
           onClick={fetchActiveConsents}
           disabled={loading}
-          className="p-1.5 border-2 border-black hover:bg-gray-100 transition-colors"
+          className="p-1.5 border border-slate-200 dark:border-zinc-800 hover:bg-gray-100 transition-colors"
           title="Refresh Permission Logs"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -207,7 +207,7 @@ export const PermissionsPanel: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* B2B Trust sharing control */}
-        <div className="lg:col-span-1 p-4 border-2 border-black bg-gray-50 flex flex-col justify-between gap-4 shadow-[4px_4px_0px_#000]">
+        <div className="lg:col-span-1 p-4 border border-slate-200 dark:border-zinc-800 bg-gray-50 flex flex-col justify-between gap-4 shadow-md">
           <div className="space-y-2">
             <h4 className="font-display text-xs uppercase text-black">Public Trust Score Privacy</h4>
             <p className="text-[10px] text-gray-500 font-semibold leading-relaxed">
@@ -218,7 +218,7 @@ export const PermissionsPanel: React.FC = () => {
           <button
             onClick={handleToggleSharing}
             disabled={actionLoading === 'sharing'}
-            className={`w-full py-2 border-2 border-black font-black text-[10px] uppercase shadow-[3px_3px_0px_#000] transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_#000] flex items-center justify-center gap-2 ${
+            className={`w-full py-2 border border-slate-200 dark:border-zinc-800 font-bold text-[10px] uppercase shadow-sm transition-all transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm flex items-center justify-center gap-2 ${
               isShared ? 'bg-brutal-yellow text-black' : 'bg-white text-gray-500'
             }`}
           >
@@ -245,14 +245,14 @@ export const PermissionsPanel: React.FC = () => {
               <Loader2 className="animate-spin text-brutal-blue" size={24} />
             </div>
           ) : logs.length === 0 ? (
-            <p className="text-[10px] font-black uppercase text-gray-400 py-4 text-center">No active platform connections found.</p>
+            <p className="text-[10px] font-bold uppercase text-gray-400 py-4 text-center">No active platform connections found.</p>
           ) : (
-            <div className="max-h-52 overflow-y-auto space-y-2 border-2 border-black p-3 bg-gray-50 shadow-[inset_4px_4px_0px_rgba(0,0,0,0.05)]">
+            <div className="max-h-52 overflow-y-auto space-y-2 border border-slate-200 dark:border-zinc-800 p-3 bg-gray-50 shadow-inner">
               {logs.map((log) => (
-                <div key={log.consent_id} className="p-3 border-2 border-black bg-white shadow-[2px_2px_0px_#000] flex justify-between items-center gap-4 text-xs">
+                <div key={log.consent_id} className="p-3 border border-slate-200 dark:border-zinc-800 bg-white shadow-sm flex justify-between items-center gap-4 text-xs">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-black text-[10px] uppercase">{log.action_type}</span>
+                      <span className="font-bold text-[10px] uppercase">{log.action_type}</span>
                       {log.scope_consented?.provider && (
                         <span className="brutal-badge !text-[8px] !px-1.5 !py-0.5 uppercase bg-brutal-blue text-white">
                           {log.scope_consented.provider}
@@ -269,12 +269,12 @@ export const PermissionsPanel: React.FC = () => {
                       <button
                         onClick={() => handleRevoke(log.action_type, log.consent_id)}
                         disabled={actionLoading === log.consent_id}
-                        className="px-2 py-1 border-2 border-black bg-brutal-pink text-white text-[8px] font-black uppercase shadow-[1px_1px_0px_#000] hover:bg-red-600 transition-colors"
+                        className="px-2 py-1 border border-slate-200 dark:border-zinc-800 bg-brutal-pink text-white text-[8px] font-bold uppercase shadow-sm hover:bg-red-600 transition-colors"
                       >
                         {actionLoading === log.consent_id ? '...' : 'Revoke'}
                       </button>
                     ) : (
-                      <span className="text-[8px] font-black uppercase text-gray-400 border border-gray-300 px-2 py-1 bg-gray-100">
+                      <span className="text-[8px] font-bold uppercase text-gray-400 border border-gray-300 px-2 py-1 bg-gray-100">
                         Revoked
                       </span>
                     )}
@@ -297,7 +297,7 @@ export const PermissionsPanel: React.FC = () => {
         </p>
         <button
           onClick={() => setShowPurgeModal(true)}
-          className="px-4 py-2 border-2 border-black bg-brutal-pink text-white text-[10px] font-black uppercase shadow-[3px_3px_0px_#000] hover:bg-red-600 transition-all"
+          className="px-4 py-2 border border-slate-200 dark:border-zinc-800 bg-brutal-pink text-white text-[10px] font-bold uppercase shadow-sm hover:bg-red-600 transition-all"
         >
           Request Total Account Deletion
         </button>
@@ -306,8 +306,8 @@ export const PermissionsPanel: React.FC = () => {
       {/* Total Purge Confirmation Modal */}
       {showPurgeModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-          <div className="bg-white border-4 border-black p-6 w-full max-w-sm shadow-[8px_8px_0px_#000] space-y-5 animate-in zoom-in duration-200">
-            <div className="flex items-center gap-2 border-b-4 border-black pb-3 text-brutal-pink">
+          <div className="bg-white border border-slate-200 dark:border-zinc-800 p-6 w-full max-w-sm shadow-lg space-y-5 animate-in zoom-in duration-200">
+            <div className="flex items-center gap-2 border-b border-slate-200 dark:border-zinc-800 pb-3 text-brutal-pink">
               <Trash2 size={22} />
               <h3 className="font-display text-base uppercase tracking-wider text-black">Confirm Total Deletion</h3>
             </div>
@@ -320,14 +320,14 @@ export const PermissionsPanel: React.FC = () => {
               <button
                 onClick={() => setShowPurgeModal(false)}
                 disabled={purgeLoading}
-                className="px-4 py-2 border-2 border-black bg-white text-xs font-black uppercase text-black hover:bg-gray-50"
+                className="px-4 py-2 border border-slate-200 dark:border-zinc-800 bg-white text-xs font-bold uppercase text-black hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleTotalPurge}
                 disabled={purgeLoading}
-                className="px-5 py-2 border-2 border-black bg-brutal-pink text-white text-xs font-black uppercase shadow-[3px_3px_0px_#000] hover:bg-red-600 flex items-center gap-2"
+                className="px-5 py-2 border border-slate-200 dark:border-zinc-800 bg-brutal-pink text-white text-xs font-bold uppercase shadow-sm hover:bg-red-600 flex items-center gap-2"
               >
                 {purgeLoading ? (
                   <>

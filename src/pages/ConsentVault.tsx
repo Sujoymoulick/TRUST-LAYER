@@ -84,7 +84,7 @@ export default function ConsentVault() {
     <div className="max-w-6xl mx-auto space-y-12 pb-20">
       
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b-4 border-black pb-8">
+      <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-slate-200 dark:border-zinc-800 pb-8">
         <div>
           <h2 className="font-display text-4xl uppercase mb-2">Personal Consent Vault</h2>
           <p className="font-bold text-gray-500 uppercase tracking-widest text-sm">
@@ -112,7 +112,7 @@ export default function ConsentVault() {
               }`}
             >
               <span className="text-xl">{platform.icon}</span>
-              <span className="font-black uppercase text-xs">{platform.name}</span>
+              <span className="font-bold uppercase text-xs">{platform.name}</span>
               {selectedPlatform.id === platform.id && <ArrowRight size={14} className="ml-auto" />}
             </button>
           ))}
@@ -121,12 +121,12 @@ export default function ConsentVault() {
         {/* 2. User Gatekeeper Console (Middle) */}
         <div className="lg:col-span-6">
           <div className="brutal-card bg-white min-h-[500px] flex flex-col">
-            <div className="flex items-center justify-between mb-8 border-b-2 border-black pb-4">
+            <div className="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-zinc-800 pb-4">
               <div className="flex items-center gap-3">
                 <Shield className="text-brutal-blue" />
                 <h3 className="font-display text-lg uppercase">User Gatekeeper</h3>
               </div>
-              <div className="text-[10px] font-black uppercase text-gray-400">
+              <div className="text-[10px] font-bold uppercase text-gray-400">
                 Control: {selectedPlatform.name}
               </div>
             </div>
@@ -135,13 +135,13 @@ export default function ConsentVault() {
               {DATA_SOURCES.map(source => {
                 const isToggled = consents[`${selectedPlatform.id}_${source.id}`];
                 return (
-                  <div key={source.id} className="flex items-center justify-between p-4 border-2 border-black bg-gray-50 dark:bg-zinc-900 shadow-[4px_4px_0px_#000] hover:translate-y-[-2px] transition-transform">
+                  <div key={source.id} className="flex items-center justify-between p-4 border border-slate-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900 shadow-md hover:translate-y-[-2px] transition-transform">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 border-2 border-black bg-white dark:bg-zinc-800 flex items-center justify-center text-xl">
+                      <div className="w-10 h-10 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 flex items-center justify-center text-xl">
                         {source.icon}
                       </div>
                       <div>
-                        <div className="font-black uppercase text-xs text-black dark:text-white">{source.name}</div>
+                        <div className="font-bold uppercase text-xs text-black dark:text-white">{source.name}</div>
                         <div className="text-[8px] font-bold text-gray-500 dark:text-gray-400 uppercase">Ephemeral Token Verification</div>
                       </div>
                     </div>
@@ -160,7 +160,7 @@ export default function ConsentVault() {
               })}
             </div>
 
-            <div className="mt-8 p-4 bg-brutal-blue text-white border-2 border-black text-center font-black uppercase text-[10px] tracking-widest shadow-[4px_4px_0px_#000]">
+            <div className="mt-8 p-4 bg-brutal-blue text-white border border-slate-200 dark:border-zinc-800 text-center font-bold uppercase text-[10px] tracking-widest shadow-md">
               Explicit Consent Required for Every Data Point
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function ConsentVault() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-700 text-[10px] font-black uppercase tracking-widest text-gray-500">
+              <tr className="border-b border-gray-700 text-[10px] font-bold uppercase tracking-widest text-gray-500">
                 <th className="pb-4">Timestamp</th>
                 <th className="pb-4">Platform (Consumer)</th>
                 <th className="pb-4">Data Scope</th>
@@ -233,7 +233,7 @@ export default function ConsentVault() {
               ))}
               {logs.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-12 text-center text-gray-600 font-black italic">
+                  <td colSpan={4} className="py-12 text-center text-gray-600 font-bold italic">
                     No logs found in the immutable vault.
                   </td>
                 </tr>

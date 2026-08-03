@@ -1,6 +1,6 @@
 # 📁 Project Metadata & Architecture Blueprint
 
-This document acts as a high-density schema mapping of the **Pramaaan** identity platform. It is designed to give AI developer models immediate, high-fidelity context on UI layouts, routing trees, backend services, dependencies, and styles.
+This document acts as a high-density schema mapping of the **Crifolayer** identity platform. It is designed to give AI developer models immediate, high-fidelity context on UI layouts, routing trees, backend services, dependencies, and styles.
 
 > [!NOTE]
 > Generated automatically by the **codebase-scanner-skill**. Run `node scanner-skill/scan.js` to rebuild this schema map.
@@ -384,7 +384,7 @@ Here are the routes detected inside the main API entrypoint:
 ---
 
 ## 🎨 Theme Tokens & Aesthetic Tokens
-Pramaaan uses custom Neo-Brutalist CSS tokens mapped inside `index.css`:
+Crifolayer uses custom Neo-Brutalist CSS tokens mapped inside `index.css`:
 
 | Variable Token | Resolved Style Code | Theme Context |
 | :--- | :--- | :--- |
@@ -428,4 +428,4 @@ Below is a high-level summary of vital UI building blocks:
 5.  **[UPIPayment.tsx](file:///Users/sujoymoulick/PROJECTS/trustlayer-app/frontend/src/components/UPIPayment.tsx)**: Processes standard mobile quick response scanning systems as a manual Razorpay fallback.
 
 ---
-*Created by Pramaaan Skill Engine © 2026.*
+*Created by Crifolayer Skill Engine © 2026.*
