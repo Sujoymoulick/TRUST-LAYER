@@ -7,7 +7,7 @@
  * while the codebase is being migrated to the decoupled architecture.
  */
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 /**
  * @deprecated Use apiFetch from lib/api.ts instead.

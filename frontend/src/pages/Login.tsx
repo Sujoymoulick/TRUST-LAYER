@@ -21,7 +21,7 @@ interface EyeBallProps {
 
 const EyeBall = ({ size = 20, pupilSize = 8, isBlinking = false, forceLookX, forceLookY }: EyeBallProps) => {
   return (
-    <div className="relative flex items-center justify-center bg-white border-2 border-black rounded-full overflow-hidden transition-all duration-150"
+    <div className="relative flex items-center justify-center bg-white border border-slate-200 dark:border-zinc-800 rounded-full overflow-hidden transition-all duration-150"
       style={{ width: size, height: size, transform: isBlinking ? 'scaleY(0.1)' : 'scaleY(1)' }}>
       <div className="absolute bg-black rounded-full transition-all duration-200 ease-out"
         style={{ width: pupilSize, height: pupilSize, transform: `translate(${forceLookX !== undefined ? forceLookX : 0}px, ${forceLookY !== undefined ? forceLookY : 0}px)` }} />
@@ -30,7 +30,7 @@ const EyeBall = ({ size = 20, pupilSize = 8, isBlinking = false, forceLookX, for
 };
 
 const Pupil = ({ size = 12, forceLookX = 0, forceLookY = 0 }) => (
-  <div className="relative flex items-center justify-center bg-white border-2 border-black rounded-full w-8 h-8">
+  <div className="relative flex items-center justify-center bg-white border border-slate-200 dark:border-zinc-800 rounded-full w-8 h-8">
     <div className="bg-black rounded-full transition-all duration-200 ease-out"
       style={{ width: size, height: size, transform: `translate(${forceLookX}px, ${forceLookY}px)` }} />
   </div>
@@ -152,6 +152,17 @@ export default function Login() {
     };
   };
 
+  // Navigate once Supabase confirms the session — handles both email and OAuth flows
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any) => {
+      if (event === 'SIGNED_IN') {
+        exitGuest();
+        navigate('/dashboard');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [navigate, exitGuest]);
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -161,6 +172,7 @@ export default function Login() {
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        // navigation is handled by onAuthStateChange above
       } else {
         if (!turnstileToken) {
           throw new Error("Please complete the security verification.");
@@ -186,8 +198,7 @@ export default function Login() {
         setIsLoading(false);
         return;
       }
-      exitGuest();
-      navigate('/dashboard');
+      // navigation handled by onAuthStateChange
     } catch (err: any) {
       setError(err.message || "Authentication failed");
     } finally {
@@ -225,7 +236,7 @@ export default function Login() {
       <div className="relative hidden lg:flex flex-col justify-between bg-brutal-navy p-12 text-white">
         <div className="relative z-20">
           <Link to="/" className="flex items-center gap-2">
-            <img src={mainLogo} alt="Crifolayer Logo" className="h-10 w-auto object-contain" />
+            <img src={mainLogo} alt="Crifolayer Logo" className="h-14 w-auto object-contain" />
           </Link>
         </div>
 
@@ -278,7 +289,7 @@ export default function Login() {
       </div>
 
       {/* Right Login Section */}
-      <div className="flex items-center justify-center p-8 bg-white border-t-4 lg:border-t-0 lg:border-l-4 border-black">
+      <div className="flex items-center justify-center p-8 bg-white border-t-4 lg:border-t-0 lg:border-l border-slate-200 dark:border-zinc-800">
         <div className="w-full max-w-[420px]">
           <AnimatePresence mode="wait">
             <motion.div
@@ -298,19 +309,19 @@ export default function Login() {
               </div>
 
               {error && (
-                <div className="bg-red-100 border-2 border-black p-3 mb-6 font-bold text-xs uppercase text-red-600">
+                <div className="bg-red-100 border border-slate-200 dark:border-zinc-800 p-3 mb-6 font-bold text-xs uppercase text-red-600">
                   {error}
                 </div>
               )}
 
               <form onSubmit={handleAuth} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="font-black text-xs uppercase">Email</Label>
+                  <Label htmlFor="email" className="font-bold text-xs uppercase">Email</Label>
                   <Input id="email" type="email" placeholder="anna@gmail.com" value={email} autoComplete="off" onChange={(e) => setEmail(e.target.value)} onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required className="brutal-input" />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="font-black text-xs uppercase">Password</Label>
+                  <Label htmlFor="password" className="font-bold text-xs uppercase">Password</Label>
                   <div className="relative">
                     <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} onFocus={() => setIsTyping(true)} onBlur={() => setIsTyping(false)} required className="brutal-input pr-12" />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-black/50 hover:text-black transition-colors" >
@@ -322,10 +333,10 @@ export default function Login() {
                 {isLogin && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="remember" className="border-2 border-black data-[state=checked]:bg-brutal-pink" />
+                      <Checkbox id="remember" className="border border-slate-200 dark:border-zinc-800 data-[state=checked]:bg-brutal-pink" />
                       <Label htmlFor="remember" className="text-sm font-bold cursor-pointer" > Remember for 30 days </Label>
                     </div>
-                    <a href="#" className="text-sm font-black underline" > Forgot password? </a>
+                    <a href="#" className="text-sm font-bold underline" > Forgot password? </a>
                   </div>
                 )}
 
@@ -348,7 +359,7 @@ export default function Login() {
 
                 <div className="flex items-center gap-4">
                   <div className="h-0.5 flex-1 bg-black opacity-10" />
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Or Continue With</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Or Continue With</span>
                   <div className="h-0.5 flex-1 bg-black opacity-10" />
                 </div>
 
@@ -388,11 +399,11 @@ export default function Login() {
             </motion.div>
           </AnimatePresence>
 
-          <div className="mt-8 pt-8 border-t-2 border-black border-dashed flex flex-col gap-4">
-            <Button variant="ghost" className="font-black text-xs uppercase tracking-widest hover:bg-gray-100" onClick={() => setIsLogin(!isLogin)} >
+          <div className="mt-8 pt-8 border-t border-slate-200 dark:border-zinc-800 border-dashed flex flex-col gap-4">
+            <Button variant="ghost" className="font-bold text-xs uppercase tracking-widest hover:bg-gray-100" onClick={() => setIsLogin(!isLogin)} >
               {isLogin ? "Don't have an account? Create one" : "Already have an account? Sign In"}
             </Button>
-            <button className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-black transition-colors" onClick={handleGuestLogin} >
+            <button className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors" onClick={handleGuestLogin} >
               Continue as Guest (Read Only)
             </button>
           </div>

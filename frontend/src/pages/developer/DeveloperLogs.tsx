@@ -452,12 +452,12 @@ export default function DeveloperLogs() {
             <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
               Env:
             </span>
-            <div className="flex border-2 border-black overflow-hidden rounded-sm shadow-[2px_2px_0px_#000]">
+            <div className="flex border border-slate-200 dark:border-zinc-800 overflow-hidden rounded-sm shadow-sm">
               {(['all', 'sandbox', 'production'] as const).map((val) => (
                 <button
                   key={val}
                   onClick={() => handleFilterChange('env', val)}
-                  className={`px-3 py-1.5 text-xs font-bold uppercase transition-colors border-r-2 border-black last:border-r-0 ${
+                  className={`px-3 py-1.5 text-xs font-bold uppercase transition-colors border-r border-slate-200 dark:border-zinc-800 last:border-r-0 ${
                     envFilter === val ? 'bg-brutal-yellow text-black' : 'bg-white dark:bg-zinc-900 text-black dark:text-white hover:bg-yellow-50 dark:hover:bg-zinc-800'
                   }`}
                 >
@@ -472,7 +472,7 @@ export default function DeveloperLogs() {
             <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
               Status:
             </span>
-            <div className="flex border-2 border-black overflow-hidden rounded-sm shadow-[2px_2px_0px_#000]">
+            <div className="flex border border-slate-200 dark:border-zinc-800 overflow-hidden rounded-sm shadow-sm">
               {([
                 { value: 'all', label: 'All' },
                 { value: 'success', label: 'Success (2xx)' },
@@ -481,7 +481,7 @@ export default function DeveloperLogs() {
                 <button
                   key={value}
                   onClick={() => handleFilterChange('status', value)}
-                  className={`px-3 py-1.5 text-xs font-bold uppercase transition-colors border-r-2 border-black last:border-r-0 ${
+                  className={`px-3 py-1.5 text-xs font-bold uppercase transition-colors border-r border-slate-200 dark:border-zinc-800 last:border-r-0 ${
                     statusFilter === value ? 'bg-brutal-yellow text-black' : 'bg-white dark:bg-zinc-900 text-black dark:text-white hover:bg-yellow-50 dark:hover:bg-zinc-800'
                   }`}
                 >
@@ -502,7 +502,7 @@ export default function DeveloperLogs() {
               placeholder="Filter by endpoint..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="w-full pl-9 pr-3 py-2 text-sm border-2 border-black rounded-sm bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-brutal-yellow"
+              className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 dark:border-zinc-800 rounded-sm bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-brutal-yellow"
               style={{ color: 'var(--text-primary)' }}
             />
           </div>
@@ -520,7 +520,7 @@ export default function DeveloperLogs() {
       </div>
 
       {/* Log Table */}
-      <div className="border-[3px] border-black shadow-[6px_6px_0px_#000] overflow-hidden mb-6" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <div className="border-[3px] border-black shadow-md overflow-hidden mb-6" style={{ backgroundColor: 'var(--bg-primary)' }}>
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="flex flex-col items-center gap-4">
@@ -576,7 +576,7 @@ export default function DeveloperLogs() {
                     <>
                       <tr
                         key={log.id}
-                        className="border-b-2 border-black/10 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer"
+                        className="border-b border-slate-200 dark:border-zinc-800/10 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors cursor-pointer"
                         onClick={() => toggleRow(log.id)}
                       >
                         {/* Expand Toggle */}
@@ -627,7 +627,7 @@ export default function DeveloperLogs() {
                         {/* Environment Badge */}
                         <td className="px-4 py-3">
                           {log.environment === 'sandbox' ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-brutal-yellow text-black border border-black/20">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-brutal-yellow text-black border border-slate-200 dark:border-zinc-800/20">
                               sandbox
                             </span>
                           ) : (
@@ -662,7 +662,7 @@ export default function DeveloperLogs() {
 
                       {/* Expanded Row */}
                       {isExpanded && (
-                        <tr key={`${log.id}-expanded`} className="border-b-2 border-black/10">
+                        <tr key={`${log.id}-expanded`} className="border-b border-slate-200 dark:border-zinc-800/10">
                           <td colSpan={8} className="px-0 py-0">
                             <div className="bg-zinc-50 dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 px-6 py-4">
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

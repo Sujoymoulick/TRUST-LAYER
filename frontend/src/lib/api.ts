@@ -42,6 +42,11 @@ export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     }
   }
 
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new Error('Server returned non-JSON response. Please make sure the backend server is running and configured correctly.');
+  }
+
   return response.json();
 };
 

@@ -246,7 +246,7 @@ function MethodBadge({ method }: { method: string }) {
   };
   return (
     <span
-      className={`inline-block px-2 py-0.5 text-xs font-bold font-mono rounded border border-black ${colors[method] ?? 'bg-gray-200 text-black'}`}
+      className={`inline-block px-2 py-0.5 text-xs font-bold font-mono rounded border border-slate-200 dark:border-zinc-800 ${colors[method] ?? 'bg-gray-200 text-black'}`}
     >
       {method}
     </span>
@@ -264,7 +264,7 @@ function StatusBadge({ status }: { status: number }) {
       : 'bg-brutal-pink text-black';
   return (
     <span
-      className={`inline-block px-3 py-1 text-sm font-bold font-mono border border-black ${color}`}
+      className={`inline-block px-3 py-1 text-sm font-bold font-mono border border-slate-200 dark:border-zinc-800 ${color}`}
     >
       {status}
     </span>
@@ -377,7 +377,7 @@ export default function DeveloperPlayground() {
       >
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black shadow-[4px_4px_0px_#000] flex items-center justify-center">
+            <div className="w-10 h-10 bg-brutal-yellow border-[3px] border-black shadow-md flex items-center justify-center">
               <Terminal className="w-5 h-5 text-black" />
             </div>
             <div>
@@ -398,7 +398,7 @@ export default function DeveloperPlayground() {
             <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
               Mode:
             </span>
-            <div className="flex border-[3px] border-[var(--border-color)] overflow-hidden shadow-[4px_4px_0px_#000]">
+            <div className="flex border-[3px] border-[var(--border-color)] overflow-hidden shadow-md">
               <button
                 onClick={() => setIsSandbox(true)}
                 className={`px-4 py-1.5 text-sm font-bold uppercase tracking-tight transition-colors ${
@@ -429,7 +429,7 @@ export default function DeveloperPlayground() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-4">
         {/* Sandbox Banner */}
         {isSandbox && (
-          <div className="flex items-center gap-3 px-4 py-3 border-[3px] border-black bg-brutal-yellow shadow-[4px_4px_0px_#000]">
+          <div className="flex items-center gap-3 px-4 py-3 border-[3px] border-black bg-brutal-yellow shadow-md">
             <Zap className="w-4 h-4 text-black flex-shrink-0" />
             <p className="text-sm font-bold text-black">
               🧪 Sandbox Mode — responses are simulated. No real API calls are made.
@@ -438,7 +438,7 @@ export default function DeveloperPlayground() {
         )}
 
         {!isSandbox && (
-          <div className="flex items-center gap-3 px-4 py-3 border-[3px] border-black bg-brutal-pink shadow-[4px_4px_0px_#000]">
+          <div className="flex items-center gap-3 px-4 py-3 border-[3px] border-black bg-brutal-pink shadow-md">
             <Zap className="w-4 h-4 text-black flex-shrink-0" />
             <p className="text-sm font-bold text-black">
               ⚡ Live Mode — requests will be sent to the real TrustLayer API.
@@ -470,7 +470,7 @@ export default function DeveloperPlayground() {
                   <select
                     value={selectedIndex}
                     onChange={(e) => handleEndpointChange(Number(e.target.value))}
-                    className="w-full appearance-none border-[3px] border-[var(--border-color)] px-3 py-2.5 pr-10 text-sm font-mono shadow-[4px_4px_0px_#000] focus:outline-none focus:border-black"
+                    className="w-full appearance-none border-[3px] border-[var(--border-color)] px-3 py-2.5 pr-10 text-sm font-mono shadow-md focus:outline-none focus:border-black"
                     style={{
                       background: 'var(--bg-primary)',
                       color: 'var(--text-primary)',
@@ -503,7 +503,7 @@ export default function DeveloperPlayground() {
                 >
                   Auth Method
                 </label>
-                <div className="flex border-[3px] border-[var(--border-color)] overflow-hidden shadow-[4px_4px_0px_#000]">
+                <div className="flex border-[3px] border-[var(--border-color)] overflow-hidden shadow-md">
                   <button
                     onClick={() => setAuthMethod('apikey')}
                     className={`flex-1 py-2 text-sm font-bold uppercase tracking-tight transition-colors ${
@@ -542,7 +542,7 @@ export default function DeveloperPlayground() {
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   placeholder={authMethod === 'apikey' ? 'tl_sk_test_...' : 'eyJhbGciOiJ...'}
-                  className="w-full border-[3px] border-[var(--border-color)] px-3 py-2.5 text-sm font-mono shadow-[4px_4px_0px_#000] focus:outline-none focus:border-black"
+                  className="w-full border-[3px] border-[var(--border-color)] px-3 py-2.5 text-sm font-mono shadow-md focus:outline-none focus:border-black"
                   style={{
                     background: 'var(--bg-primary)',
                     color: 'var(--text-primary)',
@@ -564,7 +564,7 @@ export default function DeveloperPlayground() {
                     value={pathParam}
                     onChange={(e) => setPathParam(e.target.value)}
                     placeholder="demo_123"
-                    className="w-full border-[3px] border-[var(--border-color)] px-3 py-2.5 text-sm font-mono shadow-[4px_4px_0px_#000] focus:outline-none focus:border-black"
+                    className="w-full border-[3px] border-[var(--border-color)] px-3 py-2.5 text-sm font-mono shadow-md focus:outline-none focus:border-black"
                     style={{
                       background: 'var(--bg-primary)',
                       color: 'var(--text-primary)',
@@ -594,7 +594,7 @@ export default function DeveloperPlayground() {
                     value={requestBody}
                     onChange={(e) => handleBodyChange(e.target.value)}
                     rows={10}
-                    className="w-full border-[3px] border-[var(--border-color)] px-3 py-2.5 text-sm font-mono shadow-[4px_4px_0px_#000] focus:outline-none focus:border-black resize-none"
+                    className="w-full border-[3px] border-[var(--border-color)] px-3 py-2.5 text-sm font-mono shadow-md focus:outline-none focus:border-black resize-none"
                     style={{
                       background: 'var(--bg-primary)',
                       color: 'var(--text-primary)',
@@ -614,7 +614,7 @@ export default function DeveloperPlayground() {
                 >
                   {loading ? (
                     <>
-                      <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      <span className="w-4 h-4 border border-slate-200 dark:border-zinc-800 border-t-transparent rounded-full animate-spin" />
                       Sending...
                     </>
                   ) : (

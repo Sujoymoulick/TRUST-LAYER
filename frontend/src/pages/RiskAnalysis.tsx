@@ -89,12 +89,12 @@ export default function RiskAnalysis() {
     <div className="max-w-4xl mx-auto">
       <h2 className="font-display text-3xl uppercase mb-8">Risk Analysis</h2>
 
-      <div className="brutal-card mb-8 shadow-[8px_8px_0px_#000]">
+      <div className="brutal-card mb-8 shadow-lg">
         <h3 className="font-display text-lg uppercase mb-6 flex items-center gap-2">
           <ShieldAlert size={20} /> Real-time Risk Indicator
         </h3>
         <div className="flex flex-col items-center py-6">
-          <svg width="260" height="150" viewBox="0 0 260 150" className="drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+          <svg width="260" height="150" viewBox="0 0 260 150" className="drop-shadow-md">
             <path d="M 30 130 A 100 100 0 0 1 230 130" fill="none" stroke="#e5e5e5" strokeWidth="24" strokeLinecap="round" />
             <path d="M 30 130 A 100 100 0 0 1 97 47" fill="none" stroke="#00FF00" strokeWidth="24" />
             <path d="M 97 47 A 100 100 0 0 1 163 47" fill="none" stroke="#FFE600" strokeWidth="24" />
@@ -104,10 +104,10 @@ export default function RiskAnalysis() {
               <circle cx="130" cy="130" r="10" fill="#000" />
             </g>
           </svg>
-          <div className="flex gap-6 mt-6 font-black text-[10px] uppercase">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brutal-green border-2 border-black" /> Safe</div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brutal-yellow border-2 border-black" /> Warning</div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brutal-pink border-2 border-black" /> Risky</div>
+          <div className="flex gap-6 mt-6 font-bold text-[10px] uppercase">
+            <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brutal-green border border-slate-200 dark:border-zinc-800" /> Safe</div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brutal-yellow border border-slate-200 dark:border-zinc-800" /> Warning</div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 bg-brutal-pink border border-slate-200 dark:border-zinc-800" /> Risky</div>
           </div>
         </div>
       </div>

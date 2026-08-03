@@ -185,8 +185,8 @@ export default function ApiDashboard() {
           <p className="text-xs font-bold text-gray-500 uppercase mt-1 tracking-widest">Integrate Crifolayer Trustlayer into third-party apps.</p>
         </div>
 
-        <div className="brutal-card shadow-[8px_8px_0px_#000] flex flex-col items-center text-center py-16 gap-6">
-          <div className="w-20 h-20 border-4 border-black bg-brutal-yellow flex items-center justify-center shadow-[6px_6px_0px_#000]">
+        <div className="brutal-card shadow-lg flex flex-col items-center text-center py-16 gap-6">
+          <div className="w-20 h-20 border border-slate-200 dark:border-zinc-800 bg-brutal-yellow flex items-center justify-center shadow-md">
             <Lock size={40} />
           </div>
           <h3 className="font-display text-2xl uppercase">Developer Suite Locked</h3>
@@ -195,7 +195,7 @@ export default function ApiDashboard() {
           </p>
           <button
             onClick={() => navigate('/login')}
-            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase"
+            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-bold uppercase"
           >
             Create Developer Account →
           </button>
@@ -224,29 +224,29 @@ export default function ApiDashboard() {
       {/* ─── MODAL 1: REGISTER APPLICATION ─── */}
       {showRegModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-md w-full p-6 flex flex-col gap-6">
+          <div className="bg-white border-[4px] border-black shadow-lg max-w-md w-full p-6 flex flex-col gap-6">
             <h3 className="font-display text-2xl uppercase leading-none">Register New App</h3>
             
             <form onSubmit={handleCreateApp} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Application Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Application Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Acme Web Platform"
                   value={newAppName}
                   onChange={(e) => setNewAppName(e.target.value)}
-                  className="w-full border-2 border-black p-3 font-bold text-xs uppercase"
+                  className="w-full border border-slate-200 dark:border-zinc-800 p-3 font-bold text-xs uppercase"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Description (Optional)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Description (Optional)</label>
                 <textarea
                   placeholder="e.g. Unified payment check logic"
                   value={newAppDesc}
                   onChange={(e) => setNewAppDesc(e.target.value)}
-                  className="w-full border-2 border-black p-3 font-bold text-xs uppercase h-20"
+                  className="w-full border border-slate-200 dark:border-zinc-800 p-3 font-bold text-xs uppercase h-20"
                 />
               </div>
 
@@ -254,14 +254,14 @@ export default function ApiDashboard() {
                 <button
                   type="button"
                   onClick={() => setShowRegModal(false)}
-                  className="brutal-btn flex-1 bg-zinc-100 text-black px-4 py-3 font-black uppercase text-[10px]"
+                  className="brutal-btn flex-1 bg-zinc-100 text-black px-4 py-3 font-bold uppercase text-[10px]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isRegistering}
-                  className="brutal-btn flex-1 bg-brutal-green text-black px-4 py-3 font-black uppercase text-[10px] flex items-center justify-center gap-2"
+                  className="brutal-btn flex-1 bg-brutal-green text-black px-4 py-3 font-bold uppercase text-[10px] flex items-center justify-center gap-2"
                 >
                   {isRegistering ? <Loader2 className="animate-spin size-4" /> : 'Register App'}
                 </button>
@@ -343,7 +343,7 @@ export default function ApiDashboard() {
       {/* ─── MODAL 3: REVOKE APPLICATION CONFIRMATION ─── */}
       {appToRevoke && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border-[4px] border-black shadow-[8px_8px_0px_#000] max-w-sm w-full p-6 flex flex-col gap-6">
+          <div className="bg-white border-[4px] border-black shadow-lg max-w-sm w-full p-6 flex flex-col gap-6">
             <div className="flex items-center gap-3 text-red-500">
               <AlertTriangle size={32} />
               <h3 className="font-display text-2xl uppercase leading-none">Revoke App?</h3>
@@ -356,14 +356,14 @@ export default function ApiDashboard() {
             <div className="flex gap-4 pt-2">
               <button 
                 onClick={() => setAppToRevoke(null)}
-                className="brutal-btn flex-1 bg-zinc-100 text-black px-4 py-3 font-black uppercase text-[10px]"
+                className="brutal-btn flex-1 bg-zinc-100 text-black px-4 py-3 font-bold uppercase text-[10px]"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleRevokeApp}
                 disabled={isRevoking}
-                className="brutal-btn flex-1 bg-red-500 text-white px-4 py-3 font-black uppercase text-[10px] flex items-center justify-center gap-2"
+                className="brutal-btn flex-1 bg-red-500 text-white px-4 py-3 font-bold uppercase text-[10px] flex items-center justify-center gap-2"
               >
                 {isRevoking ? <Loader2 className="animate-spin size-4" /> : 'Yes, Revoke'}
               </button>
@@ -382,7 +382,7 @@ export default function ApiDashboard() {
         </div>
         <button
           onClick={() => setShowRegModal(true)}
-          className="brutal-btn bg-brutal-yellow text-black text-xs px-6 py-3 flex items-center gap-2 font-black uppercase shadow-[4px_4px_0px_#000]"
+          className="brutal-btn bg-brutal-yellow text-black text-xs px-6 py-3 flex items-center gap-2 font-bold uppercase shadow-md"
         >
           <Plus size={16} /> Register B2B App
         </button>
@@ -403,10 +403,10 @@ export default function ApiDashboard() {
             <button
               key={link.path}
               onClick={() => navigate(link.path)}
-              className={`${link.color} border-[3px] border-black shadow-[4px_4px_0px_#000] p-4 flex flex-col items-center gap-2 text-center hover:translate-y-[-2px] hover:shadow-[4px_6px_0px_#000] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000] transition-all cursor-pointer`}
+              className={`${link.color} border-[3px] border-black shadow-md p-4 flex flex-col items-center gap-2 text-center hover:translate-y-[-2px] hover:shadow-md active:translate-y-[2px] active:shadow-sm transition-all cursor-pointer`}
             >
               <Icon size={22} className="text-black" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-black leading-tight">{link.label}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-black leading-tight">{link.label}</span>
             </button>
           );
         })}
@@ -414,21 +414,21 @@ export default function ApiDashboard() {
 
       {/* ─── QUICK LINKS ─── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <button onClick={() => navigate('/developer/docs')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+        <button onClick={() => navigate('/developer/docs')} className="brutal-btn bg-white border border-slate-200 dark:border-zinc-800 p-4 flex flex-col items-center gap-2 shadow-md hover:-translate-y-1 transition-transform">
           <BookOpen size={24} className="text-brutal-blue" />
-          <span className="text-[10px] font-black uppercase tracking-wider">API Docs</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider">API Docs</span>
         </button>
-        <button onClick={() => navigate('/developer/playground')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+        <button onClick={() => navigate('/developer/playground')} className="brutal-btn bg-white border border-slate-200 dark:border-zinc-800 p-4 flex flex-col items-center gap-2 shadow-md hover:-translate-y-1 transition-transform">
           <Play size={24} className="text-brutal-green" />
-          <span className="text-[10px] font-black uppercase tracking-wider">Playground</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider">Playground</span>
         </button>
-        <button onClick={() => navigate('/developer/webhooks')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+        <button onClick={() => navigate('/developer/webhooks')} className="brutal-btn bg-white border border-slate-200 dark:border-zinc-800 p-4 flex flex-col items-center gap-2 shadow-md hover:-translate-y-1 transition-transform">
           <Webhook size={24} className="text-brutal-pink" />
-          <span className="text-[10px] font-black uppercase tracking-wider">Webhooks</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider">Webhooks</span>
         </button>
-        <button onClick={() => navigate('/developer/sdk')} className="brutal-btn bg-white border-2 border-black p-4 flex flex-col items-center gap-2 shadow-[4px_4px_0px_#000] hover:-translate-y-1 transition-transform">
+        <button onClick={() => navigate('/developer/sdk')} className="brutal-btn bg-white border border-slate-200 dark:border-zinc-800 p-4 flex flex-col items-center gap-2 shadow-md hover:-translate-y-1 transition-transform">
           <Box size={24} className="text-brutal-yellow" />
-          <span className="text-[10px] font-black uppercase tracking-wider">SDKs</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider">SDKs</span>
         </button>
       </div>
 
@@ -436,34 +436,34 @@ export default function ApiDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Card 1: Total Calls */}
-        <div className="brutal-card p-6 flex items-center gap-4 bg-white border-4 border-black shadow-[6px_6px_0px_#000]">
-          <div className="p-3 bg-brutal-blue/15 text-brutal-blue border-2 border-black">
+        <div className="brutal-card p-6 flex items-center gap-4 bg-white border border-slate-200 dark:border-zinc-800 shadow-md">
+          <div className="p-3 bg-brutal-blue/15 text-brutal-blue border border-slate-200 dark:border-zinc-800">
             <Activity size={24} />
           </div>
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Total API Transactions</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Total API Transactions</h4>
             <span className="text-2xl font-display uppercase tracking-wide text-black dark:text-white">{metrics?.totalCalls || 0}</span>
           </div>
         </div>
 
         {/* Card 2: Average Latency */}
-        <div className="brutal-card p-6 flex items-center gap-4 bg-white border-4 border-black shadow-[6px_6px_0px_#000]">
-          <div className="p-3 bg-brutal-yellow/15 text-brutal-yellow border-2 border-black">
+        <div className="brutal-card p-6 flex items-center gap-4 bg-white border border-slate-200 dark:border-zinc-800 shadow-md">
+          <div className="p-3 bg-brutal-yellow/15 text-brutal-yellow border border-slate-200 dark:border-zinc-800">
             <Clock size={24} />
           </div>
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Average Gateway Latency</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Average Gateway Latency</h4>
             <span className="text-2xl font-display uppercase tracking-wide text-black dark:text-white">{metrics?.averageLatency || 0}ms</span>
           </div>
         </div>
 
         {/* Card 3: Integrators Status */}
-        <div className="brutal-card p-6 flex items-center gap-4 bg-white border-4 border-black shadow-[6px_6px_0px_#000]">
-          <div className="p-3 bg-brutal-green/15 text-brutal-green border-2 border-black">
+        <div className="brutal-card p-6 flex items-center gap-4 bg-white border border-slate-200 dark:border-zinc-800 shadow-md">
+          <div className="p-3 bg-brutal-green/15 text-brutal-green border border-slate-200 dark:border-zinc-800">
             <Globe size={24} />
           </div>
           <div>
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Registered B2B Apps</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Registered B2B Apps</h4>
             <span className="text-2xl font-display uppercase tracking-wide text-black dark:text-white">{apps.length} Active</span>
           </div>
         </div>
@@ -471,7 +471,7 @@ export default function ApiDashboard() {
       </div>
 
       {/* ─── ROW 2: ACTIVE B2B APPLICATIONS LIST ─── */}
-      <div className="brutal-card p-6 bg-white border-4 border-black shadow-[8px_8px_0px_#000]">
+      <div className="brutal-card p-6 bg-white border border-slate-200 dark:border-zinc-800 shadow-lg">
         <h3 className="font-display text-lg uppercase flex items-center gap-2 mb-6">
           <Shield size={20} /> Registered Applications
         </h3>
@@ -483,28 +483,28 @@ export default function ApiDashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {apps.map(app => (
-              <div key={app.id} className="border-3 border-black p-4 bg-zinc-50 dark:bg-zinc-900 flex flex-col justify-between gap-4 shadow-[4px_4px_0px_#000]">
+              <div key={app.id} className="border border-slate-200 dark:border-zinc-800 p-4 bg-zinc-50 dark:bg-zinc-900 flex flex-col justify-between gap-4 shadow-md">
                 <div className="space-y-2">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-black text-sm uppercase text-black dark:text-white">{app.name}</h4>
+                      <h4 className="font-bold text-sm uppercase text-black dark:text-white">{app.name}</h4>
                       <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase mt-0.5">{app.description || 'No description provided'}</p>
                     </div>
-                    <span className="bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white text-[9px] font-mono px-2 py-0.5 border border-black dark:border-zinc-700 uppercase font-bold">
+                    <span className="bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white text-[9px] font-mono px-2 py-0.5 border border-slate-200 dark:border-zinc-800 dark:border-zinc-700 uppercase font-bold">
                       ID: {app.id}
                     </span>
                   </div>
 
                   <div className="space-y-1.5 pt-2">
                     {/* Sandbox hint */}
-                    <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-black dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
+                    <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-slate-200 dark:border-zinc-800 dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
                       <span>SANDBOX <span className="text-zinc-400">(tl_sk_test_)</span>:</span>
-                      <span className="font-black text-black dark:text-white">{app.sandboxKeyHint}</span>
+                      <span className="font-bold text-black dark:text-white">{app.sandboxKeyHint}</span>
                     </div>
                     {/* Prod hint */}
-                    <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-black dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
+                    <div className="flex justify-between items-center text-[10px] bg-white dark:bg-zinc-800 p-2 border border-slate-200 dark:border-zinc-800 dark:border-zinc-700 font-mono text-zinc-600 dark:text-zinc-300">
                       <span>PRODUCTION <span className="text-zinc-400">(tl_sk_live_)</span>:</span>
-                      <span className="font-black text-black dark:text-white">{app.productionKeyHint}</span>
+                      <span className="font-bold text-black dark:text-white">{app.productionKeyHint}</span>
                     </div>
                   </div>
                 </div>
@@ -529,14 +529,14 @@ export default function ApiDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left: SVG Telemetry Chart */}
-        <div className="brutal-card lg:col-span-2 p-6 bg-white border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col justify-between">
+        <div className="brutal-card lg:col-span-2 p-6 bg-white border border-slate-200 dark:border-zinc-800 shadow-lg flex flex-col justify-between">
           <div>
             <h3 className="font-display text-lg uppercase flex items-center gap-2 mb-6">
               <BarChart2 size={20} /> Telemetry Volume (Last 7 Days)
             </h3>
 
             {/* SVG Brutalist Polyline Chart */}
-            <div className="border-4 border-black p-4 bg-zinc-50 relative aspect-[2.5/1] overflow-hidden flex items-end">
+            <div className="border border-slate-200 dark:border-zinc-800 p-4 bg-zinc-50 relative aspect-[2.5/1] overflow-hidden flex items-end">
               <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
                 {/* Horizontal Guide Lines */}
                 <line x1="0" y1="20" x2="400" y2="20" stroke="#ddd" strokeWidth="1" strokeDasharray="4 4" />
@@ -573,15 +573,15 @@ export default function ApiDashboard() {
             </div>
           </div>
 
-          <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mt-4 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex justify-between text-[10px] font-bold uppercase text-zinc-400 dark:text-zinc-500 tracking-wider mt-4 pt-2 border-t border-zinc-100 dark:border-zinc-800">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-              <span key={d} className={metrics?.dailyVolume?.[d] ? 'text-black dark:text-white font-black' : ''}>{d} ({metrics?.dailyVolume?.[d] || 0})</span>
+              <span key={d} className={metrics?.dailyVolume?.[d] ? 'text-black dark:text-white font-bold' : ''}>{d} ({metrics?.dailyVolume?.[d] || 0})</span>
             ))}
           </div>
         </div>
 
         {/* Right: Embeddable Login Widget Code */}
-        <div className="brutal-card p-6 bg-brutal-navy text-white border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col justify-between gap-6">
+        <div className="brutal-card p-6 bg-brutal-navy text-white border border-slate-200 dark:border-zinc-800 shadow-lg flex flex-col justify-between gap-6">
           <div className="space-y-4">
             <h3 className="font-display text-lg uppercase text-brutal-yellow">Verify Widget Code</h3>
             <p className="text-xs font-bold leading-relaxed opacity-90 uppercase">
@@ -589,7 +589,7 @@ export default function ApiDashboard() {
             </p>
             
             {/* HTML code snippet block */}
-            <div className="bg-black/50 border-2 border-black p-3 rounded-none font-mono text-[10px] text-brutal-green break-all overflow-y-auto max-h-24">
+            <div className="bg-black/50 border border-slate-200 dark:border-zinc-800 p-3 rounded-none font-mono text-[10px] text-brutal-green break-all overflow-y-auto max-h-24">
               {`<LoginWithTrustLayerButton
   clientId="${apps[0]?.id || 'YOUR_APP_ID'}"
   redirectUri="https://yourdomain.com/callback"
@@ -608,7 +608,7 @@ export default function ApiDashboard() {
                 alert('Please register a B2B Application first to populate the client ID.');
               }
             }}
-            className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-3 text-xs font-black uppercase flex items-center gap-2 border-2 border-black"
+            className="brutal-btn bg-brutal-yellow text-black self-start px-6 py-3 text-xs font-bold uppercase flex items-center gap-2 border border-slate-200 dark:border-zinc-800"
           >
             Copy Snippet <ArrowUpRight size={16} />
           </button>
@@ -617,8 +617,8 @@ export default function ApiDashboard() {
       </div>
 
       {/* ─── ROW 4: RECENT API TRANSACTION LOGS ─── */}
-      <div className="brutal-card p-0 overflow-hidden border-4 border-black shadow-[8px_8px_0px_#000] bg-white">
-        <h3 className="font-display text-lg uppercase p-4 border-b-4 border-black bg-zinc-50 dark:bg-zinc-900 text-black dark:text-white flex items-center gap-2">
+      <div className="brutal-card p-0 overflow-hidden border border-slate-200 dark:border-zinc-800 shadow-lg bg-white">
+        <h3 className="font-display text-lg uppercase p-4 border-b border-slate-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-black dark:text-white flex items-center gap-2">
           <Activity size={20} /> Real-Time B2B API Transaction Logs
         </h3>
         
@@ -640,8 +640,8 @@ export default function ApiDashboard() {
                 {metrics?.recentLogs && metrics.recentLogs.length > 0 ? (
                   metrics.recentLogs.map((log: any) => (
                     <tr key={log.id}>
-                      <td className="uppercase font-mono text-xs font-black text-black">
-                        <span className={`px-2 py-0.5 border border-black ${log.method === 'POST' ? 'bg-brutal-blue/10 text-brutal-blue' : 'bg-zinc-100 text-black'}`}>
+                      <td className="uppercase font-mono text-xs font-bold text-black">
+                        <span className={`px-2 py-0.5 border border-slate-200 dark:border-zinc-800 ${log.method === 'POST' ? 'bg-brutal-blue/10 text-brutal-blue' : 'bg-zinc-100 text-black'}`}>
                           {log.method}
                         </span>
                       </td>
@@ -649,13 +649,13 @@ export default function ApiDashboard() {
                       <td className="font-mono text-xs text-zinc-500">{log.endpoint}</td>
                       <td className="font-bold text-xs">{log.duration}ms</td>
                       <td>
-                        <span className={`text-[10px] font-black uppercase px-2 py-0.5 border ${log.environment === 'production' ? 'bg-brutal-yellow/20 text-yellow-700 border-yellow-700' : 'bg-zinc-200 border-zinc-400'}`}>
+                        <span className={`text-[10px] font-bold uppercase px-2 py-0.5 border ${log.environment === 'production' ? 'bg-brutal-yellow/20 text-yellow-700 border-yellow-700' : 'bg-zinc-200 border-zinc-400'}`}>
                           {log.environment}
                         </span>
                       </td>
                       <td className="font-bold text-xs">{new Date(log.createdAt).toLocaleTimeString()}</td>
                       <td>
-                        <div className={`w-6 h-6 border-2 border-black flex items-center justify-center font-bold text-[10px] ${log.status >= 400 ? 'bg-brutal-pink text-black' : 'bg-brutal-green text-black'}`}>
+                        <div className={`w-6 h-6 border border-slate-200 dark:border-zinc-800 flex items-center justify-center font-bold text-[10px] ${log.status >= 400 ? 'bg-brutal-pink text-black' : 'bg-brutal-green text-black'}`}>
                           {log.status}
                         </div>
                       </td>
@@ -687,8 +687,8 @@ export default function ApiDashboard() {
                 <tbody>
                   {[1, 2, 3, 4, 5].map((i) => (
                     <tr key={i}>
-                      <td className="uppercase font-mono text-xs font-black text-black">
-                        <span className="px-2 py-0.5 border border-black bg-zinc-100 text-black">
+                      <td className="uppercase font-mono text-xs font-bold text-black">
+                        <span className="px-2 py-0.5 border border-slate-200 dark:border-zinc-800 bg-zinc-100 text-black">
                           GET
                         </span>
                       </td>
@@ -696,13 +696,13 @@ export default function ApiDashboard() {
                       <td className="font-mono text-xs text-zinc-500">/v1/verify</td>
                       <td className="font-bold text-xs">12{i}ms</td>
                       <td>
-                        <span className="text-[10px] font-black uppercase px-2 py-0.5 border bg-brutal-yellow/20 text-yellow-700 border-yellow-700">
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 border bg-brutal-yellow/20 text-yellow-700 border-yellow-700">
                           production
                         </span>
                       </td>
                       <td className="font-bold text-xs">12:0{i}:00 PM</td>
                       <td>
-                        <div className="w-6 h-6 border-2 border-black flex items-center justify-center font-bold text-[10px] bg-brutal-green text-black">
+                        <div className="w-6 h-6 border border-slate-200 dark:border-zinc-800 flex items-center justify-center font-bold text-[10px] bg-brutal-green text-black">
                           200
                         </div>
                       </td>

@@ -35,7 +35,7 @@ const Logout = () => {
             
             {/* Cute animated duck walker video */}
             <div className="flex justify-center my-4">
-              <div className="border-4 border-black shadow-[6px_6px_0px_#000] bg-white overflow-hidden p-2 rounded-lg" style={{ width: '180px', height: '180px' }}>
+              <div className="border border-slate-200 dark:border-zinc-800 shadow-md bg-white overflow-hidden p-2 rounded-lg" style={{ width: '180px', height: '180px' }}>
                 <video 
                   src="/CookieDuckApp_Duck_Walk_01.webm" 
                   autoPlay 
@@ -55,7 +55,7 @@ const Logout = () => {
               {/* Stay / Cancel Button */}
               <button 
                 onClick={() => navigate(-1)} 
-                className="brutal-btn flex-1 bg-brutal-green text-black font-black uppercase text-sm py-4 cursor-pointer"
+                className="brutal-btn flex-1 bg-brutal-green text-black font-bold uppercase text-sm py-4 cursor-pointer"
               >
                 <span>Stay</span>
               </button>
@@ -64,7 +64,7 @@ const Logout = () => {
               <button 
                 onClick={handleLogout}
                 disabled={loading}
-                className="brutal-btn flex-1 bg-brutal-pink text-white font-black uppercase text-sm py-4 cursor-pointer"
+                className="brutal-btn flex-1 bg-brutal-pink text-white font-bold uppercase text-sm py-4 cursor-pointer"
               >
                 <span>{loading ? 'Exiting...' : 'Exit'}</span>
               </button>
@@ -89,7 +89,7 @@ const Logout = () => {
     <div className="min-h-screen bg-brutal-bg flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         <div className="brutal-card text-center space-y-8 py-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-brutal-yellow border-4 border-black shadow-[4px_4px_0px_#000] mb-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-brutal-yellow border border-slate-200 dark:border-zinc-800 shadow-md mb-4">
             <LogOut size={40} className="text-black" />
           </div>
           
@@ -100,8 +100,8 @@ const Logout = () => {
             </p>
           </div>
 
-          <div className="bg-brutal-pink border-4 border-black p-6 shadow-[6px_6px_0px_#000] rotate-1">
-            <p className="text-white font-black uppercase text-sm tracking-widest">
+          <div className="bg-brutal-pink border border-slate-200 dark:border-zinc-800 p-6 shadow-md rotate-1">
+            <p className="text-white font-bold uppercase text-sm tracking-widest">
               Security Notice
             </p>
             <p className="text-black font-bold mt-2">

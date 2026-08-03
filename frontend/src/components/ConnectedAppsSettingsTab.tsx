@@ -82,11 +82,11 @@ export function ConnectedAppsSettingsTab({ userId }: { userId: string }) {
       <h3 className="font-display text-2xl uppercase mb-6">Manage Connected Apps</h3>
       <div className="grid gap-6">
         {apps.map((app) => (
-          <div key={app.id} className="brutal-card border-4 border-black p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all hover:translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[8px_8px_0px_#000]">
+          <div key={app.id} className="brutal-card border border-slate-200 dark:border-zinc-800 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all hover:translate-x-[2px] hover:-translate-y-[2px] hover:shadow-lg">
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-3">
                 <h4 className="font-display text-xl uppercase capitalize">{app.provider}</h4>
-                <span className={`text-[10px] font-black uppercase px-2 py-0.5 border-2 border-black ${app.status === 'CONNECTED' ? 'bg-brutal-green' : 'bg-brutal-pink text-white'}`}>
+                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 border border-slate-200 dark:border-zinc-800 ${app.status === 'CONNECTED' ? 'bg-brutal-green' : 'bg-brutal-pink text-white'}`}>
                   {app.status}
                 </span>
               </div>
@@ -107,7 +107,7 @@ export function ConnectedAppsSettingsTab({ userId }: { userId: string }) {
               <button
                 onClick={() => setConfirmModalProvider(app)}
                 disabled={unlinkingId === app.provider}
-                className="brutal-btn bg-brutal-pink text-white border-2 border-black px-6 py-2 text-xs font-black uppercase shadow-[3px_3px_0px_#000] active:translate-y-[1px] active:shadow-[2px_2px_0px_#000] transition-all flex items-center gap-2 w-full md:w-auto justify-center"
+                className="brutal-btn bg-brutal-pink text-white border border-slate-200 dark:border-zinc-800 px-6 py-2 text-xs font-bold uppercase shadow-sm active:scale-[0.98] active:shadow-sm transition-all flex items-center gap-2 w-full md:w-auto justify-center"
               >
                 {unlinkingId === app.provider ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                 Unlink
@@ -120,7 +120,7 @@ export function ConnectedAppsSettingsTab({ userId }: { userId: string }) {
       {/* Confirmation Modal */}
       {confirmModalProvider && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-           <div className="brutal-card border-[4px] border-black max-w-md w-full bg-white p-8 relative animate-in zoom-in-95 duration-200 shadow-[12px_12px_0px_#FF60B5]">
+           <div className="brutal-card border-[4px] border-black max-w-md w-full bg-white p-8 relative animate-in zoom-in-95 duration-200 shadow-xl">
              <div className="text-brutal-pink mb-6">
                 <AlertTriangle size={48} />
              </div>
@@ -131,14 +131,14 @@ export function ConnectedAppsSettingsTab({ userId }: { userId: string }) {
              <div className="flex flex-col sm:flex-row gap-4 w-full">
                <button 
                  onClick={() => setConfirmModalProvider(null)}
-                 className="brutal-btn bg-gray-100 text-black border-2 border-black w-full"
+                 className="brutal-btn bg-gray-100 text-black border border-slate-200 dark:border-zinc-800 w-full"
                >
                  Cancel
                </button>
                <button 
                  onClick={() => handleUnlink(confirmModalProvider.provider)}
                  disabled={unlinkingId === confirmModalProvider.provider}
-                 className="brutal-btn bg-brutal-pink text-white border-2 border-black w-full flex items-center justify-center gap-2"
+                 className="brutal-btn bg-brutal-pink text-white border border-slate-200 dark:border-zinc-800 w-full flex items-center justify-center gap-2"
                >
                  {unlinkingId === confirmModalProvider.provider ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                  Yes, Disconnect

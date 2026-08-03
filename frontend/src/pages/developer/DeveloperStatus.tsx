@@ -85,7 +85,7 @@ export default function DeveloperStatus() {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-10">
-        <div className="inline-flex items-center gap-2 bg-brutal-yellow border-2 border-black px-3 py-1 font-black text-[10px] uppercase tracking-widest mb-4 shadow-[2px_2px_0px_#000]">
+        <div className="inline-flex items-center gap-2 bg-brutal-yellow border border-slate-200 dark:border-zinc-800 px-3 py-1 font-bold text-[10px] uppercase tracking-widest mb-4 shadow-sm">
           <Activity size={12} /> System Status
         </div>
         <h1 className="font-display text-4xl uppercase tracking-tight text-[var(--text-primary)] mb-2">
@@ -95,7 +95,7 @@ export default function DeveloperStatus() {
           <p className="text-sm font-bold text-[var(--text-secondary)]">
             Real-time health monitoring for all TrustLayer services.
           </p>
-          <div className={`flex items-center gap-1.5 text-[10px] font-black text-[var(--text-secondary)] transition-opacity ${pulse ? 'opacity-50' : 'opacity-100'}`}>
+          <div className={`flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)] transition-opacity ${pulse ? 'opacity-50' : 'opacity-100'}`}>
             <RefreshCw size={10} className={pulse ? 'animate-spin' : ''} />
             Updated {lastUpdated.toLocaleTimeString()}
           </div>
@@ -103,7 +103,7 @@ export default function DeveloperStatus() {
       </div>
 
       {/* Overall status banner */}
-      <div className={`border-[3px] border-black p-5 mb-8 shadow-[6px_6px_0px_#000] flex items-center gap-4 ${allOperational ? 'bg-brutal-green' : 'bg-brutal-yellow'}`}>
+      <div className={`border-[3px] border-black p-5 mb-8 shadow-md flex items-center gap-4 ${allOperational ? 'bg-brutal-green' : 'bg-brutal-yellow'}`}>
         {allOperational
           ? <CheckCircle size={28} className="text-black flex-shrink-0" />
           : <AlertCircle size={28} className="text-black flex-shrink-0" />
@@ -120,7 +120,7 @@ export default function DeveloperStatus() {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full bg-black ${pulse ? 'opacity-40' : 'opacity-100'} transition-opacity`} />
-          <span className="text-[10px] font-black uppercase text-black">Live</span>
+          <span className="text-[10px] font-bold uppercase text-black">Live</span>
         </div>
       </div>
 
@@ -129,33 +129,33 @@ export default function DeveloperStatus() {
         <h2 className="font-display text-xl uppercase text-[var(--text-primary)] mb-5 border-b-[3px] border-[var(--border-color)] pb-2">
           Services
         </h2>
-        <div className="flex flex-col gap-0 border-[3px] border-black shadow-[6px_6px_0px_#000] overflow-hidden">
+        <div className="flex flex-col gap-0 border-[3px] border-black shadow-md overflow-hidden">
           {SERVICES.map((svc, idx) => (
             <div
               key={svc.id}
               className={`flex items-center gap-4 px-5 py-4 ${idx < SERVICES.length - 1 ? 'border-b-[3px] border-black/20' : ''} bg-[var(--bg-primary)] hover:bg-brutal-yellow/5 transition-colors`}
             >
-              <div className="w-10 h-10 bg-brutal-yellow border-2 border-black flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_#000]">
+              <div className="w-10 h-10 bg-brutal-yellow border border-slate-200 dark:border-zinc-800 flex items-center justify-center flex-shrink-0 shadow-sm">
                 <svc.icon size={16} className="text-black" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-black text-sm uppercase text-[var(--text-primary)]">{svc.name}</div>
+                <div className="font-bold text-sm uppercase text-[var(--text-primary)]">{svc.name}</div>
                 <div className="text-[10px] font-bold text-[var(--text-secondary)]">{svc.description}</div>
               </div>
               {/* Uptime */}
               <div className="hidden sm:flex flex-col items-end mr-4">
-                <div className="font-black text-xs text-[var(--text-primary)]">{svc.uptime}%</div>
+                <div className="font-bold text-xs text-[var(--text-primary)]">{svc.uptime}%</div>
                 <div className="text-[9px] font-bold text-[var(--text-secondary)] uppercase">Uptime (30d)</div>
               </div>
               {/* Latency */}
               <div className="hidden md:flex flex-col items-end mr-4">
-                <div className="font-black text-xs text-[var(--text-primary)] flex items-center gap-1">
+                <div className="font-bold text-xs text-[var(--text-primary)] flex items-center gap-1">
                   <Clock size={10} /> {svc.latency}ms
                 </div>
                 <div className="text-[9px] font-bold text-[var(--text-secondary)] uppercase">Avg Latency</div>
               </div>
               {/* Status badge */}
-              <span className={`border-2 border-black px-2.5 py-1 text-[10px] font-black uppercase whitespace-nowrap ${STATUS_COLOR[svc.status]}`}>
+              <span className={`border border-slate-200 dark:border-zinc-800 px-2.5 py-1 text-[10px] font-bold uppercase whitespace-nowrap ${STATUS_COLOR[svc.status]}`}>
                 {STATUS_LABEL[svc.status]}
               </span>
             </div>
@@ -175,10 +175,10 @@ export default function DeveloperStatus() {
             return (
               <div key={i} className="flex-1 relative group cursor-pointer">
                 <div
-                  className={`w-full ${color} border border-black/20 transition-opacity hover:opacity-70`}
+                  className={`w-full ${color} border border-slate-200 dark:border-zinc-800/20 transition-opacity hover:opacity-70`}
                   style={{ height }}
                 />
-                <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] font-black px-1.5 py-0.5 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10">
+                <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black text-white text-[9px] font-bold px-1.5 py-0.5 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-10">
                   Day {30 - i}
                 </div>
               </div>
@@ -191,13 +191,13 @@ export default function DeveloperStatus() {
         </div>
         <div className="flex items-center gap-4 mt-3">
           <span className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)]">
-            <div className="w-3 h-3 bg-brutal-green border border-black/30" /> Operational
+            <div className="w-3 h-3 bg-brutal-green border border-slate-200 dark:border-zinc-800/30" /> Operational
           </span>
           <span className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)]">
-            <div className="w-3 h-3 bg-brutal-yellow border border-black/30" /> Degraded
+            <div className="w-3 h-3 bg-brutal-yellow border border-slate-200 dark:border-zinc-800/30" /> Degraded
           </span>
           <span className="flex items-center gap-1.5 text-[10px] font-bold text-[var(--text-secondary)]">
-            <div className="w-3 h-3 bg-brutal-pink border border-black/30" /> Outage
+            <div className="w-3 h-3 bg-brutal-pink border border-slate-200 dark:border-zinc-800/30" /> Outage
           </span>
         </div>
       </div>
@@ -212,10 +212,10 @@ export default function DeveloperStatus() {
             <div key={idx} className="brutal-card">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
                 <div>
-                  <span className="font-black text-sm uppercase text-[var(--text-primary)]">{inc.title}</span>
+                  <span className="font-bold text-sm uppercase text-[var(--text-primary)]">{inc.title}</span>
                   <div className="text-[10px] font-bold text-[var(--text-secondary)] mt-0.5">{inc.date}</div>
                 </div>
-                <span className={`border-2 px-2.5 py-0.5 text-[10px] font-black uppercase ${INCIDENT_COLOR[inc.status]}`}>
+                <span className={`border-2 px-2.5 py-0.5 text-[10px] font-bold uppercase ${INCIDENT_COLOR[inc.status]}`}>
                   {inc.status}
                 </span>
               </div>
@@ -229,7 +229,7 @@ export default function DeveloperStatus() {
         {/* No incidents notice */}
         <div className="mt-6 text-center py-6 border-[3px] border-dashed border-[var(--border-color)]">
           <CheckCircle size={24} className="mx-auto mb-2 text-brutal-green" />
-          <div className="font-black text-sm uppercase text-[var(--text-secondary)]">No Active Incidents</div>
+          <div className="font-bold text-sm uppercase text-[var(--text-secondary)]">No Active Incidents</div>
           <div className="text-[10px] font-bold text-[var(--text-secondary)] mt-1">All systems running normally as of today.</div>
         </div>
       </div>

@@ -25,9 +25,9 @@ interface TrustRecord {
 }
 
 const STATUS_COLOR = { 
-  verified: '#00FF00', 
-  pending: '#FFE600', 
-  failed: '#FF60B5' 
+  verified: 'text-emerald-400', 
+  pending: 'text-amber-400', 
+  failed: 'text-red-400' 
 } as const;
 
 // Demo data for guest mode
@@ -223,13 +223,13 @@ export default function Dashboard() {
       {/* Real-time Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-8 right-8 z-50 animate-bounce">
-          <div className="brutal-card !bg-black !text-[#00E5FF] !border-[#00E5FF] shadow-[6px_6px_0px_#00E5FF] flex items-center gap-4 px-6 py-4 max-w-sm">
-            <div className="p-2 border-2 border-[#00E5FF] animate-pulse">
+          <div className="bg-[var(--card-bg)] border border-[#00E5FF] rounded-xl shadow-md flex items-center gap-4 px-6 py-4 max-w-sm">
+            <div className="p-2 border border-[#00E5FF] rounded-lg animate-pulse">
               <Sparkles size={24} className="text-[#00E5FF]" />
             </div>
             <div>
-              <p className="font-display text-sm uppercase tracking-widest text-white">System Override</p>
-              <p className="text-xs font-bold mt-1 font-mono">{toastMessage}</p>
+              <p className="font-semibold text-sm text-[var(--text-primary)]">System Update</p>
+              <p className="text-xs font-medium mt-1 font-mono text-[var(--text-secondary)]">{toastMessage}</p>
             </div>
           </div>
         </div>
@@ -237,19 +237,19 @@ export default function Dashboard() {
 
       {/* Phase 1: Claim Trust Passport Banner — hide for guests (show sign-up CTA instead) */}
       {!loading && !isGuest && kycStatus === 'not_started' && (
-        <div className="brutal-card bg-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
+        <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 p-6">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center text-3xl">
+            <div className="w-16 h-16 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] flex items-center justify-center text-3xl">
               🛂
             </div>
             <div>
-              <h4 className="font-display text-xl uppercase leading-none">Claim Your Trust Passport</h4>
-              <p className="text-xs font-bold uppercase mt-2">Initialize your global reputation and link your first signals to start building trust.</p>
+              <h4 className="font-bold text-xl leading-snug text-[var(--text-primary)]">Claim Your Trust Passport</h4>
+              <p className="text-sm font-medium mt-1 text-[var(--text-secondary)]">Initialize your global reputation and link your first signals to start building trust.</p>
             </div>
           </div>
           <button 
             onClick={() => navigate('/identity')}
-            className="brutal-btn bg-black text-white px-8 py-3 text-sm font-black uppercase whitespace-nowrap"
+            className="rounded-xl px-6 py-2.5 text-sm font-semibold text-white whitespace-nowrap" style={{ background: 'var(--accent)' }}
           >
             Claim Your Passport
           </button>
@@ -257,24 +257,24 @@ export default function Dashboard() {
       )}
       {/* Passport mini-card — only shown when KYC verified */}
       {!loading && !isGuest && kycStatus === 'verified' && (
-        <div className="brutal-card bg-black border-4 border-black flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#000]">
+        <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 p-6">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 border-4 border-brutal-yellow bg-brutal-yellow flex items-center justify-center flex-shrink-0">
-              <BookOpen className="size-8 text-black" />
+            <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--accent)' }}>
+              <BookOpen className="size-8 text-white" />
             </div>
             <div>
-              <h4 className="font-display text-xl uppercase leading-none text-brutal-yellow">Trust Passport Active</h4>
-              <p className="text-xs font-bold uppercase mt-2 text-white">Your verified identity passport is ready. View all linked accounts, address details &amp; trust graph.</p>
+              <h4 className="font-bold text-xl leading-snug text-[var(--text-primary)]">Trust Passport Active</h4>
+              <p className="text-sm font-medium mt-1 text-[var(--text-secondary)]">Your verified identity passport is ready. View all linked accounts, address details &amp; trust graph.</p>
               <div className="flex items-center gap-3 mt-3 flex-wrap">
-                <span className="bg-brutal-green text-black px-2 py-0.5 border-2 border-black font-black text-[9px] uppercase">✓ KYC Verified</span>
-                <span className="text-[9px] font-black uppercase text-white border border-white/30 px-2 py-0.5">{connectedProviders.length} apps linked</span>
-                <span className="text-[9px] font-black uppercase bg-brutal-yellow text-black px-2 py-0.5 border-2 border-black">Score: {trustScore}</span>
+                <span className="rounded-full border border-emerald-500 text-emerald-500 px-3 py-0.5 text-xs font-medium">✓ KYC Verified</span>
+                <span className="rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] px-3 py-0.5 text-xs font-medium">{connectedProviders.length} apps linked</span>
+                <span className="rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] px-3 py-0.5 text-xs font-medium">Score: {trustScore}</span>
               </div>
             </div>
           </div>
           <button
             onClick={() => navigate('/passport')}
-            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase whitespace-nowrap border-4 border-black shadow-[4px_4px_0px_#FFE600]"
+            className="rounded-xl px-6 py-2.5 text-sm font-semibold text-white whitespace-nowrap" style={{ background: 'var(--accent)' }}
           >
             View Full Passport →
           </button>
@@ -282,19 +282,19 @@ export default function Dashboard() {
       )}
 
       {isGuest && (
-        <div className="brutal-card bg-black text-brutal-yellow flex flex-col md:flex-row items-center justify-between gap-6 shadow-[8px_8px_0px_#FFE600]">
+        <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 p-6">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 border-4 border-brutal-yellow bg-white flex items-center justify-center overflow-hidden">
+            <div className="w-16 h-16 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden">
               <img src={guestmodeLogo} alt="Guest Mode Logo" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h4 className="font-display text-xl uppercase leading-none text-brutal-yellow">You're Viewing Demo Data</h4>
-              <p className="text-xs font-bold uppercase mt-2 text-white/80">Create a free account to build your real trust score and link identities.</p>
+              <h4 className="font-bold text-xl leading-snug text-[var(--text-primary)]">You're Viewing Demo Data</h4>
+              <p className="text-sm font-medium mt-1 text-[var(--text-secondary)]">Create a free account to build your real trust score and link identities.</p>
             </div>
           </div>
           <button
             onClick={() => navigate('/login')}
-            className="brutal-btn bg-brutal-yellow text-black px-8 py-3 text-sm font-black uppercase whitespace-nowrap border-2 border-brutal-yellow"
+            className="rounded-xl px-6 py-2.5 text-sm font-semibold text-white whitespace-nowrap" style={{ background: 'var(--accent)' }}
           >
             Create Free Account →
           </button>
@@ -306,46 +306,46 @@ export default function Dashboard() {
       {/* Left Column: Trust Score + Connected Accounts */}
       <div className="lg:col-span-4 space-y-8">
         {isOwner ? (
-          <div className="brutal-card bg-black text-white border-4 border-black p-6 space-y-6 shadow-[6px_6px_0px_#00E5FF]">
-            <div className="flex items-center gap-2 border-b-2 border-white/20 pb-3">
+          <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-md p-6 space-y-6">
+            <div className="flex items-center gap-2 border-b border-[var(--border-color)] pb-3">
               <ShieldAlert size={20} className="text-[#00E5FF] animate-pulse shrink-0" />
-              <h3 className="font-display text-xs uppercase text-white tracking-widest">Oversight Dashboard</h3>
+              <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight">Oversight Dashboard</h3>
             </div>
             
             {oversightLoading ? (
               <div className="flex flex-col items-center justify-center py-10 gap-2">
                 <Loader2 className="animate-spin text-[#00E5FF]" />
-                <span className="text-[9px] font-black uppercase text-gray-400">Loading metrics...</span>
+                <span className="text-xs font-medium text-[var(--text-secondary)]">Loading metrics...</span>
               </div>
             ) : oversightData ? (
               <div className="space-y-4">
                 {/* Aggregates */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 border-2 border-white/20 bg-white/5">
-                    <span className="text-[8px] font-black uppercase text-gray-400 block mb-1">Total Users</span>
-                    <span className="font-display text-2xl font-black text-white">{oversightData.aggregates.totalUsers}</span>
+                  <div className="p-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)]">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] block mb-1">Total Users</span>
+                    <span className="font-bold text-2xl text-[var(--text-primary)]">{oversightData.aggregates.totalUsers}</span>
                   </div>
-                  <div className="p-3 border-2 border-white/20 bg-white/5">
-                    <span className="text-[8px] font-black uppercase text-gray-400 block mb-1">Verified KYC</span>
-                    <span className="font-display text-2xl font-black text-brutal-green">{oversightData.aggregates.verifiedUsers}</span>
+                  <div className="p-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)]">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] block mb-1">Verified KYC</span>
+                    <span className="font-bold text-2xl text-emerald-400">{oversightData.aggregates.verifiedUsers}</span>
                   </div>
-                  <div className="p-3 border-2 border-white/20 bg-white/5">
-                    <span className="text-[8px] font-black uppercase text-gray-400 block mb-1">Pending KYC</span>
-                    <span className="font-display text-2xl font-black text-brutal-yellow">{oversightData.aggregates.pendingKyc}</span>
+                  <div className="p-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)]">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] block mb-1">Pending KYC</span>
+                    <span className="font-bold text-2xl text-amber-400">{oversightData.aggregates.pendingKyc}</span>
                   </div>
-                  <div className="p-3 border-2 border-white/20 bg-white/5">
-                    <span className="text-[8px] font-black uppercase text-gray-400 block mb-1">Average Score</span>
-                    <span className="font-display text-2xl font-black text-[#00E5FF]">{oversightData.aggregates.averageScore}</span>
+                  <div className="p-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)]">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] block mb-1">Average Score</span>
+                    <span className="font-bold text-2xl text-[#00E5FF]">{oversightData.aggregates.averageScore}</span>
                   </div>
                 </div>
 
                 {/* Verification Trends */}
-                <div className="border-t border-white/10 pt-4">
-                  <h4 className="text-[9px] font-black uppercase text-gray-400 mb-2 flex justify-between">
+                <div className="border-t border-[var(--border-color)] pt-4">
+                  <h4 className="text-xs font-medium text-[var(--text-secondary)] mb-2 flex justify-between">
                     <span>Verification Trend</span>
-                    <span className="text-[8px] text-brutal-green">▲ 15% this week</span>
+                    <span className="text-xs text-emerald-400">▲ 15% this week</span>
                   </h4>
-                  <div className="flex items-end justify-between h-20 px-2 pt-2 bg-white/5 border border-white/10">
+                  <div className="flex items-end justify-between h-20 px-2 pt-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg">
                     {oversightData.trends.verifications.map((val: number, idx: number) => {
                       const maxVal = Math.max(...oversightData.trends.verifications);
                       const heightPercent = (val / maxVal) * 100;
@@ -365,14 +365,14 @@ export default function Dashboard() {
                 </div>
 
                 {/* Live Anomaly Alerts */}
-                <div className="border-t border-white/10 pt-4 space-y-2">
-                  <span className="text-[9px] font-black uppercase text-gray-400 block">Active Safety Alerts</span>
+                <div className="border-t border-[var(--border-color)] pt-4 space-y-2">
+                  <span className="text-xs font-medium text-[var(--text-secondary)] block">Active Safety Alerts</span>
                   <div className="space-y-2 max-h-48 overflow-y-auto">
                     {oversightData.alerts.map((alert: any) => (
                       <div key={alert.id} className={`p-2 border-l-4 text-[9px] uppercase font-bold bg-white/5 ${
                         alert.severity === 'critical' ? 'border-brutal-pink text-brutal-pink' : alert.severity === 'high' ? 'border-[#FF5F00] text-[#FF5F00]' : 'border-brutal-yellow text-brutal-yellow'
                       }`}>
-                        <div className="flex justify-between items-center font-black">
+                        <div className="flex justify-between items-center font-bold">
                           <span>{alert.title}</span>
                           <span className="text-[7px] text-gray-400">{new Date(alert.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
@@ -383,14 +383,14 @@ export default function Dashboard() {
                 </div>
               </div>
             ) : (
-              <p className="text-[10px] text-gray-400 text-center uppercase font-bold">Failed to load metrics.</p>
+              <p className="text-xs text-[var(--text-secondary)] text-center font-medium">Failed to load metrics.</p>
             )}
           </div>
         ) : (
-          <div className="brutal-card flex flex-col items-center text-center gap-4 py-8">
+          <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 flex flex-col items-center text-center gap-4 py-8">
             <div className="flex items-center gap-2">
-              <TrendingUp size={16} className="text-brutal-green" />
-              <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest">Your Trust Score</h3>
+              <TrendingUp size={16} className="text-emerald-400" />
+              <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight">Your Trust Score</h3>
             </div>
             <div className={`relative flex items-center justify-center w-48 h-48 rounded-full border-8 transition-all duration-1000 ${isGlowing ? 'border-transparent shadow-[0_0_30px_#00E5FF,inset_0_0_30px_#00E5FF]' : 'border-[var(--border-color)]'}`}>
               <div className={`absolute inset-0 rounded-full transition-opacity duration-1000 ${isGlowing ? 'opacity-100 bg-[#00E5FF]/20' : 'opacity-0'}`} />
@@ -402,14 +402,14 @@ export default function Dashboard() {
               <div className={`progress-fill transition-all duration-1000 ${isGlowing ? 'bg-[#00E5FF]' : ''}`} style={{ width: `${(trustScore / 1000) * 100}%` }} />
             </div>
             <div className="flex flex-col gap-3 w-full">
-              <span className="font-display text-sm text-brutal-green uppercase tracking-widest">
+              <span className="font-semibold text-sm text-emerald-400">
                 {isGuest ? 'Demo Mode' : (trustScore > 800 ? 'Excellent' : trustScore > 600 ? 'Good' : 'Needs Verification')}
               </span>
               
-              <div className="flex items-center justify-between p-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)] shadow-[4px_4px_0px_var(--border-color)]">
+              <div className="flex items-center justify-between p-3 border border-[var(--border-color)] rounded-xl bg-[var(--bg-primary)]">
                 <div className="flex items-center gap-2">
-                  <Sparkles size={16} className={(!isGuest && (plan === 'admin' || plan === 'pro' || isOwner)) ? 'text-brutal-blue' : 'text-[var(--text-secondary)]'} />
-                  <span className="font-black uppercase text-[10px] tracking-wider text-[var(--text-primary)]">
+                  <Sparkles size={16} className={(!isGuest && (plan === 'admin' || plan === 'pro' || isOwner)) ? 'text-blue-400' : 'text-[var(--text-secondary)]'} />
+                  <span className="font-semibold text-xs text-[var(--text-primary)]">
                     {isGuest ? 'Guest Access' : (isOwner ? `${getAdminRoleTitle(userEmail) || 'Administrator'} (Admin Elite)` : `${plan === 'admin' ? 'Admin Elite' : (plan || 'Free')} Plan`)}
                   </span>
                 </div>
@@ -418,14 +418,14 @@ export default function Dashboard() {
                 {isGuest ? (
                   <button
                     onClick={() => navigate('/login')}
-                    className="bg-brutal-yellow px-3 py-1 border-2 border-black text-[9px] font-black uppercase hover:bg-black hover:text-brutal-yellow transition-colors shadow-[2px_2px_0px_#000]"
+                    className="rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors" style={{ background: 'var(--accent)' }}
                   >
                     Sign Up
                   </button>
                 ) : isOwner ? (
                    <button 
                     onClick={() => navigate('/admin')}
-                    className="bg-brutal-blue px-3 py-1 border-2 border-black text-white text-[9px] font-black uppercase hover:bg-black transition-colors shadow-[2px_2px_0px_#000]"
+                    className="rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors bg-blue-600 hover:bg-blue-700"
                   >
                     Admin Console
                   </button>
@@ -434,7 +434,7 @@ export default function Dashboard() {
                   plan !== 'pro' && (
                     <button 
                       onClick={() => navigate('/pricing')}
-                      className="bg-brutal-yellow px-3 py-1 border-2 border-black text-[9px] font-black uppercase hover:bg-black hover:text-brutal-yellow transition-colors shadow-[2px_2px_0px_#000]"
+                      className="rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors" style={{ background: 'var(--accent)' }}
                     >
                       Upgrade
                     </button>
@@ -445,10 +445,10 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="brutal-card">
-          <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest mb-6">Connected Accounts</h3>
+        <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6">
+          <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight mb-6">Connected Accounts</h3>
           {isGuest && (
-            <div className="mb-4 px-3 py-2 border-2 border-black bg-brutal-yellow text-[9px] font-black uppercase text-center">
+            <div className="mb-4 px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)] text-xs font-medium text-[var(--text-secondary)] text-center">
               👁 Demo — Sign in to connect real accounts
             </div>
           )}
@@ -467,18 +467,18 @@ export default function Dashboard() {
                   key={a.id} 
                   onClick={() => isGuest ? navigate('/login') : (!isConnected && handleConnect(a.id))}
                   disabled={isConnected}
-                  className={`flex flex-col items-center gap-2 p-3 border-2 border-[var(--border-color)] text-[10px] font-black uppercase transition-all ${
+                  className={`flex flex-col items-center gap-2 p-3 border border-[var(--border-color)] rounded-xl text-xs font-medium transition-all ${
                     isConnected 
-                      ? 'bg-brutal-green text-black cursor-default shadow-[4px_4px_0px_var(--border-color)]' 
-                      : 'bg-[var(--bg-primary)] hover:bg-brutal-yellow hover:translate-y-[-2px] hover:shadow-[4px_4px_0px_var(--border-color)] active:translate-y-0 active:shadow-none'
+                      ? 'bg-emerald-500/10 text-emerald-600 cursor-default' 
+                      : 'bg-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:border-[var(--accent)] hover:translate-y-[-2px] hover:shadow-sm active:translate-y-0'
                   }`}
                 >
-                  <div className={`w-8 h-8 border-2 border-[var(--border-color)] rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-white text-black' : 'bg-[var(--bg-primary)] text-[var(--text-primary)]'}`}>
+                  <div className={`w-8 h-8 border border-[var(--border-color)] rounded-full flex items-center justify-center text-xs ${isConnected ? 'bg-white' : 'bg-[var(--bg-primary)]'}`}>
                      {a.icon}
                   </div>
                   {a.name}
-                  <span className={`text-[8px] ${isConnected ? 'opacity-100 font-black' : 'opacity-60'}`}>
-                    {isConnected ? 'CONNECTED' : isGuest ? '(LOGIN)' : '(Connect)'}
+                  <span className={`text-[10px] font-medium ${isConnected ? 'text-emerald-500' : 'text-[var(--text-secondary)]'}`}>
+                    {isConnected ? 'Connected' : isGuest ? 'Login' : 'Connect'}
                   </span>
                 </button>
               );
@@ -486,9 +486,9 @@ export default function Dashboard() {
             {!isGuest && (
               <button 
                 onClick={() => navigate('/identity')}
-                className="flex flex-col items-center justify-center gap-2 p-3 border-2 border-dashed border-[var(--border-color)] opacity-50 text-[10px] font-black uppercase cursor-pointer hover:opacity-100 hover:bg-[var(--text-primary)]/5 transition-all"
+                className="flex flex-col items-center justify-center gap-2 p-3 border border-dashed border-[var(--border-color)] rounded-xl opacity-50 text-xs font-medium cursor-pointer hover:opacity-100 hover:bg-[var(--bg-primary)] transition-all"
               >
-                <div className="w-8 h-8 border-2 border-dashed border-[var(--border-color)] flex items-center justify-center text-[var(--text-primary)]">+</div>
+                <div className="w-8 h-8 border border-dashed border-[var(--border-color)] rounded-full flex items-center justify-center text-[var(--text-primary)]">+</div>
                 Add new
               </button>
             )}
@@ -499,49 +499,49 @@ export default function Dashboard() {
       {/* Right Column: Risk Status + Activity Analytics */}
       <div className="lg:col-span-8 space-y-8">
         {isOwner ? (
-          <div className="brutal-card bg-white shadow-[6px_6px_0px_#000] border-2 border-black space-y-6">
-            <div className="flex items-center justify-between border-b-2 border-black pb-3">
-              <h3 className="font-display text-xs uppercase text-black tracking-widest flex items-center gap-2">
-                <ShieldAlert size={20} className="text-brutal-pink shrink-0" />
+          <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 space-y-6">
+            <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+              <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight flex items-center gap-2">
+                <ShieldAlert size={20} className="text-red-400 shrink-0" />
                 High-Risk Flagged Users
               </h3>
-              <span className="brutal-badge bg-brutal-pink text-white !text-[8px] uppercase font-black tracking-widest">
+              <span className="rounded-full border border-red-400 text-red-400 px-3 py-1 text-xs font-medium">
                 Oversight Radar
               </span>
             </div>
 
             {oversightLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="animate-spin text-brutal-pink animate-spin" />
+                <Loader2 className="animate-spin text-red-400" />
               </div>
             ) : (oversightData && oversightData.highRiskUsers && oversightData.highRiskUsers.length > 0) ? (
               <div className="space-y-3">
                 {oversightData.highRiskUsers.map((rUser: any) => (
                   <div 
                     key={rUser.id} 
-                    className="p-4 border-2 border-black bg-gray-50 shadow-[3px_3px_0px_#000] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                    className="p-4 border border-[var(--border-color)] rounded-xl bg-[var(--bg-primary)] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 border-2 border-black rounded-full bg-white flex items-center justify-center font-black text-xs shadow-[1px_1px_0px_#000]">
+                        <div className="w-8 h-8 border border-[var(--border-color)] rounded-full bg-[var(--card-bg)] flex items-center justify-center text-xs">
                           👤
                         </div>
                         <div>
-                          <h4 className="font-black text-xs uppercase leading-tight text-black">{rUser.fullName}</h4>
-                          <span className="text-[8px] font-mono text-gray-400 lowercase">{rUser.email}</span>
+                          <h4 className="font-semibold text-xs leading-tight text-[var(--text-primary)]">{rUser.fullName}</h4>
+                          <span className="text-xs font-mono text-[var(--text-secondary)]">{rUser.email}</span>
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-2 pt-1">
-                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 border border-black ${
-                          rUser.riskLevel === 'CRITICAL' ? 'bg-brutal-pink text-white' : 'bg-[#FF5F00] text-white'
+                        <span className={`text-xs font-medium rounded-full px-2 py-0.5 ${
+                          rUser.riskLevel === 'CRITICAL' ? 'bg-red-500/10 text-red-400 border border-red-400' : 'bg-orange-500/10 text-orange-400 border border-orange-400'
                         }`}>
-                          ⚠️ {rUser.riskLevel} RISK
+                          ⚠️ {rUser.riskLevel} Risk
                         </span>
-                        <span className="text-[8px] font-black uppercase bg-black text-white px-2 py-0.5">
+                        <span className="text-xs font-medium rounded-full border border-[var(--border-color)] text-[var(--text-secondary)] px-2 py-0.5">
                           Score: {rUser.score}
                         </span>
                         {rUser.signals.map((sig: string, idx: number) => (
-                          <span key={idx} className="text-[8px] font-black uppercase border border-dashed border-gray-400 px-1.5 py-0.5 text-gray-500">
+                          <span key={idx} className="text-xs font-medium border border-dashed border-[var(--border-color)] rounded-full px-2 py-0.5 text-[var(--text-secondary)]">
                             {sig}
                           </span>
                         ))}
@@ -551,7 +551,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2">
                       <button 
                         onClick={() => navigate('/admin')}
-                        className="bg-black text-white hover:bg-brutal-blue border-2 border-black px-4 py-2 text-[9px] font-black uppercase shadow-[2px_2px_0px_#000] transition-colors active:translate-y-0.5"
+                        className="rounded-xl px-4 py-2 text-xs font-semibold text-white transition-colors bg-blue-600 hover:bg-blue-700"
                       >
                         Audit Profile
                       </button>
@@ -560,30 +560,30 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-gray-500 uppercase font-bold text-center py-6">No high-risk flagged users detected.</p>
+              <p className="text-xs text-[var(--text-secondary)] font-medium text-center py-6">No high-risk flagged users detected.</p>
             )}
           </div>
         ) : (
-          <div className="brutal-card">
-            <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest mb-6">Score Breakdown (ML Layers)</h3>
+          <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6">
+            <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight mb-6">Score Breakdown (ML Layers)</h3>
             <div className="space-y-4">
               {[
-                { label: 'Layer 1: Rules & Blacklists', key: 'rule', color: 'bg-brutal-blue' },
-                { label: 'Layer 2: Behavioral Anomaly', key: 'behavioral', color: 'bg-brutal-pink' },
-                { label: 'Layer 3: Graph Collusion', key: 'graph', color: 'bg-brutal-yellow' },
-                { label: 'Layer 4: Fingerprinting', key: 'fingerprint', color: 'bg-brutal-green' },
+                { label: 'Layer 1: Rules & Blacklists', key: 'rule', color: 'bg-blue-500' },
+                { label: 'Layer 2: Behavioral Anomaly', key: 'behavioral', color: 'bg-red-400' },
+                { label: 'Layer 3: Graph Collusion', key: 'graph', color: 'bg-amber-400' },
+                { label: 'Layer 4: Fingerprinting', key: 'fingerprint', color: 'bg-emerald-400' },
               ].map((layer) => {
                 const profileMetadata = records[0]?.metadata as any;
                 const score = profileMetadata?.layer_scores?.[layer.key] || (trustScore / 4);
                 return (
                   <div key={layer.key}>
-                    <div className="flex justify-between text-[10px] font-black uppercase mb-1">
+                    <div className="flex justify-between text-xs font-medium text-[var(--text-secondary)] mb-1">
                       <span>{layer.label}</span>
                       <span>{Math.round(score)} / 250</span>
                     </div>
-                    <div className="h-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)] shadow-[2px_2px_0px_var(--border-color)]">
+                    <div className="h-2 border border-[var(--border-color)] bg-[var(--bg-primary)] rounded-full overflow-hidden">
                       <div 
-                        className={`h-full border-r-2 border-[var(--border-color)] ${layer.color}`} 
+                        className={`h-full rounded-full ${layer.color}`} 
                         style={{ width: `${(score / 250) * 100}%` }} 
                       />
                     </div>
@@ -591,41 +591,41 @@ export default function Dashboard() {
                 );
               })}
             </div>
-            <div className="mt-8 p-3 border-2 border-black bg-black text-white text-center">
-              <div className="font-display text-lg uppercase">
+            <div className="mt-8 p-4 rounded-xl bg-[var(--bg-primary)] border border-[var(--border-color)] text-center">
+              <div className="font-bold text-base text-[var(--text-primary)]">
                 {trustScore >= 800 ? 'Elite Tier' : trustScore >= 500 ? 'Verified' : 'Unverified'}
               </div>
-              <div className="text-[8px] font-bold tracking-widest uppercase opacity-60">Verified by Crifolayer ML Engine</div>
+              <div className="text-xs font-medium text-[var(--text-secondary)] mt-1">Verified by Crifolayer ML Engine</div>
             </div>
           </div>
         )}
 
          {/* Live Activity Feed */}
-         <div className="brutal-card bg-black text-white border-brutal-blue border-4 shadow-[8px_8px_0px_#0057FF]">
+         <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6">
            <div className="flex items-center justify-between mb-4">
-             <h3 className="font-display text-xs uppercase text-brutal-blue tracking-widest">Live Activity Feed</h3>
-             <span className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest">
-               <span className="w-2 h-2 bg-brutal-green rounded-full animate-pulse"></span>
+             <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight">Live Activity Feed</h3>
+             <span className="flex items-center gap-2 text-xs font-medium text-[var(--text-secondary)]">
+               <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
                Real-time
              </span>
            </div>
            <div className="space-y-3">
              {activityFeed.length > 0 ? activityFeed.map((log) => (
-               <div key={log.id} className="flex flex-col gap-1 pb-3 border-b border-white/10 last:border-0">
-                 <div className="flex justify-between items-center text-[8px] font-black uppercase text-gray-400">
+               <div key={log.id} className="flex flex-col gap-1 pb-3 border-b border-[var(--border-color)] last:border-0">
+                 <div className="flex justify-between items-center text-xs font-medium text-[var(--text-secondary)]">
                    <span>{log.type.replace('_', ' ')}</span>
                    <span>{new Date(log.created_at).toLocaleTimeString()}</span>
                  </div>
-                 <div className="text-xs font-bold font-mono">{log.message}</div>
+                 <div className="text-xs font-semibold font-mono text-[var(--text-primary)]">{log.message}</div>
                </div>
              )) : (
-               <div className="text-xs font-bold text-gray-500 uppercase py-2">No recent activity</div>
+               <div className="text-xs font-medium text-[var(--text-secondary)] py-2">No recent activity</div>
              )}
            </div>
          </div>
 
-         <div className="brutal-card">
-          <h3 className="font-display text-xs uppercase text-gray-500 tracking-widest mb-8">Recent Activity</h3>
+         <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6">
+          <h3 className="font-semibold text-xs text-[var(--text-secondary)] tracking-tight mb-8">Recent Activity</h3>
           
           <div className="overflow-x-auto">
             <table className="data-table">
@@ -652,10 +652,10 @@ export default function Dashboard() {
                 ) : records.length > 0 ? (
                   records.map((r) => (
                     <tr key={r.id}>
-                      <td className="font-mono text-[10px]">{r.identity_hash.substring(0, 20)}...</td>
-                      <td className="font-bold text-[10px]">{formatDate(r.created_at)}</td>
-                      <td>
-                        <span className="brutal-badge !border-2 !px-2 !py-0.5 uppercase text-[8px]" style={{ background: STATUS_COLOR[r.verification_status] }}>
+                      <td className="py-3 font-mono">{r.identity_hash.substring(0, 20)}...</td>
+                      <td className="py-3 font-medium">{formatDate(r.created_at)}</td>
+                      <td className="py-3">
+                        <span className={`rounded-full px-3 py-1 text-xs font-medium border border-[var(--border-color)] ${STATUS_COLOR[r.verification_status]}`}>
                           {r.verification_status}
                         </span>
                       </td>
@@ -663,7 +663,7 @@ export default function Dashboard() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={3} className="text-center py-8 text-gray-400 font-bold uppercase text-xs">
+                    <td colSpan={3} className="text-center py-8 text-[var(--text-secondary)] font-medium text-xs">
                       No transactions found
                     </td>
                   </tr>
@@ -676,9 +676,9 @@ export default function Dashboard() {
       </div>
 
       {/* Network Intelligence Section (Neo4j) */}
-      <div className="brutal-card bg-[var(--bg-primary)] mt-8 relative overflow-hidden">
-        <h3 className="font-display text-xl uppercase mb-6 flex items-center gap-2">
-          <BookOpen className="text-brutal-blue" size={24} />
+      <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 mt-8 relative overflow-hidden">
+        <h3 className="font-bold text-xl mb-6 flex items-center gap-2 text-[var(--text-primary)] tracking-tight">
+          <BookOpen className="text-blue-500" size={24} />
           Identity Graph
         </h3>
         

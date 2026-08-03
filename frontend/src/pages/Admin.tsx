@@ -96,20 +96,20 @@ const renderStatusBadge = (status?: string | null) => {
   const s = status || 'active';
   if (s === 'suspended') {
     return (
-      <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-pink text-white shadow-[1px_1px_0px_#000] font-black">
+      <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-pink text-white shadow-sm font-bold">
         suspended
       </span>
     );
   }
   if (s === 'paused') {
     return (
-      <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-yellow text-black shadow-[1px_1px_0px_#000] font-black">
+      <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-brutal-yellow text-black shadow-sm font-bold">
         paused
       </span>
     );
   }
   return (
-    <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-[#39FF14] text-black shadow-[1px_1px_0px_#000] font-black">
+    <span className="brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase bg-[#39FF14] text-black shadow-sm font-bold">
       active
     </span>
   );
@@ -692,10 +692,10 @@ export default function Admin() {
         ].map((stat, i) => (
           <div key={i} className="brutal-card group hover:-translate-y-1 transition-transform">
             <div className="flex items-start justify-between mb-4">
-              <div className={`p-3 border-2 border-black rounded-full ${stat.color} shadow-[3px_3px_0px_#000]`}>
+              <div className={`p-3 border border-slate-200 dark:border-zinc-800 rounded-full ${stat.color} shadow-sm`}>
                 <stat.icon size={20} />
               </div>
-              <span className={`text-[10px] font-black px-2 py-1 border-2 border-black rounded-full ${stat.trend.startsWith('+') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              <span className={`text-[10px] font-bold px-2 py-1 border border-slate-200 dark:border-zinc-800 rounded-full ${stat.trend.startsWith('+') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                 {stat.trend}
               </span>
             </div>
@@ -707,7 +707,7 @@ export default function Admin() {
         ))}
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between border-b-4 border-black gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between border-b border-slate-200 dark:border-zinc-800 gap-4">
         <div className="flex gap-2 overflow-x-auto w-full lg:w-auto">
           {(['activity_stream', 'verifications', 'users', 'audit_logs', 'subscriptions', 'system_status'] as const).map(tab => (
             <button
@@ -717,7 +717,7 @@ export default function Admin() {
                 activeTab === tab 
                   ? 'bg-black text-white' 
                   : 'bg-white text-black hover:bg-gray-100'
-              } border-x-2 border-t-2 border-black mb-[-4px]`}
+              } border-x-2 border-t border-slate-200 dark:border-zinc-800 mb-[-4px]`}
             >
               {tab === 'audit_logs' ? 'Audit Logs' : tab === 'activity_stream' ? 'Activity Stream' : tab === 'system_status' ? 'System Status' : tab}
             </button>
@@ -729,25 +729,25 @@ export default function Admin() {
         
         <div className="lg:col-span-2">
           {activeTab === 'activity_stream' && (
-            <div className="brutal-card shadow-[6px_6px_0px_#000]">
+            <div className="brutal-card shadow-md">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="font-display text-xl uppercase">Global Activity Stream</h3>
               </div>
               <div className="space-y-4">
                 {globalStream.map((event) => (
-                  <div key={event.id} className={`p-4 border-4 border-black flex items-start gap-4 ${event.type === 'risk' ? 'bg-[#FF0055]/10' : 'bg-white'}`}>
-                    <div className={`p-2 border-2 border-black ${event.type === 'risk' ? 'bg-[#FF0055] text-white' : 'bg-[#39FF14] text-black'}`}>
+                  <div key={event.id} className={`p-4 border border-slate-200 dark:border-zinc-800 flex items-start gap-4 ${event.type === 'risk' ? 'bg-[#FF0055]/10' : 'bg-white'}`}>
+                    <div className={`p-2 border border-slate-200 dark:border-zinc-800 ${event.type === 'risk' ? 'bg-[#FF0055] text-white' : 'bg-[#39FF14] text-black'}`}>
                       {event.type === 'risk' ? <AlertTriangle size={16} /> : <Activity size={16} />}
                     </div>
                     <div className="flex-1">
                       <p className={`font-mono text-xs font-bold uppercase ${event.type === 'risk' ? 'text-[#FF0055]' : 'text-black'}`}>{event.message}</p>
                       <p className="text-[10px] font-bold text-gray-500 mt-1 uppercase">User ID: <span className="font-mono text-black">{event.user_id.substring(0,8)}</span></p>
                     </div>
-                    <span className="font-mono text-[8px] font-black uppercase text-gray-400">{new Date(event.created_at).toLocaleString()}</span>
+                    <span className="font-mono text-[8px] font-bold uppercase text-gray-400">{new Date(event.created_at).toLocaleString()}</span>
                   </div>
                 ))}
                 {globalStream.length === 0 && (
-                  <div className="text-center py-12 border-4 border-black border-dashed text-gray-400 font-display uppercase">
+                  <div className="text-center py-12 border border-slate-200 dark:border-zinc-800 border-dashed text-gray-400 font-display uppercase">
                     No activity recorded
                   </div>
                 )}
@@ -763,10 +763,10 @@ export default function Admin() {
               </div>
               <div className="space-y-6">
                 {kycApps.filter(app => app.status === 'pending').map(app => (
-                  <div key={app.id} className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] flex flex-col gap-4">
+                  <div key={app.id} className="p-4 border border-slate-200 dark:border-zinc-800 bg-white shadow-md flex flex-col gap-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-black text-lg uppercase">{app.extracted_data?.fullName || app.profiles?.full_name || 'Unknown User'}</h4>
+                        <h4 className="font-bold text-lg uppercase">{app.extracted_data?.fullName || app.profiles?.full_name || 'Unknown User'}</h4>
                         <p className="text-xs font-bold text-gray-500 uppercase">{app.profiles?.email}</p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -775,7 +775,7 @@ export default function Admin() {
                             href={`https://cockpit.sumsub.com/check-applicant/${app.sumsub_applicant_id}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 border-2 border-black bg-brutal-blue text-white hover:bg-black transition-colors"
+                            className="p-1.5 border border-slate-200 dark:border-zinc-800 bg-brutal-blue text-white hover:bg-black transition-colors"
                             title="Open in Sumsub Cockpit"
                           >
                             <ExternalLink size={14} />
@@ -789,31 +789,31 @@ export default function Admin() {
                     
                     <div className="grid grid-cols-2 gap-4 text-xs">
                       <div>
-                        <p className="font-black uppercase text-gray-400 mb-1">Date of Birth</p>
+                        <p className="font-bold uppercase text-gray-400 mb-1">Date of Birth</p>
                         <p className="font-bold">{app.extracted_data?.dob || 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="font-black uppercase text-gray-400 mb-1">Country</p>
+                        <p className="font-bold uppercase text-gray-400 mb-1">Country</p>
                         <p className="font-bold">{app.extracted_data?.country || 'N/A'}</p>
                       </div>
                       <div className="col-span-2">
-                        <p className="font-black uppercase text-gray-400 mb-1">ID Documents</p>
+                        <p className="font-bold uppercase text-gray-400 mb-1">ID Documents</p>
                         {app.extracted_data?.idDocs?.map((doc: any, i: number) => (
                            <div key={i} className="flex gap-2 items-center">
-                             <span className="bg-gray-100 px-2 py-1 border border-black font-mono">{doc.idDocType || 'UNKNOWN_DOC'}</span>
+                             <span className="bg-gray-100 px-2 py-1 border border-slate-200 dark:border-zinc-800 font-mono">{doc.idDocType || 'UNKNOWN_DOC'}</span>
                            </div>
                         )) || <span className="italic text-gray-400">No doc details extracted</span>}
                       </div>
                     </div>
                     
                     <div className="flex gap-4 mt-2">
-                      <button onClick={() => handleKycDecision(app.id, 'approve')} className="flex-1 py-2 bg-brutal-green border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000] hover:translate-y-[2px] hover:shadow-none transition-all">Approve</button>
-                      <button onClick={() => handleKycDecision(app.id, 'reject')} className="flex-1 py-2 bg-brutal-pink text-white border-2 border-black font-black uppercase shadow-[2px_2px_0px_#000] hover:translate-y-[2px] hover:shadow-none transition-all">Reject</button>
+                      <button onClick={() => handleKycDecision(app.id, 'approve')} className="flex-1 py-2 bg-brutal-green border border-slate-200 dark:border-zinc-800 font-bold uppercase shadow-sm active:scale-[0.98]  transition-all">Approve</button>
+                      <button onClick={() => handleKycDecision(app.id, 'reject')} className="flex-1 py-2 bg-brutal-pink text-white border border-slate-200 dark:border-zinc-800 font-bold uppercase shadow-sm active:scale-[0.98]  transition-all">Reject</button>
                     </div>
                   </div>
                 ))}
                 {kycApps.filter(app => app.status === 'pending').length === 0 && (
-                  <div className="text-center py-12 border-4 border-black border-dashed text-gray-400 font-display uppercase">
+                  <div className="text-center py-12 border border-slate-200 dark:border-zinc-800 border-dashed text-gray-400 font-display uppercase">
                     Queue is empty
                   </div>
                 )}
@@ -823,7 +823,7 @@ export default function Admin() {
                     <h4 className="font-display text-sm uppercase mb-4 text-gray-400">Recently Reviewed</h4>
                     <div className="space-y-2">
                       {kycApps.filter(app => app.status !== 'pending').slice(0, 5).map(app => (
-                        <div key={app.id} className="flex items-center justify-between p-2 border-2 border-black bg-gray-50 text-xs font-bold uppercase">
+                        <div key={app.id} className="flex items-center justify-between p-2 border border-slate-200 dark:border-zinc-800 bg-gray-50 text-xs font-bold uppercase">
                           <span>{app.extracted_data?.fullName || app.profiles?.email}</span>
                           <span className={app.status === 'approved' ? 'text-brutal-green' : 'text-brutal-pink'}>{app.status}</span>
                         </div>
@@ -868,10 +868,10 @@ export default function Admin() {
                           <tr key={u.id} className="hover:bg-gray-50">
                             <td>
                               <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden flex-shrink-0">
+                              <div className="w-8 h-8 border border-slate-200 dark:border-zinc-800 rounded-full overflow-hidden flex-shrink-0">
                                 <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" className="w-full h-full object-cover" />
                               </div>
-                              <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
+                              <span className="text-xs font-bold uppercase">{u.full_name || 'Anonymous'}</span>
                               </div>
                             </td>
                             <td className="text-[10px] font-bold text-gray-500">{u.email}</td>
@@ -891,9 +891,9 @@ export default function Admin() {
                             </td>
                             <td>
                               {getAdminRoleTitle(u.email) ? (
-                                <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-black ${
+                                <span className={`brutal-badge !text-[8px] !px-2.5 !py-0.5 !border-2 uppercase font-bold ${
                                   getAdminRoleTitle(u.email) === 'Founder' ? 'bg-brutal-green text-black' : 'bg-brutal-yellow text-black'
-                                } shadow-[1px_1px_0px_#000]`}>
+                                } shadow-sm`}>
                                   {getAdminRoleTitle(u.email)}
                                 </span>
                               ) : (
@@ -902,7 +902,7 @@ export default function Admin() {
                             </td>
                             <td className="text-[10px] font-bold text-gray-400">{new Date(u.updated_at).toLocaleDateString()}</td>
                             <td>
-                              <button className="p-1 border-2 border-black hover:bg-black hover:text-white"><Eye size={12} /></button>
+                              <button className="p-1 border border-slate-200 dark:border-zinc-800 hover:bg-black hover:text-white"><Eye size={12} /></button>
                             </td>
                           </tr>
                         ))}
@@ -933,14 +933,14 @@ export default function Admin() {
                           <tr key={u.id} className="hover:bg-gray-50">
                             <td>
                               <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 border-2 border-black rounded-full overflow-hidden flex-shrink-0">
+                              <div className="w-8 h-8 border border-slate-200 dark:border-zinc-800 rounded-full overflow-hidden flex-shrink-0">
                                 <img src={u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} alt="" className="w-full h-full object-cover" />
                               </div>
-                              <span className="text-xs font-black uppercase">{u.full_name || 'Anonymous'}</span>
+                              <span className="text-xs font-bold uppercase">{u.full_name || 'Anonymous'}</span>
                               </div>
                             </td>
                             <td>
-                              <span className="font-mono text-sm font-bold text-[#39FF14] bg-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#000]">
+                              <span className="font-mono text-sm font-bold text-[#39FF14] bg-black px-2 py-1 border border-slate-200 dark:border-zinc-800 shadow-sm">
                                 {u.trust_score?.final_score || 0}
                               </span>
                             </td>
@@ -963,11 +963,11 @@ export default function Admin() {
                                     const val = (document.getElementById(`adj-${u.id}`) as HTMLInputElement).value;
                                     handleInlineAdjust(u.id, Number(val));
                                   }} 
-                                  className="p-1 px-3 font-display text-[10px] uppercase tracking-widest border-2 border-black bg-[#00E5FF] hover:bg-black hover:text-[#00E5FF] shadow-[2px_2px_0px_#000]"
+                                  className="p-1 px-3 font-display text-[10px] uppercase tracking-widest border border-slate-200 dark:border-zinc-800 bg-[#00E5FF] hover:bg-black hover:text-[#00E5FF] shadow-sm"
                                 >
                                   Recalculate
                                 </button>
-                                <button onClick={() => openScoreModal(u)} className="p-1 border-2 border-black bg-brutal-yellow hover:bg-black hover:text-brutal-yellow" title="God Mode Breakdown"><Eye size={14} /></button>
+                                <button onClick={() => openScoreModal(u)} className="p-1 border border-slate-200 dark:border-zinc-800 bg-brutal-yellow hover:bg-black hover:text-brutal-yellow" title="God Mode Breakdown"><Eye size={14} /></button>
                               </div>
                             </td>
                           </tr>
@@ -991,27 +991,27 @@ export default function Admin() {
               </div>
               <div className="space-y-4">
                 {auditLogs.map((log) => (
-                  <div key={log.id} className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] flex items-start justify-between gap-4">
+                  <div key={log.id} className="p-4 border border-slate-200 dark:border-zinc-800 bg-white shadow-md flex items-start justify-between gap-4">
                     <div className="flex items-start gap-4">
-                      <div className="p-2 border-2 border-black bg-brutal-yellow"><History size={16} /></div>
+                      <div className="p-2 border border-slate-200 dark:border-zinc-800 bg-brutal-yellow"><History size={16} /></div>
                       <div>
-                        <p className="text-xs font-black uppercase">{log.action_type}</p>
+                        <p className="text-xs font-bold uppercase">{log.action_type}</p>
                         <p className="text-[10px] font-bold text-gray-500 mt-1">
                           Admin <span className="text-black">{log.admin_id.substring(0, 8)}...</span> 
                           {log.target_user_id && <> targeted <span className="text-black">{log.target_user_id.substring(0, 8)}...</span></>}
                         </p>
                         {log.details && (
-                          <pre className="mt-2 text-[8px] bg-gray-50 p-2 border-2 border-black border-dashed overflow-x-auto">
+                          <pre className="mt-2 text-[8px] bg-gray-50 p-2 border border-slate-200 dark:border-zinc-800 border-dashed overflow-x-auto">
                             {JSON.stringify(log.details, null, 2)}
                           </pre>
                         )}
                       </div>
                     </div>
-                    <span className="text-[8px] font-black uppercase text-gray-400">{new Date(log.created_at).toLocaleString()}</span>
+                    <span className="text-[8px] font-bold uppercase text-gray-400">{new Date(log.created_at).toLocaleString()}</span>
                   </div>
                 ))}
                 {auditLogs.length === 0 && (
-                  <div className="text-center py-12 border-4 border-black border-dashed text-gray-400 font-display uppercase">
+                  <div className="text-center py-12 border border-slate-200 dark:border-zinc-800 border-dashed text-gray-400 font-display uppercase">
                     No audit records available
                   </div>
                 )}
@@ -1028,32 +1028,32 @@ export default function Admin() {
               
               <div className="space-y-6">
                 {plans.map((p) => (
-                  <div key={p.id} className="p-6 border-4 border-black bg-white shadow-[6px_6px_0px_#000] space-y-6">
+                  <div key={p.id} className="p-6 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-6">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 border-2 border-black bg-brutal-blue text-white"><ShieldCheck size={18} /></div>
+                       <div className="flex items-center gap-3">
+                        <div className="p-2 border border-slate-200 dark:border-zinc-800 bg-brutal-blue text-white"><ShieldCheck size={18} /></div>
                         <h4 className="font-display text-lg uppercase">{p.name}</h4>
                       </div>
-                      <span className="text-[10px] font-black px-3 py-1 border-2 border-black bg-gray-100 uppercase">{p.id}</span>
+                      <span className="text-[10px] font-bold px-3 py-1 border border-slate-200 dark:border-zinc-800 bg-gray-100 dark:bg-zinc-800 uppercase">{p.id}</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-gray-500">Monthly Price (₹)</label>
+                        <label className="text-[10px] font-bold uppercase text-gray-500">Monthly Price (₹)</label>
                         <input 
                           type="number"
                           defaultValue={p.monthly_price}
                           id={`monthly-${p.id}`}
-                          className="w-full p-3 border-4 border-black font-black text-xl shadow-[4px_4px_0px_rgba(0,0,0,0.1)] focus:shadow-[4px_4px_0px_#000] outline-none transition-all"
+                          className="w-full p-3 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-black dark:text-white font-bold text-xl shadow-md focus:shadow-md outline-none transition-all"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase text-gray-500">Yearly Price (₹/mo)</label>
+                        <label className="text-[10px] font-bold uppercase text-gray-500">Yearly Price (₹/mo)</label>
                         <input 
                           type="number"
                           defaultValue={p.yearly_price}
                           id={`yearly-${p.id}`}
-                          className="w-full p-3 border-4 border-black font-black text-xl shadow-[4px_4px_0px_rgba(0,0,0,0.1)] focus:shadow-[4px_4px_0px_#000] outline-none transition-all"
+                          className="w-full p-3 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-black dark:text-white font-bold text-xl shadow-md focus:shadow-md outline-none transition-all"
                         />
                       </div>
                     </div>
@@ -1091,7 +1091,7 @@ export default function Admin() {
                   <button 
                     onClick={fetchDiagnostics}
                     disabled={diagLoading}
-                    className="p-2 border-2 border-black hover:bg-black hover:text-white transition-colors"
+                    className="p-2 border border-slate-200 dark:border-zinc-800 hover:bg-black hover:text-white transition-colors"
                     title="Refresh now"
                   >
                     <History size={16} className={diagLoading ? 'animate-spin' : ''} />
@@ -1101,54 +1101,54 @@ export default function Admin() {
                 {diagLoading && !diagnostics ? (
                   <div className="py-12 flex flex-col items-center justify-center gap-4">
                     <Loader2 className="animate-spin text-brutal-blue" size={32} />
-                    <p className="text-[10px] font-black uppercase tracking-widest">Running tests...</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Running tests...</p>
                   </div>
                 ) : diagnostics ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Supabase Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-brutal-blue">
                         <ShieldCheck size={18} />
                         <h4 className="font-display text-sm uppercase">Supabase Connectivity</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${diagnostics.supabase.status === 'reachable' ? 'bg-brutal-green' : 'bg-brutal-pink'}`}>
                           {diagnostics.supabase.status}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">{diagnostics.supabase.latency}ms</span>
                       </div>
                     </div>
 
                     {/* Neo4j Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-brutal-pink">
                         <TrendingUp size={18} />
                         <h4 className="font-display text-sm uppercase">Neo4j AuraDB</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${diagnostics.neo4j.status === 'connected' ? 'bg-brutal-green' : 'bg-brutal-pink'}`}>
                           {diagnostics.neo4j.status}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">{diagnostics.neo4j.latency}ms</span>
                       </div>
                     </div>
 
                     {/* MongoDB Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-brutal-yellow" style={{ color: '#E8A400' }}>
                         <Database size={18} />
                         <h4 className="font-display text-sm uppercase">MongoDB Atlas</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
                           diagnostics.mongodb?.status === 'connected'    ? 'bg-brutal-green' :
                           diagnostics.mongodb?.status === 'connecting'   ? 'bg-brutal-yellow' :
@@ -1159,7 +1159,7 @@ export default function Admin() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">
                           {diagnostics.mongodb?.status === 'connected'
                             ? `${diagnostics.mongodb.latency}ms`
@@ -1169,13 +1169,13 @@ export default function Admin() {
                     </div>
 
                     {/* Cloudinary Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-brutal-yellow" style={{ color: '#0078FF' }}>
                         <Cloud size={18} />
                         <h4 className="font-display text-sm uppercase">Cloudinary Storage</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
                           diagnostics.cloudinary?.status === 'connected' ? 'bg-brutal-green' : 'bg-brutal-pink'
                         }`}>
@@ -1183,7 +1183,7 @@ export default function Admin() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">
                            {diagnostics.cloudinary?.status === 'connected' ? `${diagnostics.cloudinary.latency}ms` : '—'}
                         </span>
@@ -1191,13 +1191,13 @@ export default function Admin() {
                     </div>
 
                     {/* Connect Wallet API Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-brutal-pink">
                         <Wallet size={18} />
                         <h4 className="font-display text-sm uppercase">Wallet Auth API</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
                           diagnostics.wallet?.status === 'reachable' ? 'bg-brutal-green' : 'bg-brutal-pink'
                         }`}>
@@ -1205,7 +1205,7 @@ export default function Admin() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">
                            {diagnostics.wallet?.status === 'reachable' ? `${diagnostics.wallet.latency}ms` : '—'}
                         </span>
@@ -1213,13 +1213,13 @@ export default function Admin() {
                     </div>
 
                     {/* Sumsub Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-brutal-blue">
                         <Fingerprint size={18} />
                         <h4 className="font-display text-sm uppercase">Sumsub eKYC</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
                           diagnostics.sumsub?.status === 'reachable' ? 'bg-brutal-green' : 
                           diagnostics.sumsub?.status === 'not_configured' ? 'bg-gray-100' : 'bg-brutal-pink'
@@ -1228,7 +1228,7 @@ export default function Admin() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">
                            {diagnostics.sumsub?.status === 'reachable' ? `${diagnostics.sumsub.latency}ms` : '—'}
                         </span>
@@ -1236,13 +1236,13 @@ export default function Admin() {
                     </div>
 
                     {/* Razorpay Gateway Health */}
-                    <div className="p-4 border-4 border-black bg-white shadow-[4px_4px_0px_#000] space-y-4">
+                    <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-md space-y-4">
                       <div className="flex items-center gap-2 text-blue-500">
                         <DollarSign size={18} />
                         <h4 className="font-display text-sm uppercase">Razorpay Gateway</h4>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase">Status:</span>
+                        <span className="text-[10px] font-bold uppercase">Status:</span>
                         <span className={`brutal-badge !text-[8px] !px-2 !py-0.5 !border-2 uppercase ${
                           diagnostics.razorpay?.status === 'connected' ? 'bg-brutal-green text-black' :
                           diagnostics.razorpay?.status === 'not_configured' ? 'bg-gray-100 text-gray-400' : 'bg-brutal-pink text-white'
@@ -1254,7 +1254,7 @@ export default function Admin() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-gray-500">Latency:</span>
+                        <span className="text-[10px] font-bold uppercase text-gray-500">Latency:</span>
                         <span className="text-[10px] font-bold">
                            {diagnostics.razorpay?.status === 'connected' ? `${diagnostics.razorpay.latency}ms` : '—'}
                         </span>
@@ -1262,36 +1262,36 @@ export default function Admin() {
                     </div>
 
                     {/* Environment Info — spans full width */}
-                    <div className="md:col-span-2 p-4 border-4 border-black bg-gray-50 space-y-4">
+                    <div className="md:col-span-2 p-4 border border-slate-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 space-y-4">
                       <div className="flex items-center gap-2">
                         <Activity size={18} />
                         <h4 className="font-display text-sm uppercase">Server Environment</h4>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div>
-                          <p className="text-[8px] font-black text-gray-500 uppercase">Version</p>
+                          <p className="text-[8px] font-bold text-gray-500 uppercase">Version</p>
                           <p className="text-[10px] font-bold">1.0.0</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-gray-500 uppercase">Environment</p>
+                          <p className="text-[8px] font-bold text-gray-500 uppercase">Environment</p>
                           <p className="text-[10px] font-bold uppercase">{diagnostics.environment}</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-gray-500 uppercase">Timestamp</p>
+                          <p className="text-[8px] font-bold text-gray-500 uppercase">Timestamp</p>
                           <p className="text-[10px] font-bold">{new Date(diagnostics.timestamp).toLocaleTimeString()}</p>
                         </div>
                         <div>
-                          <p className="text-[8px] font-black text-gray-500 uppercase">Production Time</p>
+                          <p className="text-[8px] font-bold text-gray-500 uppercase">Production Time</p>
                           <p className="text-[10px] font-bold tabular-nums">{projectAge}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-8 border-4 border-black border-dashed text-center space-y-2">
-                    <p className="text-xs font-black uppercase text-red-500">Failed to load system diagnostics</p>
+                  <div className="p-8 border border-slate-200 dark:border-zinc-800 border-dashed text-center space-y-2">
+                    <p className="text-xs font-bold uppercase text-red-500">Failed to load system diagnostics</p>
                     {diagError && <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{diagError}</p>}
-                    <button onClick={fetchDiagnostics} className="text-[8px] font-black underline uppercase hover:text-black">Try Again</button>
+                    <button onClick={fetchDiagnostics} className="text-[8px] font-bold underline uppercase hover:text-black">Try Again</button>
                   </div>
                 )}
 
@@ -1306,8 +1306,8 @@ export default function Admin() {
           <div className="brutal-card bg-brutal-yellow">
             <h3 className="font-display text-lg uppercase mb-4 flex items-center gap-2"><AlertTriangle size={18} /> Alerts</h3>
             <div className="space-y-3">
-              <div className="p-3 border-2 border-black bg-white shadow-[2px_2px_0px_#000]">
-                <h4 className="text-[10px] font-black uppercase">Live: {users.length} Active Users</h4>
+              <div className="p-3 border border-slate-200 dark:border-zinc-800 bg-white shadow-sm">
+                <h4 className="text-[10px] font-bold uppercase">Live: {users.length} Active Users</h4>
                 <p className="text-[9px] font-bold text-gray-600">Site traffic is normal.</p>
               </div>
             </div>
@@ -1325,14 +1325,14 @@ export default function Admin() {
             </div>
           </div>
 
-          <div className="brutal-card !bg-brutal-blue !text-white shadow-[4px_4px_0px_#000] p-4 flex items-center justify-between gap-4">
+          <div className="brutal-card !bg-brutal-blue !text-white shadow-md p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Clock size={20} className="shrink-0" />
               <div className="font-display text-xs uppercase tracking-widest leading-tight">
                 Production<br />Time:
               </div>
             </div>
-            <div className="font-display text-sm font-black uppercase tracking-widest tabular-nums text-right leading-tight">
+            <div className="font-display text-sm font-bold uppercase tracking-widest tabular-nums text-right leading-tight">
               {projectAge}
             </div>
           </div>
@@ -1343,33 +1343,33 @@ export default function Admin() {
       {selectedUserForScore && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
           <div className="brutal-card bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
-            <button onClick={() => setSelectedUserForScore(null)} className="absolute top-4 right-4 text-2xl font-black">×</button>
-            <h2 className="font-display text-2xl uppercase border-b-4 border-black pb-4 mb-6">
+            <button onClick={() => setSelectedUserForScore(null)} className="absolute top-4 right-4 text-2xl font-bold">×</button>
+            <h2 className="font-display text-2xl uppercase border-b border-slate-200 dark:border-zinc-800 pb-4 mb-6">
               God Mode: <span className="text-brutal-blue">{selectedUserForScore.email}</span>
             </h2>
 
             <div className="space-y-6">
               {/* Recalculate/ML Breakdown Section */}
               {scoreModalLoading && !userScoreData ? (
-                <div className="py-12 flex flex-col justify-center items-center gap-3 bg-gray-50 border-2 border-black border-dashed p-6 shadow-[2px_2px_0px_#000]">
+                <div className="py-12 flex flex-col justify-center items-center gap-3 bg-gray-50 border border-slate-200 dark:border-zinc-800 border-dashed p-6 shadow-sm">
                   <Loader2 className="animate-spin text-brutal-blue" size={24} />
-                  <span className="text-[10px] font-black uppercase tracking-wider">Recalculating ML trust signals...</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Recalculating ML trust signals...</span>
                 </div>
               ) : userScoreData ? (
                 <>
-                  <div className="flex justify-between items-center bg-black text-white p-4 shadow-[4px_4px_0px_#000] border-2 border-black">
+                  <div className="flex justify-between items-center bg-black text-white p-4 shadow-md border border-slate-200 dark:border-zinc-800">
                     <div className="text-center">
-                      <p className="text-[10px] font-black uppercase text-gray-400">Calculated</p>
+                      <p className="text-[10px] font-bold uppercase text-gray-400">Calculated</p>
                       <p className="font-display text-4xl">{userScoreData.calculatedScore}</p>
                     </div>
-                    <div className="text-xl font-black">+</div>
+                    <div className="text-xl font-bold">+</div>
                     <div className="text-center">
-                      <p className="text-[10px] font-black uppercase text-gray-400">Admin Adjust</p>
+                      <p className="text-[10px] font-bold uppercase text-gray-400">Admin Adjust</p>
                       <p className="font-display text-4xl text-brutal-yellow">{manualAdjustment}</p>
                     </div>
-                    <div className="text-xl font-black">=</div>
+                    <div className="text-xl font-bold">=</div>
                     <div className="text-center">
-                      <p className="text-[10px] font-black uppercase text-brutal-blue">Final Score</p>
+                      <p className="text-[10px] font-bold uppercase text-brutal-blue">Final Score</p>
                       <p className="font-display text-5xl text-brutal-green">{userScoreData.finalScore}</p>
                     </div>
                   </div>
@@ -1378,8 +1378,8 @@ export default function Admin() {
                     <h3 className="font-display text-xs uppercase mb-3 text-gray-600">Trust Signals Breakdown</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {Object.entries(userScoreData.signals || {}).map(([key, value]) => (
-                        <div key={key} className="flex justify-between items-center p-3 border-2 border-black bg-gray-50 shadow-[2px_2px_0px_#000]">
-                          <span className="text-[9px] font-black uppercase">{key.replace(/_/g, ' ')}</span>
+                        <div key={key} className="flex justify-between items-center p-3 border border-slate-200 dark:border-zinc-800 bg-gray-50 shadow-sm">
+                          <span className="text-[9px] font-bold uppercase">{key.replace(/_/g, ' ')}</span>
                           <span className="font-mono font-bold text-xs">{String(value)} pts</span>
                         </div>
                       ))}
@@ -1387,7 +1387,7 @@ export default function Admin() {
                   </div>
                 </>
               ) : (
-                <div className="p-4 border-4 border-black bg-brutal-yellow text-black font-bold text-xs uppercase space-y-2 shadow-[4px_4px_0px_#000]">
+                <div className="p-4 border border-slate-200 dark:border-zinc-800 bg-brutal-yellow text-black font-bold text-xs uppercase space-y-2 shadow-md">
                   <div className="flex items-center gap-2">
                     <AlertTriangle size={18} />
                     <span className="font-display text-sm uppercase">ML Recalculation Offline</span>
@@ -1399,7 +1399,7 @@ export default function Admin() {
               )}
 
               {/* God Mode Overrides Section - Always Visible */}
-              <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10 space-y-4 shadow-[4px_4px_0px_#000]">
+              <div className="border-4 border-brutal-blue p-4 bg-brutal-blue/10 space-y-4 shadow-md">
                 <div>
                   <h3 className="font-display text-sm uppercase mb-2 text-brutal-blue">Trust Score Override</h3>
                   <div className="flex gap-4">
@@ -1418,7 +1418,7 @@ export default function Admin() {
                   <select
                     value={selectedUserPlan}
                     onChange={(e) => setSelectedUserPlan(e.target.value)}
-                    className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
+                    className="brutal-input w-full !py-2.5 !font-bold uppercase text-xs"
                   >
                     {plans.map((p) => (
                       <option key={p.id} value={p.id}>
@@ -1433,7 +1433,7 @@ export default function Admin() {
                   <select
                     value={selectedUserStatus}
                     onChange={(e) => setSelectedUserStatus(e.target.value)}
-                    className="brutal-input w-full !py-2.5 !font-black uppercase text-xs"
+                    className="brutal-input w-full !py-2.5 !font-bold uppercase text-xs"
                   >
                     <option value="active">ACTIVE</option>
                     <option value="paused">PAUSED</option>
@@ -1450,11 +1450,11 @@ export default function Admin() {
                 </button>
 
                 <div className="border-t-2 border-dashed border-red-500/30 pt-3 mt-4">
-                  <h3 className="font-display text-sm uppercase mb-2 text-red-600 font-black">Danger Zone</h3>
+                  <h3 className="font-display text-sm uppercase mb-2 text-red-600 font-bold">Danger Zone</h3>
                   <button 
                     onClick={handleDeleteUser}
                     disabled={scoreModalLoading}
-                    className="w-full brutal-btn bg-brutal-pink text-white uppercase text-xs py-3 font-display tracking-wider flex items-center justify-center gap-2 hover:bg-black hover:text-brutal-pink transition-colors font-black"
+                    className="w-full brutal-btn bg-brutal-pink text-white uppercase text-xs py-3 font-display tracking-wider flex items-center justify-center gap-2 hover:bg-black hover:text-brutal-pink transition-colors font-bold"
                   >
                     {scoreModalLoading ? <Loader2 className="animate-spin" size={16} /> : 'Permanently Delete Account'}
                   </button>

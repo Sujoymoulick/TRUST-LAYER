@@ -101,15 +101,15 @@ export default function Settings() {
   if (isGuest || !user) {
     return (
       <div className="max-w-md mx-auto text-center space-y-6 pt-12">
-        <h2 className="font-display text-4xl uppercase">Settings</h2>
-        <div className="brutal-card space-y-6 py-12">
+        <h2 className="font-bold text-4xl tracking-tight text-[var(--text-primary)]">Settings</h2>
+        <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-8 space-y-6 py-12">
           <div className="text-6xl">🔒</div>
-          <h3 className="font-display text-xl uppercase">Guest Mode</h3>
-          <p className="font-bold text-gray-600 leading-relaxed">
+          <h3 className="font-bold text-xl text-[var(--text-primary)]">Guest Mode</h3>
+          <p className="font-medium text-[var(--text-secondary)] leading-relaxed">
             Settings are only available to registered users. Create a free account to manage your profile and privacy.
           </p>
           <button
-            className="brutal-btn bg-brutal-yellow w-full py-4 text-base"
+            className="rounded-xl w-full py-3 text-base font-semibold text-white" style={{ background: 'var(--accent)' }}
             onClick={() => { exitGuest(); navigate('/login'); }}
           >
             Create Free Account →
@@ -121,10 +121,10 @@ export default function Settings() {
 
   return (
     <div className="max-w-4xl mx-auto pb-20">
-      <h2 className="font-display text-3xl uppercase mb-12">Settings</h2>
+      <h2 className="font-bold text-3xl tracking-tight mb-12 text-[var(--text-primary)]">Settings</h2>
 
       {message && activeTab === 'profile' && (
-        <div className={`brutal-card mb-8 py-4 px-6 font-bold uppercase text-sm ${message.includes('Error') ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+        <div className={`rounded-xl mb-8 py-4 px-6 font-medium text-sm border ${message.includes('Error') ? 'bg-red-50 text-red-600 border-red-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
           {message}
         </div>
       )}
@@ -161,16 +161,16 @@ export default function Settings() {
         <div className="space-y-12">
           {activeTab === 'profile' && (
             <>
-              <form onSubmit={handleUpdate} className="brutal-card space-y-8">
+              <form onSubmit={handleUpdate} className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 space-y-8">
                 {/* ── Avatar Upload ── */}
                 <div>
-                  <label className="block font-black text-xs uppercase mb-4">Profile Photo</label>
+                  <label className="block font-semibold text-xs text-[var(--text-secondary)] mb-4">Profile Photo</label>
                   <AvatarUploader userId={user.id} email={user.email} size="lg" />
                 </div>
 
-                <div className="border-t-2 border-dashed border-gray-200 pt-6 space-y-6">
+                <div className="border-t border-dashed border-[var(--border-color)] pt-6 space-y-6">
                   <div>
-                    <label className="block font-black text-xs uppercase mb-2">Display Name</label>
+                    <label className="block font-semibold text-xs text-[var(--text-secondary)] mb-2">Display Name</label>
                     <input 
                       className="brutal-input" 
                       value={profile.full_name} 
@@ -179,7 +179,7 @@ export default function Settings() {
                     />
                   </div>
                   <div>
-                    <label className="block font-black text-xs uppercase mb-2">Email Address</label>
+                    <label className="block font-semibold text-xs text-[var(--text-secondary)] mb-2">Email Address</label>
                     <input 
                       className={`brutal-input ${user?.app_metadata?.provider !== 'email' ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}`} 
                       value={profile.email} 
@@ -188,13 +188,13 @@ export default function Settings() {
                       readOnly={user?.app_metadata?.provider !== 'email'}
                     />
                     {user?.app_metadata?.provider !== 'email' && (
-                      <p className="text-[9px] font-bold text-gray-400 mt-1 uppercase tracking-tighter">
+                      <p className="text-xs font-medium text-[var(--text-secondary)] mt-1">
                         Email managed by {user?.app_metadata?.provider}
                       </p>
                     )}
                   </div>
                   <div>
-                    <label className="block font-black text-xs uppercase mb-2">Phone Number</label>
+                    <label className="block font-semibold text-xs text-[var(--text-secondary)] mb-2">Phone Number</label>
                     <input 
                       className="brutal-input" 
                       value={profile.phone} 
@@ -204,7 +204,7 @@ export default function Settings() {
                     />
                   </div>
                   <div>
-                    <label className="block font-black text-xs uppercase mb-2">Date of Birth</label>
+                    <label className="block font-semibold text-xs text-[var(--text-secondary)] mb-2">Date of Birth</label>
                     <input 
                       className="brutal-input" 
                       value={profile.date_of_birth} 
@@ -217,7 +217,7 @@ export default function Settings() {
                 <div className="pt-4">
                   <button 
                     type="submit" 
-                    className="brutal-btn bg-brutal-blue text-white w-full sm:w-auto px-12 py-3 flex items-center justify-center gap-2"
+                    className="rounded-xl text-white w-full sm:w-auto px-8 py-2.5 flex items-center justify-center gap-2 font-semibold text-sm" style={{ background: 'var(--accent)' }}
                     disabled={updating}
                   >
                     {updating ? <Loader2 className="animate-spin" size={18} /> : <><Save size={18} /> Save Changes</>}
@@ -225,16 +225,16 @@ export default function Settings() {
                 </div>
               </form>
 
-              <section className="brutal-card space-y-6">
-                 <h3 className="font-display text-lg uppercase mb-4">Appearance</h3>
+              <section className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 space-y-6">
+                 <h3 className="font-bold text-lg tracking-tight text-[var(--text-primary)] mb-4">Appearance</h3>
                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                       <div className="p-3 border-2 border-[var(--border-color)] bg-[var(--bg-primary)]">
-                          {theme === 'dark' ? <Moon className="text-neon-orange" /> : <Sun className="text-brutal-yellow" />}
+                       <div className="p-3 border border-[var(--border-color)] rounded-xl bg-[var(--bg-primary)]">
+                          {theme === 'dark' ? <Moon className="text-blue-400" /> : <Sun className="text-amber-400" />}
                        </div>
                        <div>
-                          <h4 className="font-display text-sm uppercase">Dark Mode</h4>
-                          <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Toggle between light and dark system themes.</p>
+                          <h4 className="font-semibold text-sm text-[var(--text-primary)]">Dark Mode</h4>
+                          <p className="text-xs font-medium text-[var(--text-secondary)]">Toggle between light and dark system themes.</p>
                        </div>
                     </div>
                     <input 
@@ -250,25 +250,25 @@ export default function Settings() {
 
           {activeTab === 'privacy' && (
             <div className="space-y-12">
-              <section className="brutal-card space-y-6">
-                 <h3 className="font-display text-lg uppercase mb-4">Privacy & Access</h3>
+              <section className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-xl shadow-sm p-6 space-y-6">
+                 <h3 className="font-bold text-lg tracking-tight text-[var(--text-primary)] mb-4">Privacy &amp; Access</h3>
                  <div className="flex items-center justify-between">
                     <div>
-                       <h4 className="font-display text-sm uppercase">Visible to Public</h4>
-                       <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase">Allow others to see your trust score on the network.</p>
+                       <h4 className="font-semibold text-sm text-[var(--text-primary)]">Visible to Public</h4>
+                       <p className="text-xs font-medium text-[var(--text-secondary)]">Allow others to see your trust score on the network.</p>
                     </div>
-                    <input type="checkbox" className="brutal-toggle" defaultChecked />
+                    <input type="checkbox" className="rounded-full w-10 h-6 bg-gray-200 appearance-none checked:bg-[var(--accent)] transition-colors cursor-pointer" defaultChecked />
                  </div>
               </section>
 
-              <div className="pt-4 border-t-4 border-[var(--border-color)] border-dashed flex flex-col sm:flex-row gap-4">
-                 <button type="button" className="brutal-btn bg-white text-red-600 border-red-600 w-full sm:w-auto px-8 py-3 flex items-center justify-center gap-2 hover:bg-red-50">
+              <div className="pt-4 border-t border-[var(--border-color)] border-dashed flex flex-col sm:flex-row gap-4">
+                 <button type="button" className="rounded-xl border border-red-300 text-red-600 bg-white w-full sm:w-auto px-6 py-2.5 flex items-center justify-center gap-2 font-semibold text-sm hover:bg-red-50 transition-colors">
                    <Trash2 size={18} /> Delete Account Permanently
                  </button>
                  <button 
                    type="button" 
                    onClick={() => navigate('/logout')}
-                   className="brutal-btn bg-brutal-pink text-white w-full sm:w-auto px-8 py-3 flex items-center justify-center gap-2 hover:bg-opacity-90"
+                   className="rounded-xl text-white w-full sm:w-auto px-6 py-2.5 flex items-center justify-center gap-2 font-semibold text-sm bg-red-500 hover:bg-red-600 transition-colors"
                  >
                    <LogOut size={18} /> Logout
                  </button>

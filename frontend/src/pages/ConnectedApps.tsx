@@ -93,12 +93,12 @@ export default function ConnectedApps() {
       <div className="flex items-center justify-between">
         <button 
           onClick={() => navigate('/passport')}
-          className="flex items-center gap-1.5 bg-white text-black border-2 border-black px-4 py-2 font-display text-xs uppercase shadow-[3px_3px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all"
+          className="flex items-center gap-1.5 bg-white text-black border border-slate-200 dark:border-zinc-800 px-4 py-2 font-display text-xs uppercase shadow-sm hover:translate-x-[1px] hover:translate-y-[1px]  transition-all"
         >
           <ArrowLeft size={14} /> Back to Passport
         </button>
         
-        <div className="flex items-center gap-2 bg-brutal-blue text-white border-2 border-black px-4 py-2 shadow-[3px_3px_0px_#000] font-display text-xs uppercase font-black">
+        <div className="flex items-center gap-2 bg-brutal-blue text-white border border-slate-200 dark:border-zinc-800 px-4 py-2 shadow-sm font-display text-xs uppercase font-bold">
           <Database size={14} className="shrink-0" />
           Credentials Vault
         </div>
@@ -127,24 +127,24 @@ export default function ConnectedApps() {
                 key={prov.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`brutal-card border-4 border-black p-6 flex flex-col justify-between h-56 transition-all ${
+                className={`brutal-card border border-slate-200 dark:border-zinc-800 p-6 flex flex-col justify-between h-56 transition-all ${
                   connected 
-                    ? 'bg-white shadow-[6px_6px_0px_#00FF00]' 
-                    : 'bg-gray-50 shadow-[6px_6px_0px_#000] opacity-80 hover:opacity-100'
+                    ? 'bg-white shadow-md' 
+                    : 'bg-gray-50 shadow-md opacity-80 hover:opacity-100'
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 border-2 border-black rounded-full bg-white flex items-center justify-center p-2 shadow-[2px_2px_0px_#000]">
+                    <div className="w-12 h-12 border border-slate-200 dark:border-zinc-800 rounded-full bg-white flex items-center justify-center p-2 shadow-sm">
                       <img src={prov.logo} className="w-full h-full object-contain" alt={prov.name} />
                     </div>
                     
                     {connected ? (
-                      <span className="bg-brutal-green text-black border-2 border-black text-[9px] font-black uppercase px-2 py-0.5 shadow-[2px_2px_0px_#000]">
+                      <span className="bg-brutal-green text-black border border-slate-200 dark:border-zinc-800 text-[9px] font-bold uppercase px-2 py-0.5 shadow-sm">
                         ✓ Connected
                       </span>
                     ) : (
-                      <span className="bg-gray-200 text-gray-500 border border-gray-400 text-[9px] font-black uppercase px-2 py-0.5">
+                      <span className="bg-gray-200 text-gray-500 border border-gray-400 text-[9px] font-bold uppercase px-2 py-0.5">
                         ⚠️ Disconnected
                       </span>
                     )}
@@ -158,7 +158,7 @@ export default function ConnectedApps() {
                   </div>
                 </div>
 
-                <div className="border-t-2 border-black border-dashed pt-4 flex items-center justify-between">
+                <div className="border-t border-slate-200 dark:border-zinc-800 border-dashed pt-4 flex items-center justify-between">
                   {connected ? (
                     <div className="space-y-1">
                       <p className="text-[9px] font-mono text-gray-500 truncate max-w-[200px] leading-tight">
@@ -181,7 +181,7 @@ export default function ConnectedApps() {
                           href={details.profileUrl} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="bg-black hover:bg-brutal-blue border-2 border-black text-white p-2 shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all"
+                          className="bg-black hover:bg-brutal-blue border border-slate-200 dark:border-zinc-800 text-white p-2 shadow-sm active:scale-[0.98] active:shadow-none transition-all"
                           title="View Verified Profile"
                         >
                           <ExternalLink size={12} />
@@ -192,7 +192,7 @@ export default function ConnectedApps() {
                     <button
                       onClick={() => setConsentModalProvider(prov.name)}
                       disabled={linkingProvider === prov.id || isGuest}
-                      className="bg-brutal-yellow hover:bg-black text-black hover:text-brutal-yellow border-2 border-black px-4 py-2 text-[10px] font-black uppercase shadow-[2px_2px_0px_#000] active:translate-y-[1px] active:shadow-none transition-all flex items-center gap-1.5"
+                      className="bg-brutal-yellow hover:bg-black text-black hover:text-brutal-yellow border border-slate-200 dark:border-zinc-800 px-4 py-2 text-[10px] font-bold uppercase shadow-sm active:scale-[0.98] active:shadow-none transition-all flex items-center gap-1.5"
                     >
                       {linkingProvider === prov.id ? (
                         <Loader2 size={12} className="animate-spin" />

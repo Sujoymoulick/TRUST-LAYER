@@ -115,7 +115,7 @@ interface CodeBlockProps {
 function CodeBlock({ code }: CodeBlockProps) {
   return (
     <div className="relative mt-3">
-      <pre className="bg-zinc-900 text-zinc-100 rounded-none border-2 border-black p-4 font-mono text-xs overflow-x-auto leading-relaxed whitespace-pre">
+      <pre className="bg-zinc-900 text-zinc-100 rounded-none border border-slate-200 dark:border-zinc-800 p-4 font-mono text-xs overflow-x-auto leading-relaxed whitespace-pre">
         {code}
       </pre>
       <CopyButton text={code} />
@@ -141,7 +141,7 @@ function EndpointCard({
   status = 'STABLE',
 }: EndpointCardProps) {
   return (
-    <div className="border-[2px] border-black bg-[var(--bg-primary)] shadow-[3px_3px_0px_#000] mb-4">
+    <div className="border-[2px] border-black bg-[var(--bg-primary)] shadow-sm mb-4">
       {/* Endpoint header */}
       <div className="flex items-center gap-3 p-3 border-b-[2px] border-black bg-zinc-50 dark:bg-zinc-800 flex-wrap">
         <MethodBadge method={method} />
@@ -373,15 +373,15 @@ function IdentitySection() {
       <p className="text-sm text-[var(--text-secondary)] mb-4">
         The Identity API provides document-level verification. Documents are hashed client-side;
         TrustLayer never stores raw document images. Supported types:{' '}
-        <code className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 border border-black/20">
+        <code className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 border border-slate-200 dark:border-zinc-800/20">
           aadhaar
         </code>
         ,{' '}
-        <code className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 border border-black/20">
+        <code className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 border border-slate-200 dark:border-zinc-800/20">
           passport
         </code>
         ,{' '}
-        <code className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 border border-black/20">
+        <code className="font-mono text-xs bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 border border-slate-200 dark:border-zinc-800/20">
           dl
         </code>
         .
@@ -735,7 +735,7 @@ export default function DeveloperDocs() {
       style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}
     >
       {/* ── Page Header ────────────────────────────────────────────────────── */}
-      <div className="border-b-[3px] border-black bg-brutal-yellow shadow-[0px_4px_0px_#000]">
+      <div className="border-b-[3px] border-black bg-brutal-yellow shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
@@ -767,7 +767,7 @@ export default function DeveloperDocs() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex gap-6 items-start">
         {/* ── Left Sidebar ─────────────────────────────────────────────────── */}
         <aside className="hidden lg:block w-56 shrink-0 sticky top-6 self-start">
-          <div className="border-[3px] border-black shadow-[4px_4px_0px_#000] overflow-hidden"
+          <div className="border-[3px] border-black shadow-md overflow-hidden"
                style={{ background: 'var(--bg-primary)' }}>
             <div className="border-b-[2px] border-black px-4 py-2 bg-zinc-900">
               <p className="font-display text-xs uppercase tracking-widest text-zinc-100">
@@ -801,7 +801,7 @@ export default function DeveloperDocs() {
           </div>
 
           {/* Quick links card */}
-          <div className="mt-4 border-[2px] border-black p-3 shadow-[3px_3px_0px_#000]"
+          <div className="mt-4 border-[2px] border-black p-3 shadow-sm"
                style={{ background: 'var(--bg-primary)' }}>
             <p className="font-display text-xs uppercase tracking-widest text-[var(--text-secondary)] mb-2">
               Quick Links
@@ -830,7 +830,7 @@ export default function DeveloperDocs() {
                   onClick={() => handleNavClick(item.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 border-[2px] border-black text-xs font-mono font-bold whitespace-nowrap transition-colors ${
                     isActive
-                      ? 'bg-brutal-yellow text-black shadow-[2px_2px_0px_#000]'
+                      ? 'bg-brutal-yellow text-black shadow-sm'
                       : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -879,7 +879,7 @@ export default function DeveloperDocs() {
               TrustLayer API v1.0 · Last updated May 2026
             </p>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-brutal-green border border-black inline-block" />
+              <span className="w-2 h-2 rounded-full bg-brutal-green border border-slate-200 dark:border-zinc-800 inline-block" />
               <span className="text-xs font-mono text-[var(--text-secondary)]">All systems operational</span>
             </div>
           </div>

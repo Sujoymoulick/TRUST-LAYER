@@ -285,16 +285,15 @@ export default function Pricing() {
       )}
 
       {/* ── 1. HEADER ── */}
-      <section style={{ textAlign: 'center', padding: '80px 24px 60px', borderBottom: '3px solid #000', background: '#fff' }}>
+      <section style={{ textAlign: 'center', padding: '80px 24px 60px', borderBottom: '1px solid var(--border-color, #e5e7eb)', background: 'var(--card-bg, #fff)' }}>
         <div className="badge" style={{ 
-          background: '#FF60B5', color: '#fff', display: 'inline-block', marginBottom: 20, 
-          fontSize: '0.9rem', fontFamily: "'Archivo Black', sans-serif", textTransform: 'uppercase', 
-          fontWeight: 900, padding: '6px 16px', border: '3px solid #000', 
-          boxShadow: '4px 4px 0px #000', letterSpacing: '0.05em'
+          background: 'var(--accent, #6366f1)', color: '#fff', display: 'inline-block', marginBottom: 20, 
+          fontSize: '0.85rem', fontFamily: "'Public Sans', sans-serif",
+          fontWeight: 600, padding: '6px 16px', borderRadius: '9999px', letterSpacing: '0.02em'
         }}>
           🚀 Pricing
         </div>
-        <h1 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(2.4rem, 6vw, 4.5rem)', textTransform: 'uppercase', lineHeight: 0.92, letterSpacing: '-0.03em', marginBottom: 20 }}>
+        <h1 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(2.4rem, 6vw, 4.5rem)', lineHeight: 0.96, letterSpacing: '-0.03em', marginBottom: 20, color: 'var(--text-primary, #000)' }}>
           Choose Your<br />Trust Plan
         </h1>
         <p style={{ fontSize: '1.15rem', fontWeight: 600, color: '#444', maxWidth: 520, margin: '0 auto 40px' }}>
@@ -304,14 +303,14 @@ export default function Pricing() {
         {/* Admin Toolbar */}
         {isAdmin && (
           <div style={{ 
-            background: '#FFE600', padding: '10px 20px', border: '3px solid #000', 
+            background: 'var(--bg-primary, #f9fafb)', padding: '10px 20px', border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 12,
             display: 'inline-flex', alignItems: 'center', gap: 15, marginBottom: 30,
-            boxShadow: '4px 4px 0px #000', fontWeight: 900, textTransform: 'uppercase', fontSize: '0.8rem'
+            fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-primary, #000)'
           }}>
             <span>Admin Control</span>
             <button 
               onClick={() => setIsEditing(!isEditing)}
-              style={{ background: isEditing ? '#000' : '#fff', color: isEditing ? '#fff' : '#000', border: '2px solid #000', padding: '4px 12px', cursor: 'pointer', fontWeight: 900 }}
+              style={{ background: isEditing ? 'var(--accent, #6366f1)' : '#fff', color: isEditing ? '#fff' : 'var(--text-primary, #000)', border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 8, padding: '4px 12px', cursor: 'pointer', fontWeight: 600 }}
             >
               {isEditing ? 'Exit Edit Mode' : 'Edit All Prices'}
             </button>
@@ -319,34 +318,34 @@ export default function Pricing() {
         )}
 
         {/* Toggle */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, border: '3px solid #000', padding: '10px 20px', boxShadow: '4px 4px 0px #000', background: '#F5F5F5' }}>
-          <span style={{ fontWeight: 900, fontSize: '0.9rem', opacity: yearly ? 0.4 : 1 }}>MONTHLY</span>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 12, padding: '10px 20px', background: 'var(--bg-primary, #f9fafb)' }}>
+          <span style={{ fontWeight: 600, fontSize: '0.9rem', opacity: yearly ? 0.4 : 1, color: 'var(--text-primary, #000)' }}>Monthly</span>
           <button
             onClick={() => setYearly(y => !y)}
             style={{
-              width: 56, height: 28, border: '3px solid #000', background: yearly ? '#000' : '#FFE600',
-              position: 'relative', cursor: 'pointer', transition: 'background 0.15s', outline: 'none',
+              width: 48, height: 26, border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 9999, background: yearly ? 'var(--accent, #6366f1)' : '#e5e7eb',
+              position: 'relative', cursor: 'pointer', transition: 'background 0.2s', outline: 'none',
               flexShrink: 0,
             }}
           >
             <div style={{
-              position: 'absolute', top: 2, left: yearly ? 27 : 2,
-              width: 18, height: 18, background: yearly ? '#FFE600' : '#000',
-              transition: 'left 0.15s',
+              position: 'absolute', top: 3, left: yearly ? 25 : 3,
+              width: 18, height: 18, background: '#fff', borderRadius: '50%',
+              transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
             }} />
           </button>
-          <span style={{ fontWeight: 900, fontSize: '0.9rem', opacity: yearly ? 1 : 0.4 }}>
-            YEARLY <span style={{ background: '#00FF00', border: '2px solid #000', padding: '1px 8px', fontSize: '0.7rem', marginLeft: 4 }}>SAVE 20%</span>
+          <span style={{ fontWeight: 600, fontSize: '0.9rem', opacity: yearly ? 1 : 0.4, color: 'var(--text-primary, #000)' }}>
+            Yearly <span style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid #10b981', borderRadius: 9999, padding: '1px 8px', fontSize: '0.7rem', marginLeft: 4, fontWeight: 600 }}>Save 20%</span>
           </span>
         </div>
       </section>
 
       {/* ── 2. PRICING CARDS ── */}
-      <section style={{ padding: '64px 24px', background: '#F5F5F5', borderBottom: '3px solid #000' }}>
+      <section style={{ padding: '64px 24px', background: 'var(--bg-primary, #f9fafb)', borderBottom: '1px solid var(--border-color, #e5e7eb)' }}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: 28,
+          gap: 24,
           maxWidth: 1200,
           margin: '0 auto',
           alignItems: 'end',
@@ -359,57 +358,55 @@ export default function Pricing() {
               <div
                 key={plan.id}
                 style={{
-                  background: plan.color,
-                  border: `3px solid #000`,
-                  boxShadow: plan.highlight ? '10px 10px 0px #000' : '6px 6px 0px #000',
+                  background: 'var(--card-bg, #fff)',
+                  border: `1px solid var(--border-color, #e5e7eb)`,
+                  borderRadius: 16,
+                  boxShadow: plan.highlight ? '0 8px 30px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.06)',
                   padding: plan.highlight ? '40px 28px 36px' : '32px 24px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 0,
                   position: 'relative',
-                  transition: 'transform 0.1s, box-shadow 0.1s',
+                  transition: 'transform 0.15s, box-shadow 0.15s',
                   cursor: 'default',
                 }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translate(-3px, -3px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = plan.highlight ? '13px 13px 0px #000' : '9px 9px 0px #000';
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = plan.highlight ? '0 16px 40px rgba(0,0,0,0.16)' : '0 8px 24px rgba(0,0,0,0.1)';
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLElement).style.transform = '';
-                  (e.currentTarget as HTMLElement).style.boxShadow = plan.highlight ? '10px 10px 0px #000' : '6px 6px 0px #000';
+                  (e.currentTarget as HTMLElement).style.boxShadow = plan.highlight ? '0 8px 30px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.06)';
                 }}
               >
                 {/* Tag */}
                 {plan.tag && (
                   <div style={{
-                    position: 'absolute', top: -16, left: 20,
-                    background: plan.highlight ? '#FF60B5' : '#0057FF',
-                    color: '#fff', border: '3px solid #000',
-                    padding: '3px 14px', fontFamily: "'Archivo Black', sans-serif",
-                    fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em',
-                    boxShadow: '3px 3px 0px #000',
+                    position: 'absolute', top: -14, left: 20,
+                    background: 'var(--accent, #6366f1)',
+                    color: '#fff', borderRadius: 9999,
+                    padding: '3px 14px', fontFamily: "'Public Sans', sans-serif",
+                    fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.03em',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                   }}>
                     {plan.tag}
                   </div>
                 )}
-
-                {/* Plan Name */}
-                <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.1rem', textTransform: 'uppercase', color: textColor, marginBottom: 20, letterSpacing: '0.04em' }}>
+                <div style={{ fontSize: '1rem', fontWeight: 700, color: '#111', marginBottom: 16 }}>
                   {plan.name}
                 </div>
 
-                {/* Price */}
                 <div style={{ marginBottom: 28 }}>
                   {isEditing ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      <div style={{ fontSize: '0.65rem', fontWeight: 900, color: textColor }}>Monthly (₹)</div>
+                      <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#6b7280' }}>Monthly (₹)</div>
                       <input 
                         id={`m-${plan.id}`}
                         type="number"
                         defaultValue={plan.monthly}
-                        style={{ width: '100%', padding: '6px', border: '3px solid #000', fontWeight: 900, background: '#fff', color: '#000' }}
+                        style={{ width: '100%', padding: '8px', border: '1px solid #e5e7eb', borderRadius: 8, fontWeight: 600, background: '#fff', color: '#111' }}
                       />
-                      <div style={{ fontSize: '0.65rem', fontWeight: 900, color: textColor }}>Yearly (₹/mo)</div>
+                      <div style={{ fontSize: '0.65rem', fontWeight: 600, color: '#6b7280' }}>Yearly (₹/mo)</div>
                       <input 
                         id={`y-${plan.id}`}
                         type="number"
@@ -438,9 +435,9 @@ export default function Pricing() {
                           setLoading(null);
                         }}
                         style={{ 
-                          marginTop: 10, background: '#00FF00', color: '#000', border: '3px solid #000', 
-                          padding: '8px', fontWeight: 900, fontSize: '0.75rem', cursor: 'pointer',
-                          boxShadow: '4px 4px 0px #000'
+                          marginTop: 10, background: 'var(--accent, #6366f1)', color: '#fff', border: 'none', borderRadius: 8,
+                          padding: '8px', fontWeight: 600, fontSize: '0.75rem', cursor: 'pointer',
+                          boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
                         }}
                       >
                         {loading === plan.id ? 'Saving...' : 'Save Changes'}
@@ -466,7 +463,7 @@ export default function Pricing() {
                 </div>
 
                 {/* Divider */}
-                <div style={{ height: 3, background: isBlack ? 'rgba(255,255,255,0.2)' : '#000', marginBottom: 24 }} />
+                <div style={{ height: 1, background: 'var(--border-color, #e5e7eb)', marginBottom: 24 }} />
 
                 {/* Features */}
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32, flex: 1 }}>
@@ -483,17 +480,17 @@ export default function Pricing() {
                   onClick={() => handlePlanSelect(plan.id)}
                   disabled={!!loading}
                   style={{
-                    width: '100%', padding: '14px', border: '3px solid #000',
-                    background: plan.btnColor, color: plan.btnText,
-                    fontFamily: "'Archivo Black', sans-serif", fontSize: '0.9rem',
-                    textTransform: 'uppercase', letterSpacing: '0.05em',
-                    boxShadow: '4px 4px 0px #000', cursor: loading ? 'not-allowed' : 'pointer',
-                    transition: 'transform 0.08s, box-shadow 0.08s',
+                    width: '100%', padding: '12px', border: 'none', borderRadius: 10,
+                    background: 'var(--accent, #6366f1)', color: '#fff',
+                    fontFamily: "'Public Sans', sans-serif", fontSize: '0.9rem', fontWeight: 600,
+                    letterSpacing: '0.02em',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)', cursor: loading ? 'not-allowed' : 'pointer',
+                    transition: 'transform 0.1s, box-shadow 0.1s, opacity 0.1s',
                     opacity: loading && loading !== plan.id ? 0.5 : 1,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10
                   }}
-                  onMouseEnter={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = 'translate(2px,2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '2px 2px 0px #000'; } }}
-                  onMouseLeave={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #000'; } }}
+                  onMouseEnter={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 16px rgba(0,0,0,0.2)'; } }}
+                  onMouseLeave={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)'; } }}
                 >
                   {loading === plan.id ? (
                     <Loader2 className="animate-spin" size={18} />
@@ -510,48 +507,48 @@ export default function Pricing() {
       </section>
 
       {/* ── 3. FEATURE COMPARISON ── */}
-      <section style={{ padding: '72px 24px', borderBottom: '3px solid #000', background: '#fff' }}>
+      <section style={{ padding: '72px 24px', borderBottom: '1px solid var(--border-color, #e5e7eb)', background: 'var(--card-bg, #fff)' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3rem)', textTransform: 'uppercase', letterSpacing: '-0.02em', marginBottom: 8, textAlign: 'center' }}>
+          <h2 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em', marginBottom: 8, textAlign: 'center', color: 'var(--text-primary, #000)' }}>
             Compare Plans
           </h2>
-          <p style={{ textAlign: 'center', fontWeight: 600, color: '#555', marginBottom: 40 }}>Everything side by side</p>
+          <p style={{ textAlign: 'center', fontWeight: 500, color: 'var(--text-secondary, #555)', marginBottom: 40 }}>Everything side by side</p>
 
-          <div style={{ border: '3px solid #000', boxShadow: '8px 8px 0px #000', overflowX: 'auto' }}>
+          <div style={{ border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.08)', overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
               <thead>
                 <tr>
-                  <th style={{ padding: '16px 20px', background: '#000', color: '#fff', fontFamily: "'Archivo Black', sans-serif", fontSize: '0.85rem', textTransform: 'uppercase', textAlign: 'left', borderRight: '3px solid #333' }}>
+                  <th style={{ padding: '16px 20px', background: 'var(--bg-primary, #f9fafb)', color: 'var(--text-primary, #111)', fontFamily: "'Public Sans', sans-serif", fontSize: '0.85rem', fontWeight: 700, textAlign: 'left', borderRight: '1px solid var(--border-color, #e5e7eb)', borderBottom: '1px solid var(--border-color, #e5e7eb)' }}>
                     Feature
                   </th>
                   {['Free', 'Pro', 'Pro Plus', 'Business', ...(isAdmin ? ['Admin Elite'] : [])].map((h, i) => (
                     <th key={h} style={{
                       padding: '16px 20px', textAlign: 'center',
-                      background: h === 'Admin Elite' ? '#FF60B5' : (i === 2 ? '#FFE600' : '#000'),
-                      color: h === 'Admin Elite' || i === 2 ? '#000' : '#fff',
-                      fontFamily: "'Archivo Black', sans-serif", fontSize: '0.85rem',
-                      textTransform: 'uppercase',
-                      borderRight: i < (isAdmin ? 4 : 3) ? '3px solid #333' : 'none',
+                      background: h === 'Admin Elite' ? 'rgba(var(--accent-rgb),0.1)' : (i === 2 ? 'rgba(var(--accent-rgb),0.08)' : 'var(--bg-primary, #f9fafb)'),
+                      color: 'var(--text-primary, #111)',
+                      fontFamily: "'Public Sans', sans-serif", fontSize: '0.85rem', fontWeight: 700,
+                      borderRight: i < (isAdmin ? 4 : 3) ? '1px solid var(--border-color, #e5e7eb)' : 'none',
+                      borderBottom: '1px solid var(--border-color, #e5e7eb)',
                     }}>
                       {h}
-                      {i === 2 && <div style={{ fontWeight: 700, fontSize: '0.65rem', marginTop: 2, textTransform: 'none', fontFamily: "'Public Sans', sans-serif" }}>⭐ Best Value</div>}
-                      {h === 'Admin Elite' && <div style={{ fontWeight: 700, fontSize: '0.65rem', marginTop: 2, textTransform: 'none', fontFamily: "'Public Sans', sans-serif" }}>👑 Dynamic Admin</div>}
+                      {i === 2 && <div style={{ fontWeight: 600, fontSize: '0.65rem', marginTop: 2, color: 'var(--text-secondary, #555)' }}>⭐ Best Value</div>}
+                      {h === 'Admin Elite' && <div style={{ fontWeight: 600, fontSize: '0.65rem', marginTop: 2, color: 'var(--text-secondary, #555)' }}>👑 Dynamic Admin</div>}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {FEATURES.map((row, i) => (
-                  <tr key={row.label} style={{ background: i % 2 === 0 ? '#fff' : '#F9F9F9' }}>
-                    <td style={{ padding: '14px 20px', fontWeight: 700, fontSize: '0.88rem', borderBottom: '2px solid #000', borderRight: '3px solid #000' }}>
+                  <tr key={row.label} style={{ background: i % 2 === 0 ? 'var(--card-bg, #fff)' : 'var(--bg-primary, #f9fafb)' }}>
+                    <td style={{ padding: '14px 20px', fontWeight: 600, fontSize: '0.88rem', borderBottom: '1px solid var(--border-color, #e5e7eb)', borderRight: '1px solid var(--border-color, #e5e7eb)', color: 'var(--text-primary, #000)' }}>
                       {row.label}
                     </td>
                     {(isAdmin ? (['free', 'pro', 'proplus', 'business', 'admin'] as const) : (['free', 'pro', 'proplus', 'business'] as const)).map((key, j) => (
                       <td key={key} style={{
                         padding: '14px 20px', textAlign: 'center',
-                        borderBottom: '2px solid #000',
-                        borderRight: j < (isAdmin ? 4 : 3) ? '2px solid #ddd' : 'none',
-                        background: key === 'admin' ? 'rgba(255,96,181,0.08)' : (j === 2 ? 'rgba(255,230,0,0.08)' : 'transparent'),
+                        borderBottom: '1px solid var(--border-color, #e5e7eb)',
+                        borderRight: j < (isAdmin ? 4 : 3) ? '1px solid var(--border-color, #e5e7eb)' : 'none',
+                        background: key === 'admin' ? 'rgba(var(--accent-rgb),0.04)' : (j === 2 ? 'rgba(var(--accent-rgb),0.04)' : 'transparent'),
                       }}>
                         <FeatureCell val={row[key as keyof typeof row] as any} />
                       </td>
@@ -565,37 +562,37 @@ export default function Pricing() {
       </section>
 
       {/* ── 4. TRUST SCORE VISUAL ── */}
-      <section style={{ padding: '72px 24px', background: '#0A1B3F', borderBottom: '3px solid #000' }}>
+      <section style={{ padding: '72px 24px', background: 'var(--bg-primary, #f0f4ff)', borderBottom: '1px solid var(--border-color, #e5e7eb)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3rem)', textTransform: 'uppercase', color: '#FFE600', letterSpacing: '-0.02em', marginBottom: 12 }}>
+          <h2 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3rem)', color: 'var(--text-primary, #111)', letterSpacing: '-0.02em', marginBottom: 12 }}>
             Unlock Your True Score
           </h2>
-          <p style={{ fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: 52, fontSize: '1.05rem' }}>
+          <p style={{ fontWeight: 500, color: 'var(--text-secondary, #555)', marginBottom: 52, fontSize: '1.05rem' }}>
             Better plan → Higher trust → More opportunities
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 20 }}>
             {[
-              { plan: 'Free', score: 620, bar: '62%', color: '#fff', textColor: '#000', scoreColor: '#555' },
-              { plan: 'Pro', score: 760, bar: '76%', color: '#0057FF', textColor: '#fff', scoreColor: '#FFE600' },
-              { plan: 'Pro Plus', score: 890, bar: '89%', color: '#FFE600', textColor: '#000', scoreColor: '#000', star: true },
-              { plan: 'Business', score: 970, bar: '97%', color: '#FF60B5', textColor: '#fff', scoreColor: '#fff' },
+              { plan: 'Free', score: 620, bar: '62%', bg: 'var(--card-bg, #fff)', textColor: 'var(--text-primary, #000)', scoreColor: 'var(--text-secondary, #555)' },
+              { plan: 'Pro', score: 760, bar: '76%', bg: '#eff6ff', textColor: '#1d4ed8', scoreColor: '#2563eb' },
+              { plan: 'Pro Plus', score: 890, bar: '89%', bg: '#f0fdf4', textColor: '#15803d', scoreColor: '#16a34a', star: true },
+              { plan: 'Business', score: 970, bar: '97%', bg: '#fdf4ff', textColor: '#7e22ce', scoreColor: '#9333ea' },
             ].map(s => (
               <div
                 key={s.plan}
-                style={{ background: s.color, border: '3px solid #000', boxShadow: s.star ? '0 0 0 4px #FFE600, 0 0 0 7px #000' : '6px 6px 0px #000', padding: '28px 20px', position: 'relative' }}
+                style={{ background: s.bg, border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 16, boxShadow: s.star ? '0 0 0 3px #6366f1, 0 8px 24px rgba(0,0,0,0.1)' : '0 4px 12px rgba(0,0,0,0.06)', padding: '28px 20px', position: 'relative' }}
               >
                 {s.star && (
-                  <div style={{ position: 'absolute', top: -18, left: '50%', transform: 'translateX(-50%)', background: '#FF60B5', color: '#fff', border: '3px solid #000', padding: '3px 14px', fontFamily: "'Archivo Black', sans-serif", fontSize: '0.7rem', textTransform: 'uppercase', whiteSpace: 'nowrap', boxShadow: '3px 3px 0px #000' }}>
+                  <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', background: 'var(--accent, #6366f1)', color: '#fff', borderRadius: 9999, padding: '3px 14px', fontFamily: "'Public Sans', sans-serif", fontSize: '0.7rem', fontWeight: 600, whiteSpace: 'nowrap', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
                     ★ Best Value
                   </div>
                 )}
-                <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '0.8rem', textTransform: 'uppercase', color: s.textColor, marginBottom: 16, letterSpacing: '0.06em' }}>{s.plan}</div>
+                <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '0.8rem', color: s.textColor, marginBottom: 16, letterSpacing: '0.04em' }}>{s.plan}</div>
                 <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '3.5rem', color: s.scoreColor, lineHeight: 1, marginBottom: 16 }}>{s.score}</div>
-                <div style={{ height: 10, background: 'rgba(0,0,0,0.15)', border: '2px solid rgba(0,0,0,0.3)', marginBottom: 8 }}>
-                  <div style={{ width: s.bar, height: '100%', background: s.textColor === '#000' ? '#000' : 'rgba(255,255,255,0.8)' }} />
+                <div style={{ height: 8, background: 'var(--border-color, #e5e7eb)', borderRadius: 9999, marginBottom: 8, overflow: 'hidden' }}>
+                  <div style={{ width: s.bar, height: '100%', background: s.scoreColor, borderRadius: 9999 }} />
                 </div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: s.scoreColor, opacity: 0.7 }}>Trust Score</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: s.scoreColor, opacity: 0.8 }}>Trust Score</div>
               </div>
             ))}
           </div>
@@ -603,34 +600,34 @@ export default function Pricing() {
       </section>
 
       {/* ── 5. FAQ ── */}
-      <section style={{ padding: '72px 24px 80px', background: '#fff' }}>
+      <section style={{ padding: '72px 24px 80px', background: 'var(--card-bg, #fff)' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3rem)', textTransform: 'uppercase', letterSpacing: '-0.02em', marginBottom: 8, textAlign: 'center' }}>
+          <h2 style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em', marginBottom: 8, textAlign: 'center', color: 'var(--text-primary, #000)' }}>
             Got Questions?
           </h2>
-          <p style={{ textAlign: 'center', fontWeight: 600, color: '#555', marginBottom: 48 }}>Frequently asked questions</p>
+          <p style={{ textAlign: 'center', fontWeight: 500, color: 'var(--text-secondary, #555)', marginBottom: 48 }}>Frequently asked questions</p>
 
-          <div style={{ border: '3px solid #000', boxShadow: '8px 8px 0px #000' }}>
+          <div style={{ border: '1px solid var(--border-color, #e5e7eb)', borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
             {FAQS.map((faq, i) => (
               <div
                 key={i}
-                style={{ borderBottom: i < FAQS.length - 1 ? '3px solid #000' : 'none' }}
+                style={{ borderBottom: i < FAQS.length - 1 ? '1px solid var(--border-color, #e5e7eb)' : 'none' }}
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   style={{
-                    width: '100%', padding: '20px 24px', background: openFaq === i ? '#FFE600' : '#fff',
+                    width: '100%', padding: '20px 24px', background: openFaq === i ? 'var(--bg-primary, #f9fafb)' : 'transparent',
                     border: 'none', cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
-                    alignItems: 'center', fontFamily: "'Archivo Black', sans-serif", fontSize: '1rem',
-                    textTransform: 'uppercase', textAlign: 'left', transition: 'background 0.1s',
+                    alignItems: 'center', fontFamily: "'Public Sans', sans-serif", fontSize: '1rem', fontWeight: 600,
+                    textAlign: 'left', transition: 'background 0.15s', color: 'var(--text-primary, #000)',
                   }}
                 >
                   <span>{faq.q}</span>
-                  <span style={{ fontSize: '1.4rem', flexShrink: 0, marginLeft: 16, transition: 'transform 0.2s', transform: openFaq === i ? 'rotate(45deg)' : 'none' }}>+</span>
+                  <span style={{ fontSize: '1.2rem', flexShrink: 0, marginLeft: 16, transition: 'transform 0.2s', transform: openFaq === i ? 'rotate(45deg)' : 'none', color: 'var(--text-secondary, #555)' }}>+</span>
                 </button>
                 {openFaq === i && (
-                  <div style={{ padding: '4px 24px 24px', background: '#FFF9D6', borderTop: '2px dashed #000' }}>
-                    <p style={{ fontWeight: 600, fontSize: '0.95rem', lineHeight: 1.7, color: '#333', marginTop: 16 }}>{faq.a}</p>
+                  <div style={{ padding: '4px 24px 24px', background: 'var(--bg-primary, #f9fafb)', borderTop: '1px solid var(--border-color, #e5e7eb)' }}>
+                    <p style={{ fontWeight: 500, fontSize: '0.95rem', lineHeight: 1.7, color: 'var(--text-secondary, #444)', marginTop: 16 }}>{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -640,27 +637,27 @@ export default function Pricing() {
       </section>
 
       {/* ── FINAL CTA STRIP ── */}
-      <div style={{ background: '#FFE600', borderTop: '3px solid #000', padding: '32px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, maxWidth: '100%' }}>
+      <div style={{ background: 'var(--bg-primary, #f9fafb)', borderTop: '1px solid var(--border-color, #e5e7eb)', padding: '40px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 20, maxWidth: '100%' }}>
         <div>
-          <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.5rem', textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
+          <div style={{ fontFamily: "'Archivo Black', sans-serif", fontSize: '1.5rem', letterSpacing: '-0.02em', color: 'var(--text-primary, #000)' }}>
             Ready to build trust at scale?
           </div>
-          <div style={{ fontWeight: 600, color: '#444', marginTop: 4 }}>Start free. Upgrade anytime. No hidden fees.</div>
+          <div style={{ fontWeight: 500, color: 'var(--text-secondary, #555)', marginTop: 4 }}>Start free. Upgrade anytime. No hidden fees.</div>
         </div>
         <button
           onClick={() => handlePlanSelect('free')}
           disabled={!!loading}
           style={{
-            background: '#000', color: '#FFE600', border: '3px solid #000',
-            padding: '16px 40px', fontFamily: "'Archivo Black', sans-serif",
-            fontSize: '1rem', textTransform: 'uppercase', boxShadow: '6px 6px 0px rgba(0,0,0,0.3)',
-            cursor: loading ? 'not-allowed' : 'pointer', letterSpacing: '0.05em',
-            transition: 'transform 0.08s, box-shadow 0.08s',
+            background: 'var(--accent, #6366f1)', color: '#fff', border: 'none', borderRadius: 12,
+            padding: '14px 36px', fontFamily: "'Public Sans', sans-serif",
+            fontSize: '1rem', fontWeight: 600, boxShadow: '0 4px 16px rgba(var(--accent-rgb),0.3)',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            transition: 'transform 0.1s, box-shadow 0.1s',
             opacity: loading ? 0.7 : 1,
             display: 'flex', alignItems: 'center', gap: 10
           }}
-          onMouseEnter={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = 'translate(2px,2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '3px 3px 0px rgba(0,0,0,0.3)'; } }}
-          onMouseLeave={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = '6px 6px 0px rgba(0,0,0,0.3)'; } }}
+          onMouseEnter={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(var(--accent-rgb),0.4)'; } }}
+          onMouseLeave={e => { if(!loading) { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(var(--accent-rgb),0.3)'; } }}
         >
           {loading === 'free' ? <Loader2 className="animate-spin" size={20} /> : 'Get Started for Free →'}
         </button>
@@ -670,13 +667,14 @@ export default function Pricing() {
       {notification && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-          background: 'rgba(0, 0, 0, 0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 99999, padding: 24, backdropFilter: 'blur(5px)'
+          background: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 99999, padding: 24, backdropFilter: 'blur(8px)'
         }}>
           <div style={{
-            background: '#fff',
-            border: '4px solid #000',
-            boxShadow: '12px 12px 0px #000',
+            background: 'var(--card-bg, #fff)',
+            border: '1px solid var(--border-color, #e5e7eb)',
+            borderRadius: 20,
+            boxShadow: '0 24px 64px rgba(0,0,0,0.15)',
             maxWidth: 460,
             width: '100%',
             position: 'relative',
@@ -688,32 +686,31 @@ export default function Pricing() {
           }}>
             {/* Header / Accent Bar */}
             <div style={{
-              background: notification.type === 'success' ? '#00FF00' : (notification.type === 'error' ? '#FF60B5' : '#FFE600'),
-              borderBottom: '4px solid #000',
+              background: notification.type === 'success' ? 'rgba(16,185,129,0.08)' : (notification.type === 'error' ? 'rgba(239,68,68,0.08)' : 'rgba(var(--accent-rgb),0.08)'),
+              borderBottom: '1px solid var(--border-color, #e5e7eb)',
               padding: '16px 20px',
               display: 'flex',
               alignItems: 'center',
               gap: 12
             }}>
               <span style={{ fontSize: '1.4rem' }}>
-                {notification.type === 'success' ? '⚡' : (notification.type === 'error' ? '🚨' : 'ℹ️')}
+                {notification.type === 'success' ? '✅' : (notification.type === 'error' ? '❌' : 'ℹ️')}
               </span>
               <span style={{
-                fontFamily: "'Archivo Black', sans-serif",
-                fontSize: '1.1rem',
-                textTransform: 'uppercase',
-                color: '#000',
-                letterSpacing: '0.05em'
+                fontFamily: "'Public Sans', sans-serif",
+                fontSize: '1rem',
+                fontWeight: 700,
+                color: notification.type === 'success' ? '#059669' : (notification.type === 'error' ? '#dc2626' : 'var(--accent, #6366f1)'),
               }}>
-                {notification.type === 'success' ? 'SYSTEM SUCCESS' : (notification.type === 'error' ? 'SYSTEM ERROR' : 'SYSTEM NOTICE')}
+                {notification.type === 'success' ? 'Success' : (notification.type === 'error' ? 'Error' : 'Notice')}
               </span>
             </div>
 
             {/* Content */}
             <div style={{ padding: '32px 24px', textAlign: 'center' }}>
               <p style={{
-                fontWeight: 800,
-                color: '#000',
+                fontWeight: 600,
+                color: 'var(--text-primary, #000)',
                 fontSize: '1.05rem',
                 lineHeight: 1.6,
                 margin: '0 0 28px',
@@ -730,31 +727,21 @@ export default function Pricing() {
                   if (cb) cb();
                 }}
                 style={{
-                  background: '#FFE600',
-                  color: '#000',
-                  border: '3px solid #000',
+                  background: 'var(--accent, #6366f1)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 10,
                   padding: '12px 40px',
-                  fontFamily: "'Archivo Black', sans-serif",
+                  fontFamily: "'Public Sans', sans-serif",
                   fontSize: '0.9rem',
-                  textTransform: 'uppercase',
-                  boxShadow: '4px 4px 0px #000',
+                  fontWeight: 600,
+                  boxShadow: '0 4px 12px rgba(var(--accent-rgb),0.3)',
                   cursor: 'pointer',
-                  letterSpacing: '0.05em',
-                  transition: 'transform 0.08s, box-shadow 0.08s',
+                  transition: 'opacity 0.1s',
                   outline: 'none'
                 }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translate(2px, 2px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '2px 2px 0px #000';
-                  (e.currentTarget as HTMLElement).style.background = '#000';
-                  (e.currentTarget as HTMLElement).style.color = '#FFE600';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.transform = '';
-                  (e.currentTarget as HTMLElement).style.boxShadow = '4px 4px 0px #000';
-                  (e.currentTarget as HTMLElement).style.background = '#FFE600';
-                  (e.currentTarget as HTMLElement).style.color = '#000';
-                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '0.9'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
               >
                 Acknowledge
               </button>

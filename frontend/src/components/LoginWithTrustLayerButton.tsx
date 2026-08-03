@@ -31,16 +31,16 @@ export default function LoginWithTrustLayerButton({
   return (
     <button
       onClick={handleOAuthClick}
-      className="group relative inline-flex items-center gap-3 bg-zinc-950 text-white font-black uppercase text-xs tracking-wider px-6 py-4 border-2 border-white hover:bg-zinc-900 transition-all active:translate-x-[2px] active:translate-y-[2px] cursor-pointer"
+      className="group relative inline-flex items-center gap-3 bg-zinc-950 text-white font-bold uppercase text-xs tracking-wider px-6 py-4 border-2 border-white hover:bg-zinc-900 transition-all active:translate-x-[2px] active:translate-y-[2px] cursor-pointer"
       style={{
         boxShadow: '4px 4px 0px #00FF66',
       }}
     >
-      <div className="w-6 h-6 rounded-none bg-brutal-green text-black flex items-center justify-center border-2 border-black group-hover:scale-110 transition-transform">
+      <div className="w-6 h-6 rounded-none bg-brutal-green text-black flex items-center justify-center border border-slate-200 dark:border-zinc-800 group-hover:scale-110 transition-transform">
         <Shield size={14} className="fill-current" />
       </div>
       
-      <span className="font-display font-black tracking-widest">
+      <span className="font-display font-bold tracking-widest">
         {customText}
       </span>
 
